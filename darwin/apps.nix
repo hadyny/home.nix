@@ -53,6 +53,7 @@
       "cloudflare-warp"
       "figma"
       "firefox"
+      "gitkraken"
       "jetbrains-toolbox"
       "mitmproxy"
       "nvm"
