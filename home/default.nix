@@ -46,7 +46,7 @@ in
   home = {
     username = config.user.name;
     homeDirectory = config.user.home;
-    wallpaper.file = ./config/wallpaper/drwho-macos.jpeg;
+    wallpaper.file = ./config/wallpaper/wallpaper.jpg;
 
     sessionVariables = {
       EDITOR = "nvim";
