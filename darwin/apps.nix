@@ -58,7 +58,6 @@
       "mitmproxy"
       "nvm"
       "obsidian"
-      "openvpn-connect"
       "postman"
       "rider"
       "slack"
