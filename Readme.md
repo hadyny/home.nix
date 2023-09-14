@@ -12,13 +12,13 @@ However, the configuration itself has been tried on Ubuntu and NixOS and it turn
 Currently MacOS-specific
 
 ```bash
-$ bash -i <(curl -fsSL https://raw.githubusercontent.com/AlexeyRaga/home.nix/main/install.sh)
+$ bash -i <(curl -fsSL https://raw.githubusercontent.com/hadyny/home.nix/main/install.sh)
 ```
 
 At the end of the successful installation the installer will ask to tune the configuration
 in your `~/.nixpkgs`, re-enter the shell and switch into the new configuration.
 
-Before switching, consider to populate your secrets:
+Before switching, consider populating your secrets:
 
 ```bash
 ~/.nixpkgs/home/secrets/default.nix
