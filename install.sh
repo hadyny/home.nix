@@ -100,7 +100,7 @@ install_homebrew() {
 
 clone_repository() {
   echo
-  local repository="hadyny/home.nix"
+  local repository="ephadyn/home.nix"
   local clone_target="${HOME}/.nixpkgs"
   header "Setting up the configuration from github.com:${repository}..."
 
