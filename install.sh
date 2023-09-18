@@ -144,7 +144,7 @@ set_up_secrets() {
   echo
   header "Setting up secrets"
   local full_name=$(id -F)
-  local user_name=$(id -F | tr -d ' ')
+  local user_name=$(id -F | cut -f1 -d" ")
   local email_name=$(id -F | tr -s ' ' | tr "[:upper:]" "[:lower:]" | tr ' ' '.')
   un_example() {
     local src="$1"
