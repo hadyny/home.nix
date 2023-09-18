@@ -70,10 +70,6 @@
 
     ];
 
-    masApps = {
-      Magnet = 441258766;
-    };
-
     global.brewfile = true;
     onActivation.cleanup = "zap";
 
