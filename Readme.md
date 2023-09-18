@@ -12,7 +12,7 @@ However, the configuration itself has been tried on Ubuntu and NixOS and it turn
 Currently MacOS-specific
 
 ```bash
-$ bash -i <(curl -fsSL https://raw.githubusercontent.com/hadyny/home.nix/main/install.sh)
+$ bash -i <(curl -fsSL https://raw.githubusercontent.com/ephadyn/home.nix/main/install.sh)
 ```
 
 At the end of the successful installation the installer will ask to tune the configuration
