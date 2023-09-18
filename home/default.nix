@@ -72,7 +72,7 @@ in
   programs = {
     lazygit.enable = true;
     bat.enable = true;
-    exa.enable = true;
+    eza.enable = true;
     jq.enable = true;
     htop.enable = true;
     bottom.enable = true;
