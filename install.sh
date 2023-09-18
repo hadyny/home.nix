@@ -91,7 +91,10 @@ install_homebrew() {
   command -v brew >/dev/null || {
     warn "'Homebrew' is not installed. Installing..."
     printf "\n" | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ${HOME}/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
   }
+  
   info "'Homebrew' is installed! Here is what we have:"
   brew --version
   # echo "Making sure that 'Homebrew' is healthy..."
