@@ -207,5 +207,6 @@ install_nix_darwin
 clone_repository
 set_up_secrets
 darwin_build
+clone_lazyvim
 
 } # Prevent script running if partially downloaded
