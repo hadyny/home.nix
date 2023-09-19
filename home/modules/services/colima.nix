@@ -21,6 +21,9 @@ let
         trap cleanup EXIT
 
         ${colimaBin} start \
+        --arch aarch64
+        --vm-type=vz
+        --vz-rosetta
         --activate=${boolToString cfg.config.autoActivate} \
         --cpu=${toString cfg.config.cpu} \
         --memory=${toString cfg.config.memory} \

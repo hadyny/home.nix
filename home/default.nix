@@ -103,11 +103,11 @@ in
   };
 
   services.colima = {
-    enable = false;
+    enable = true;
 
     config = {
       cpu = 4;
-      memory = 4;
+      memory = 8;
     };
   };
 
