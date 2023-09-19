@@ -55,8 +55,6 @@
       "firefox"
       "gitkraken"
       "jetbrains-toolbox"
-      "mitmproxy"
-      "nvm"
       "obsidian"
       "postman"
       "rider"

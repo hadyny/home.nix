@@ -22,12 +22,12 @@
   targets.darwin.dock = {
     # Apps to be added to Dock.
     apps = [
+      "Slack"
       "Brave Browser"
-      "Obsidian"
+      "iTerm"
       "Rider"
       "Visual Studio Code"
-      "iTerm"
-      "Slack"
+      "Obsidian"
       "Spotify"
     ];
 
