@@ -139,7 +139,6 @@ clone_lazyvim() {
 
   info "'${clone_target}' is sourced from github.com:'${repository}'."
   cd "${clone_target}"
-  rm -rf .git
   cd - >/dev/null
 }
 
