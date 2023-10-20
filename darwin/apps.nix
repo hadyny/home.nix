@@ -51,6 +51,7 @@
       "1password"
       "brave-browser"
       "cloudflare-warp"
+      "emacs-mac"
       "figma"
       "firefox"
       "gitkraken"
@@ -74,6 +75,7 @@
     taps = [
       "homebrew/cask"
       "homebrew/core"
+      "railwaycat/emacsmacport"
     ];
   };
 }
