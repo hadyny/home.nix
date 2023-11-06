@@ -148,7 +148,7 @@ set_up_secrets() {
   local full_name=$(id -F)
   local user_name=$(id -F | cut -f1 -d" ")
   local email_name=$(id -F | tr -s ' ' | tr "[:upper:]" "[:lower:]" | tr ' ' '.')
-  un_example() {
+  un_template) {
     local src="$1"
     local dst="${1%.*}"
 
@@ -164,8 +164,8 @@ set_up_secrets() {
     fi
   }
 
-  un_example "${HOME}/.nixpkgs/home/secrets/default.nix.example"
-  un_example "${HOME}/.nixpkgs/home/work/secrets/default.nix.example"
+  un_template "${HOME}/.nixpkgs/home/secrets/default.nix.template"
+  un_template "${HOME}/.nixpkgs/home/work/secrets/default.nix.template"
 }
 
 darwin_build() {

@@ -63,8 +63,8 @@ $ darwin-rebuild switch
 
 5. Set up your secrets:
    ```bash
-    $ cp ~/.nixpkgs/home/secrets/default.nix.example ~/.nixpkgs/home/secrets/default.nix
-    $ cp ~/.nixpkgs/home/work/secrets/default.nix.example ~/.nixpkgs/home/work/secrets/default.nix
+    $ cp ~/.nixpkgs/home/secrets/default.nix.template ~/.nixpkgs/home/secrets/default.nix
+    $ cp ~/.nixpkgs/home/work/secrets/default.nix.template ~/.nixpkgs/home/work/secrets/default.nix
    ```
    Edit both files. The first one represents "global" secrets, and the second one is for work-related secrets.
 
