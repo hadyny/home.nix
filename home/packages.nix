@@ -39,5 +39,8 @@
 
     mediainfo
     libmediainfo
+
+    mitmproxy
+    terraform
   ];
 }

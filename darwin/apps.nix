@@ -73,8 +73,6 @@
     onActivation.cleanup = "zap";
 
     taps = [
-      "homebrew/cask"
-      "homebrew/core"
       "railwaycat/emacsmacport"
     ];
   };
