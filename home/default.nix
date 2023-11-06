@@ -72,19 +72,23 @@ in
   programs = {
     lazygit.enable = true;
     bat.enable = true;
-    eza.enable = true;
     jq.enable = true;
     htop.enable = true;
     bottom.enable = true;
+    ssh.enable = true;
+
+    eza = {
+      enable = true;
+      enableAliases = true;
+      extraOptions = [
+        "--group-directories-first"
+        "--header"
+      ];
+    };
 
     neovim = {
       enable = true;
       defaultEditor = true;
-    };
-
-    lsd = {
-      enable = true;
-      enableAliases = true;
     };
 
     direnv = {
@@ -100,6 +104,8 @@ in
     };
 
     lf.enable = true;
+
+
   };
 
   services.colima = {
@@ -111,27 +117,18 @@ in
     };
   };
 
-
-  programs.ssh = {
-    enable = true;
+  tools = {
+    aws.enable = true;
+    dotnet.enable = true;
+    git = {
+      enable = true;
+      userName = secrets.github.fullName;
+      userEmail = secrets.github.userEmail;
+      githubUser = secrets.github.userName;
+    };
   };
 
-  tools.aws = {
-    enable = true;
-  };
-
-  tools.dotnet = {
-    enable = true;
-  };
-
-  tools.git = {
-    enable = true;
-    userName = secrets.github.fullName;
-    userEmail = secrets.github.userEmail;
-    githubUser = secrets.github.userName;
-  };
-
-  ### ZSH (TODO: Maybe Mmve to a module?)
+  ### ZSH (TODO: Maybe move to a module?)
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -173,10 +170,6 @@ in
     '';
 
     plugins = [
-      {
-        name = "fast-syntax-highlighting";
-        src = "${pkgs.zsh-fast-syntax-highlighting}/share/zsh/site-functions";
-      }
       {
         name = "powerlevel10k";
         src = pkgs.zsh-powerlevel10k;
