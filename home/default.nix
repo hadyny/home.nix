@@ -104,8 +104,6 @@ in
     };
 
     lf.enable = true;
-
-
   };
 
   services.colima = {
@@ -128,7 +126,6 @@ in
     };
   };
 
-  ### ZSH (TODO: Maybe move to a module?)
   programs.zsh = {
     enable = true;
     enableCompletion = true;
