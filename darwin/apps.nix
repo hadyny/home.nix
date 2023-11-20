@@ -44,9 +44,8 @@
       "1password"
       "brave-browser"
       "cloudflare-warp"
-      "emacs-mac"
+      "railwaycat/emacsmacport/emacs-mac"
       "figma"
-      #"firefox"
       "gitkraken"
       "jetbrains-toolbox"
       "obsidian"
@@ -59,7 +58,6 @@
     ];
 
     brews = [
-
     ];
 
     global.brewfile = true;
