@@ -47,6 +47,7 @@
       "railwaycat/emacsmacport/emacs-mac"
       "figma"
       "gitkraken"
+      "github"
       "jetbrains-toolbox"
       "obsidian"
       "postman"

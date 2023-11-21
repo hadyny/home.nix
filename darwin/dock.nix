@@ -30,6 +30,9 @@
       "Visual Studio Code"
       "Obsidian"
       "Spotify"
+      "Emacs"
+      "Github Desktop"
+      "Gitkraken"
     ];
 
     # "Others" section in Dock (the one after the bar, where the Bin sits).
