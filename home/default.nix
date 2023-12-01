@@ -137,7 +137,6 @@ in
     # https://github.com/zsh-users/zsh-syntax-highlighting/issues/295#issuecomment-214581607
     initExtra = ''
       zstyle ':bracketed-paste-magic' active-widgets '.self-*'
-      autoload -U add-zsh-hook
 
       export NVM_DIR="$([ -z "''${XDG_CONFIG_HOME-}" ] && printf %s "''${HOME}/.nvm" || printf %s "''${XDG_CONFIG_HOME}/nvm")"
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
