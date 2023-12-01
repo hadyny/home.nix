@@ -8,7 +8,7 @@
     # Sets the speed of animation when hiding/showing the Dock. Default is "1.0".
     autohide-time-modifier = 1.0;
     # Position of dock. Default is "bottom"; alternatives are "left" and "right".
-    orientation = "bottom";
+    orientation = "left";
     # Whether to make icons of hidden applications translucent. Default is false.
     showhidden = true;
     # Show recent applications in the dock. Default is true.
@@ -16,7 +16,7 @@
     # Show only open applications in the Dock. Default is false.
     static-only = false;
     # Size of the icons in the Dock. Default is 64.
-    tilesize = 32;
+    tilesize = 48;
   };
 
   targets.darwin.dock = {
@@ -24,21 +24,16 @@
     apps = [
       "Slack"
       "Firefox"
-      "Brave Browser"
       "iTerm"
       "Rider"
       "Visual Studio Code"
       "Obsidian"
-      "Spotify"
-      "Emacs"
-      "Github Desktop"
-      "Gitkraken"
     ];
 
     # "Others" section in Dock (the one after the bar, where the Bin sits).
     others = [
       ({ path = "/Applications"; })
-      ({ path = "${config.user.home}/Downloads"; sort = "dateadded"; view = "fan"; })
+      ({ path = "${config.user.home}/Downloads"; sort = "dateadded"; view = "grid"; })
     ];
   };
 }

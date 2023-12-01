@@ -29,9 +29,21 @@ in
       userName = cfg.userName;
       userEmail = cfg.userEmail;
 
-      difftastic = {
+      delta = {
         enable = true;
-        display = "side-by-side"; # one of "side-by-side", "side-by-side-show-both", "inline"
+        options = {
+          decorations = {
+            commit-decoration-style = "bold yellow box ul";
+            file-decoration-style = "none";
+            file-style = "bold yellow ul";
+          };
+          features = "decorations";
+          whitespace-error-style = "22 reverse";
+          true-color = "always";
+          line-numbers = true;
+          side-by-side = true;
+          hyperlinks = true;
+        };
       };
 
       extraConfig = {
