@@ -16,7 +16,7 @@
     # Show only open applications in the Dock. Default is false.
     static-only = false;
     # Size of the icons in the Dock. Default is 64.
-    tilesize = 48;
+    tilesize = 56;
   };
 
   targets.darwin.dock = {
