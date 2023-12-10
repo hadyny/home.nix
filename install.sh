@@ -128,7 +128,7 @@ set_up_secrets() {
   local full_name=$(id -F)
   local user_name=$(id -F | cut -f1 -d" ")
   local email_name=$(id -F | tr -s ' ' | tr "[:upper:]" "[:lower:]" | tr ' ' '.')
-  un_template) {
+  un_template() {
     local src="$1"
     local dst="${1%.*}"
 
