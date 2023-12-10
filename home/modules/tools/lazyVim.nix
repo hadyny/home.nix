@@ -3,11 +3,13 @@
 {
   programs.neovim = {
     extraPackages = with pkgs; [
-      # LazyVim
       lua-language-server
+      tailwindcss
+      tailwindcss-language-server
+      csharp-ls
+      typescript
+      typescript-language-server
       stylua
-      # Telescope
-      ripgrep
     ];
 
     plugins = with pkgs.vimPlugins; [
