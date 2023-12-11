@@ -3,6 +3,8 @@
 {
   programs.neovim = {
     extraPackages = with pkgs; [
+      # csharp-ls
+      tailwindcss-language-server
       lua-language-server
       stylua
     ];
@@ -29,6 +31,8 @@
           gitsigns-nvim
           indent-blankline-nvim
           lualine-nvim
+          mason-nvim
+          mason-lspconfig-nvim
           neo-tree-nvim
           neoconf-nvim
           neodev-nvim
@@ -88,9 +92,7 @@
             -- The following configs are needed for fixing lazyvim on nix
             -- force enable telescope-fzf-native.nvim
             { "nvim-telescope/telescope-fzf-native.nvim", enabled = true },
-            -- disable mason.nvim, use programs.neovim.extraPackages
-            { "williamboman/mason-lspconfig.nvim", enabled = false },
-            { "williamboman/mason.nvim", enabled = false },
+
             -- import/override with your plugins
             { import = "plugins" },
             -- treesitter handled by xdg.configFile."nvim/parser", put this line at the end of spec to clear ensure_installed
@@ -107,7 +109,18 @@
         name = "treesitter-parsers";
         paths = (pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: with plugins; [
           c
+          c_sharp
+          css
+          dockerfile
+          graphql
+          html
+          javascript
+          json
           lua
+          nix
+          terraform
+          tsx
+          typescript
         ])).dependencies;
       };
     in
