@@ -44,7 +44,6 @@
       "1password"
       "brave-browser"
       "cloudflare-warp"
-      "railwaycat/emacsmacport/emacs-mac"
       "figma"
       "gitkraken"
       "github"
@@ -65,7 +64,6 @@
     onActivation.cleanup = "zap";
 
     taps = [
-      "railwaycat/emacsmacport"
     ];
   };
 }
