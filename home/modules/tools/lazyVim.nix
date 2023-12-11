@@ -4,11 +4,6 @@
   programs.neovim = {
     extraPackages = with pkgs; [
       lua-language-server
-      # tailwindcss
-      # tailwindcss-language-server
-      csharp-ls
-      typescript
-      typescript-language-server
       stylua
     ];
 
