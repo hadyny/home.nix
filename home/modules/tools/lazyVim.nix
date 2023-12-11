@@ -2,12 +2,7 @@
 
 {
   programs.neovim = {
-    extraPackages = with pkgs; [
-      # csharp-ls
-      tailwindcss-language-server
-      lua-language-server
-      stylua
-    ];
+    extraPackages = with pkgs; [];
 
     plugins = with pkgs.vimPlugins; [
       lazy-nvim
@@ -16,14 +11,13 @@
     extraLuaConfig =
       let
         plugins = with pkgs.vimPlugins; [
-          # LazyVim
           LazyVim
           bufferline-nvim
           cmp-buffer
           cmp-nvim-lsp
           cmp-path
           cmp_luasnip
-        #   conform-nvim
+          conform-nvim
           dashboard-nvim
           dressing-nvim
           flash-nvim
@@ -32,7 +26,6 @@
           indent-blankline-nvim
           lualine-nvim
           mason-nvim
-          mason-lspconfig-nvim
           neo-tree-nvim
           neoconf-nvim
           neodev-nvim
@@ -108,7 +101,6 @@
       parsers = pkgs.symlinkJoin {
         name = "treesitter-parsers";
         paths = (pkgs.vimPlugins.nvim-treesitter.withPlugins (plugins: with plugins; [
-          c
           c_sharp
           css
           dockerfile
