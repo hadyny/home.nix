@@ -5,8 +5,6 @@
     raycast.enable = true;
     iterm2.enable = true;
 
-    firefox.enable = true;
-
     vscode = {
       enable = true;
       extensions = [
@@ -47,6 +45,7 @@
       "figma"
       "gitkraken"
       "github"
+      "firefox"
       "jetbrains-toolbox"
       "obsidian"
       "postman"
