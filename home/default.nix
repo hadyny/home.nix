@@ -29,18 +29,7 @@ in
     # everything for work
     ./work
   ] ++ (modules.importAllModules ./modules);
-
-  # secureEnv.onePassword = {
-  #   enable = true;
-  #   sessionVariables = {
-  #     GITHUB_TOKEN = {
-  #       vault = "Private";
-  #       item = "Github Token";
-  #       field = "password";
-  #     };
-  #   };
-  # };
-
+ 
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home = {
