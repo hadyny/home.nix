@@ -60,7 +60,22 @@ in
 
   programs = {
     lazygit.enable = true;
-    bat.enable = true;
+    bat = {
+      enable = true;
+      config = { theme = "catppuccin"; };
+      themes = {
+        catppuccin = {
+          src = pkgs.fetchFromGitHub
+            {
+              owner = "catppuccin";
+              repo = "bat";
+              rev = "ba4d16880d63e656acced2b7d4e034e4a93f74b1";
+               sha256 = "sha256-6WVKQErGdaqb++oaXnY3i6/GuH2FhTgK0v4TN4Y0Wbw=";
+            };
+          file = "Catppuccin-macchiato.tmTheme";
+        };
+      };
+    };
     jq.enable = true;
     htop.enable = true;
     bottom.enable = true;
@@ -82,6 +97,8 @@ in
       enable = true;
       defaultEditor = true;
     };
+
+    nnn.enable = true;
 
     direnv = {
       enable = true;
@@ -110,6 +127,11 @@ in
     };
 
     lf.enable = true;
+
+    starship = {
+      enable = true;
+      enableZshIntegration = true;
+    };
   };
 
   services.colima = {
@@ -137,6 +159,7 @@ in
     enableCompletion = true;
     enableAutosuggestions = true;
     syntaxHighlighting.enable = true;
+    autocd = true;
     # history.extended = true;
 
     # this is to workaround zsh syntax highlighting slowness on copy/paste
@@ -168,19 +191,6 @@ in
       load-nvmrc
     '';
 
-    plugins = [
-      {
-        name = "powerlevel10k";
-        src = pkgs.zsh-powerlevel10k;
-        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-      }
-      {
-        name = "powerlevel10k-config";
-        src = lib.cleanSource ./config/p10k;
-        file = "p10k-lean.zsh";
-      }
-    ];
-
     oh-my-zsh = {
       enable = true;
       plugins = [
@@ -191,7 +201,6 @@ in
         "gitfast"
         "github"
         "nvm"
-        "z"
       ];
     };
   };
