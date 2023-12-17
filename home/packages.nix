@@ -20,6 +20,7 @@
     duf # better df
     gdu # better du
     fd # better find
+    gh
     moreutils
     ripgrep # better grep
     watch
