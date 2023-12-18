@@ -59,7 +59,6 @@ in
   ];
 
   programs = {
-    lazygit.enable = true;
     bat = {
       enable = true;
       config = { theme = "catppuccin"; };
@@ -125,8 +124,6 @@ in
         "hl+" = "#f38ba8";
       };
     };
-
-    lf.enable = true;
 
     starship = {
       enable = true;

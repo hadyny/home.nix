@@ -9,6 +9,7 @@
     tree
     broot
     clang
+    commitizen
     delta # diff stuff, https://github.com/dandavison/delta
     curl
     wget

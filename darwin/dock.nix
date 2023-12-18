@@ -23,6 +23,7 @@
     # Apps to be added to Dock.
     apps = [
       "Slack"
+      "Brave Browser"
       "Firefox"
       "iTerm"
       "Rider"
