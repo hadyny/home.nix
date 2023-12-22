@@ -101,6 +101,17 @@ install_homebrew() {
   # brew doctor
 }
 
+install_rosetta() {
+  header "Setting up Rosetta"
+
+  if arch -x86_64 /usr/bin/true 2> /dev/null; then
+        info "Rosetta is already installed, skipping"
+    else
+        warn "Rosetta is not installed, installing now"
+        /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+    fi
+}
+
 clone_repository() {
   echo
   local repository="ephadyn/home.nix"
@@ -183,6 +194,7 @@ install_homebrew
 install_nix
 install_home_manager
 install_nix_darwin
+install_rosetta
 clone_repository
 set_up_secrets
 darwin_build
