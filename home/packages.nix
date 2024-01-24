@@ -22,6 +22,7 @@
     gdu # better du
     fd # better find
     gh
+    tig
     moreutils
     ripgrep # better grep
     watch

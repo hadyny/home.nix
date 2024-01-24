@@ -81,6 +81,73 @@ in
             paging.pager = "delta --features 'default lazygit'";
             parseEmoji = true;
           };
+          customCommands = [
+            {
+              key = "C";
+              command = "git cz c";
+              description = "commit with commitizen";
+              context = "files";
+              loadingText = "opening commitizen commit tool";
+              subprocess = true;
+            }
+            {
+              key = "t";
+              command = "tig {{.SelectedSubCommit.Sha}} -- {{.SelectedCommitFile.Name}}";
+              context = "commitFiles";
+              description = "tig file (history of commits affecting file)";
+              subprocess = true;
+            }
+            {
+              key = "t";
+              command = "tig -- {{.SelectedFile.Name}}";
+              context = "files";
+              description = "tig file (history of commits affecting file)";
+              subprocess = true;
+            }
+            {
+              key = "E";
+              description = "Add empty commit";
+              context = "commits";
+              command = "git commit --allow-empty -m \"empty commit\"";
+              loadingText = "Committing empty commit...";
+            }
+            {
+              key = "n";
+              context = "localBranches";
+              prompts = [
+                {
+                  type = "menu";
+                  title = "What kind of branch is it?";
+                  key = "BranchType";
+                  options = [
+                    {
+                      name = "feature";
+                      description = "a feature branch";
+                      value = "feature";
+                    }
+                    {
+                      name = "bugfix";
+                      description = "a butfix branch";
+                      value = "bugfix";
+                    }
+                    {
+                      name = "release";
+                      description = "a release branch";
+                      value = "release";
+                    }
+                  ];
+                }
+                {
+                  type = "input";
+                  title = "What is the new branch name?";
+                  key = "BranchName";
+                  initialValue = "";
+                }
+              ];
+              command = "git branch {{.Form.BranchType}}/{{.Form.BranchName}}";
+              loadingText = "Creating branch";
+            }
+          ];
         };
       };
     };

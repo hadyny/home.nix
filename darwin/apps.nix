@@ -40,7 +40,7 @@
 
     casks = [
       "1password"
-      "brave-browser"
+      "chromium"
       "cloudflare-warp"
       "figma"
       "firefox"
@@ -52,6 +52,7 @@
       "rider"
       "slack"
       "spotify"
+      "vivaldi"
       "vlc"
       "zoom"
     ];
