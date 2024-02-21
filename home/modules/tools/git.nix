@@ -54,13 +54,14 @@ in
             true-color = "always";
             line-numbers = true;
             hyperlinks = true;
+            diff-so-fancy = true;
           };
         };
 
         extraConfig = {
-          # core = { autocrlf = false; };
           github.user = cfg.githubUser;
           init.defaultBranch = "main";
+          diff.colorMoved = "default";
         };
 
         includes = map (x: { condition = "gitdir:~/${x}/"; path = "~/${x}/.gitconfig"; })
@@ -77,7 +78,6 @@ in
             showRandomTip = false;
           };
           git = {
-            branchLogCmd = "git logs --graph";
             paging.pager = "delta --features 'default lazygit'";
             parseEmoji = true;
           };

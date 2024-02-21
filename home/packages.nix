@@ -23,6 +23,7 @@
     gdu # better du
     fd # better find
     gh
+    git-standup
     tig
     moreutils
     ripgrep # better grep

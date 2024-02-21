@@ -85,20 +85,5 @@ with lib;
         region = "ca-central-1";
       };
     };
-
-    # sessions = {
-    #   ep = {
-    #     sso_startUrl = "https://educationperfect.aws";
-    #     sso_region = "ap-southeast-2";
-
-    #     profiles = {
-    #       dev = {
-    #         sso_account_id = "327162508743";
-    #         sso_role_name = "admin";
-    #         region = "ap-southeast-2";
-    #       };
-    #     };
-    #   };
-    # };
   };
 }
