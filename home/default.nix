@@ -81,11 +81,6 @@ in
       ];
     };
 
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-    };
-
     nnn.enable = true;
 
     direnv = {
