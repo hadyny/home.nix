@@ -9,7 +9,9 @@
     neovim = {
       enable = true;
       defaultEditor = true;
-      
+      extraPackages = [
+        pkgs.rnix-lsp
+      ];
     };
   };
 

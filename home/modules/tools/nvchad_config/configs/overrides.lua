@@ -33,13 +33,20 @@ M.mason = {
     "typescript-language-server",
     "deno",
     "prettier",
-
-    -- c/cpp stuff
-    "clangd",
-    "clang-format",
+    "json-lsp",
+    "eslint-lsp",
+    "tailwindcss-language-server",
 
     -- shell stuff
     "shfmt",
+
+    -- development
+    "azure-pipelines-language-server",
+    "csharp-language-server",
+    "dockerfile-language-server",
+    "docker-compose-language-service",
+    "terraform-ls",
+    "marksman"
   },
 }
 
