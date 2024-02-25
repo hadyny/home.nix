@@ -1,0 +1,10 @@
+{
+  "workbench.colorTheme": "Catppuccin Macchiato",
+  "editor.fontFamily": "'FiraCode Nerd Font Mono', 'Droid Sans Mono', 'monospace', monospace",
+  "editor.fontLigatures": true,
+  "workbench.preferredDarkColorTheme": "Catppuccin Macchiato",
+  "workbench.preferredLightColorTheme": "Catppuccin Latte",
+  "window.autoDetectColorScheme": true,
+  "githubPullRequests.pullBranch": "never",
+  "git.autofetch": true,
+}

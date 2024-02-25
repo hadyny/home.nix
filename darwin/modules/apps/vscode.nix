@@ -7,7 +7,7 @@ let
   cfg = config.darwin.apps.vscode;
 
   codeBin = ''/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'';
-
+  settingsFile = ./vscode/settings.json;
 in
 {
   options.darwin.apps.vscode = {
@@ -21,6 +21,7 @@ in
   };
 
   config = mkIf enabled {
+    home-manager.users.${config.user.name}.home.file."Library/Application Support/Code/User/settings.json".source = settingsFile;
     # Install VSCode from Homebrew
     homebrew = {
       casks = [ "visual-studio-code" ];
