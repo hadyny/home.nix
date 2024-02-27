@@ -16,6 +16,7 @@ local servers = {
     "eslint",
     "rnix",
     "marksman",
+    "hls"
 }
 
 for _, lsp in ipairs(servers) do

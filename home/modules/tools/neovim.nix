@@ -9,11 +9,13 @@
     neovim = {
       enable = true;
       defaultEditor = true;
-      extraPackages = with pkgs; [
-        rnix-lsp
-      ];
     };
   };
+
+  home.packages = with pkgs; [
+    rnix-lsp
+    haskell-language-server
+  ];
 
   xdg.configFile."nvim".source = pkgs.stdenv.mkDerivation {
     name = "NvChad";

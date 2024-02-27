@@ -24,6 +24,8 @@
     fd # better find
     gh
     git-standup
+    ghc
+    cabal-install
     tig
     moreutils
     ripgrep # better grep

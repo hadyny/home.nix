@@ -54,8 +54,9 @@ M.mason = {
     "csharp-language-server",
     "dockerfile-language-server",
     "docker-compose-language-service",
-    "terraform-lsp",
-    "marksman"
+    "terraform-ls",
+    "marksman",
+    -- "haskell-language-server",
   },
 }
 
