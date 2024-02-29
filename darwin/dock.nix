@@ -23,7 +23,6 @@
     # Apps to be added to Dock.
     apps = [
       "Slack"
-      "Vivaldi"
       "Firefox"
       "Chromium"
       "iTerm"

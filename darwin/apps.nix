@@ -37,6 +37,8 @@
         "nilobarp.javascript-test-runner"
         "orta.vscode-jest"
         "redhat.vscode-yaml"
+        "tgriesser.avro-schemas"
+        "vscodevim.vim"
         "yzhang.markdown-all-in-one"
       ];
     };

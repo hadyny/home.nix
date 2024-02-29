@@ -154,6 +154,11 @@ in
 
     home.packages = with pkgs; [
       git-crypt
+      commitizen
+      delta
+      gh
+      git-standup
+      tig
     ];
   };
 }

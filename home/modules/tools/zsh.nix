@@ -11,7 +11,6 @@
         enableAutosuggestions = true;
         syntaxHighlighting.enable = true;
         autocd = true;
-        # history.extended = true;
 
         # this is to workaround zsh syntax highlighting slowness on copy/paste
         # https://github.com/zsh-users/zsh-syntax-highlighting/issues/295#issuecomment-214581607

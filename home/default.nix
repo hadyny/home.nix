@@ -23,8 +23,8 @@ in
   '';
 
   imports = [
-    # Programs to install
-    ./packages.nix
+    # Development packages
+    ./development.nix
 
     # everything for work
     ./work
@@ -38,8 +38,6 @@ in
     wallpaper.file = ./config/wallpaper/wallpaper.jpg;
 
     sessionVariables = {
-      EDITOR = "nvim";
-      GH_PAGER = "delta";
     };
 
     sessionPath = [
