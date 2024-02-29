@@ -7,4 +7,5 @@
   "window.autoDetectColorScheme": true,
   "githubPullRequests.pullBranch": "never",
   "git.autofetch": true,
+  "haskell.manageHLS": "PATH"
 }

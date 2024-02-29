@@ -14,20 +14,15 @@ in
     };
 
     packages = with pkgs; [
-
       csharprepl
       csharp-ls
       tree
       broot
-      clang
       curl
       wget
-      httpie # HTTP requests tool, Python
-      xh # Friendly and fast tool for sending HTTP requests, written in Rust
       docker
       docker-credential-helpers
       lazydocker # docker UI
-      dive # docker images exploration, https://github.com/wagoodman/dive
       duf # better df
       gdu # better du
       fd # better find
