@@ -14,8 +14,8 @@ in
     };
 
     packages = with pkgs; [
+      cargo
       csharprepl
-      csharp-ls
       tree
       broot
       curl

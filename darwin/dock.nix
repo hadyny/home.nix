@@ -25,9 +25,7 @@
       "Slack"
       "Firefox"
       "Chromium"
-      "iTerm"
-      "Rider"
-      "Visual Studio Code"
+      "Kitty"
       "Obsidian"
     ];
 

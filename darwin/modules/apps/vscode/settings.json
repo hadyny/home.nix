@@ -7,5 +7,10 @@
   "window.autoDetectColorScheme": true,
   "githubPullRequests.pullBranch": "never",
   "git.autofetch": true,
-  "haskell.manageHLS": "PATH"
+  "haskell.manageHLS": "PATH",
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "workbench.activityBar.location": "hidden",
+  "settings.minimap.enabled": false,
 }

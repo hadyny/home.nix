@@ -105,6 +105,21 @@ in
       };
     };
 
+    kitty = {
+      enable = true;
+      font = {
+        size = 11;
+        package = pkgs.hack-font;
+        name = "Hack";
+      };
+      shellIntegration.enableZshIntegration = true;
+      theme = "Catppuccin-Mocha";
+      settings = {
+        enable_audio_bell = false;
+        window_padding_width = 20;
+      };
+    };
+
     starship = {
       enable = true;
       enableZshIntegration = true;

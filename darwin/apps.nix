@@ -8,6 +8,7 @@
     vscode = {
       enable = true;
       extensions = [
+        "asvetliakov.vscode-neovim"
         "bbenoist.nix"
         "bradlc.vscode-tailwindcss"
         "catppuccin.catppuccin-vsc"
@@ -38,7 +39,6 @@
         "orta.vscode-jest"
         "redhat.vscode-yaml"
         "tgriesser.avro-schemas"
-        "vscodevim.vim"
         "yzhang.markdown-all-in-one"
       ];
     };
@@ -67,12 +67,25 @@
     ];
 
     brews = [
+      {
+        name = "neovim";
+        args = [ "--HEAD" ];
+      }
+      {
+        name = "neovide";
+        args = [ "HEAD" ];
+      }
+      {
+        name = "emacs-plus";
+        args = [ "with-native-comp" "with-modern-vscode-icon" ];
+      }
     ];
 
     global.brewfile = true;
     onActivation.cleanup = "zap";
 
     taps = [
+      "d12frosted/emacs-plus"
     ];
   };
 }
