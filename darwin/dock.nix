@@ -23,15 +23,14 @@
     # Apps to be added to Dock.
     apps = [
       "Slack"
-      "Firefox"
-      "Chromium"
-      "Kitty"
+      "Vivaldi"
+      "iTerm"
+      "Visual Studio Code"
       "Obsidian"
     ];
 
     # "Others" section in Dock (the one after the bar, where the Bin sits).
     others = [
-      ({ path = "/Applications"; })
       ({ path = "${config.user.home}/Downloads"; sort = "dateadded"; view = "grid"; })
     ];
   };

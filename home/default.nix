@@ -54,13 +54,26 @@ in
     _1password
 
     # fonts
-    (nerdfonts.override { fonts = [ "FiraCode" "FiraMono" ]; })
+    (nerdfonts.override { fonts = [ "Hack" "FiraCode" "FiraMono" "VictorMono" ]; })
   ];
 
   programs = {
     bat = {
       enable = true;
-      config = { theme = "Nord"; };
+      config = {
+        theme = "catppuccin";
+      };
+      themes = {
+        catppuccin = {
+          src = pkgs.fetchFromGitHub {
+            owner = "catppuccin";
+            repo = "bat";
+            rev = "main";
+            sha256 = "sha256-Q5B4NDrfCIK3UAMs94vdXnR42k4AXCqZz6sRn8bzmf4=";
+          };
+          file = "themes/Catppuccin Mocha.tmTheme";
+        };
+      };
     };
     jq.enable = true;
     htop.enable = true;
@@ -108,9 +121,8 @@ in
     kitty = {
       enable = true;
       font = {
-        size = 11;
-        package = pkgs.hack-font;
-        name = "Hack";
+        size = 12;
+        name = "Hack Nerd Font Mono";
       };
       shellIntegration.enableZshIntegration = true;
       theme = "Catppuccin-Mocha";
@@ -120,9 +132,24 @@ in
       };
     };
 
-    starship = {
+    starship = let
+      flavour = "mocha";
+    in
+    {
       enable = true;
       enableZshIntegration = true;
+      settings = {
+        scan_timeout = 100;
+        format = "$all";
+        palette = "catppuccin_${flavour}";
+      } // builtins.fromTOML (builtins.readFile
+        (pkgs.fetchFromGitHub
+          {
+            owner = "catppuccin";
+            repo = "starship";
+            rev = "5629d2356f62a9f2f8efad3ff37476c19969bd4f";
+            sha256 = "sha256-nsRuxQFKbQkyEI4TXgvAjcroVdG+heKX5Pauq/4Ota0=";
+          } + /palettes/${flavour}.toml));
     };
   };
 

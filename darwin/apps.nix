@@ -38,6 +38,7 @@
         "nilobarp.javascript-test-runner"
         "orta.vscode-jest"
         "redhat.vscode-yaml"
+        "statelyai.stately-vscode"
         "tgriesser.avro-schemas"
         "yzhang.markdown-all-in-one"
       ];
@@ -54,16 +55,13 @@
       "figma"
       "firefox"
       "gitkraken"
-      "github"
       "jetbrains-toolbox"
       "obsidian"
       "postman"
-      "rider"
       "slack"
       "spotify"
       "vivaldi"
       "vlc"
-      "zoom"
     ];
 
     brews = [
@@ -75,17 +73,11 @@
         name = "neovide";
         args = [ "HEAD" ];
       }
-      {
-        name = "emacs-plus";
-        args = [ "with-native-comp" "with-modern-vscode-icon" ];
-      }
     ];
 
     global.brewfile = true;
     onActivation.cleanup = "zap";
 
-    taps = [
-      "d12frosted/emacs-plus"
-    ];
+    taps = [];
   };
 }

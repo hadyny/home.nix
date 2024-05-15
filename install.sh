@@ -133,6 +133,27 @@ clone_repository() {
   cd - >/dev/null
 }
 
+install_nvim_config() {
+  echo
+  local repository="ephadyn/neovim-config"
+  local clone_target="${HOME}/.config/nvim"
+  header "Setting up the configuration from github.com:${repository}..."
+
+  if [[ ! $( cat "${clone_target}/.git/config" | grep "github.com" | grep "${repository}" ) ]]; then
+    if [ -d "${clone_target}" ]; then
+      warn "Looks like '${clone_target}' exists and it is not what we want. Backing up as '${clone_target}.backup-before-clone'..."
+      mv "${clone_target}" "${clone_target}.backup-before-clone"
+    fi
+    warn "Cloning 'github.com:${repository}' into '${clone_target}'..."
+    git clone "https://github.com/${repository}.git" "${clone_target}"
+  fi
+
+  info "'${clone_target}' is sourced from github.com:'${repository}'."
+  cd "${clone_target}"
+  git remote -v
+  cd - >/dev/null
+}
+
 set_up_secrets() {
   echo
   header "Setting up secrets"
@@ -196,6 +217,7 @@ install_home_manager
 install_nix_darwin
 install_rosetta
 clone_repository
+install_nvim_config
 set_up_secrets
 darwin_build
 
