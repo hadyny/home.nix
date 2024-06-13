@@ -80,9 +80,13 @@ in
     bottom.enable = true;
     ssh.enable = true;
 
+    neovim = {
+      enable = true;
+      defaultEditor = true;
+    };
+
     eza = {
       enable = true;
-      enableAliases = true;
       git = true;
       icons = true;
       extraOptions = [
@@ -121,8 +125,8 @@ in
     kitty = {
       enable = true;
       font = {
-        size = 12;
-        name = "Hack Nerd Font Mono";
+        size = 13;
+        name = "VictorMono Nerd Font";
       };
       shellIntegration.enableZshIntegration = true;
       theme = "Catppuccin-Mocha";
