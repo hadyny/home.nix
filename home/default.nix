@@ -3,7 +3,12 @@
 
 let
   secrets = import ./secrets;
-  modules = import ../lib/modules.nix {inherit lib;};
+  modules = import ../lib/modules.nix { inherit lib; };
+
+  nixvim = import (builtins.fetchGit {
+    url = "https://github.com/nix-community/nixvim";
+    ref = "main";
+  });
 in
 {
   # Let Home Manager install and manage itself.
@@ -19,17 +24,18 @@ in
 
   # Flakes are not standard yet, but widely used, enable them.
   xdg.configFile."nix/nix.conf".text = ''
-      experimental-features = nix-command flakes
+    experimental-features = nix-command flakes
   '';
 
   imports = [
     # Development packages
+    nixvim.homeManagerModules.nixvim
     ./development.nix
 
     # everything for work
     ./work
   ] ++ (modules.importAllModules ./modules);
- 
+
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home = {
@@ -37,8 +43,7 @@ in
     homeDirectory = config.user.home;
     wallpaper.file = ./config/wallpaper/wallpaper.jpg;
 
-    sessionVariables = {
-    };
+    sessionVariables = { };
 
     sessionPath = [
     ];
@@ -80,11 +85,6 @@ in
     bottom.enable = true;
     ssh.enable = true;
 
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-    };
-
     eza = {
       enable = true;
       git = true;
@@ -107,7 +107,7 @@ in
       enableZshIntegration = true;
       enableBashIntegration = true;
       colors = {
-        "bg+" = "#313244"; 
+        "bg+" = "#313244";
         "bg" = "#1e1e2e";
         "spinner" = "#f5e0dc";
         "hl" = "#f38ba8";
@@ -136,25 +136,26 @@ in
       };
     };
 
-    starship = let
-      flavour = "mocha";
-    in
-    {
-      enable = true;
-      enableZshIntegration = true;
-      settings = {
-        scan_timeout = 100;
-        format = "$all";
-        palette = "catppuccin_${flavour}";
-      } // builtins.fromTOML (builtins.readFile
-        (pkgs.fetchFromGitHub
-          {
-            owner = "catppuccin";
-            repo = "starship";
-            rev = "5629d2356f62a9f2f8efad3ff37476c19969bd4f";
-            sha256 = "sha256-nsRuxQFKbQkyEI4TXgvAjcroVdG+heKX5Pauq/4Ota0=";
-          } + /palettes/${flavour}.toml));
-    };
+    starship =
+      let
+        flavour = "mocha";
+      in
+      {
+        enable = true;
+        enableZshIntegration = true;
+        settings = {
+          scan_timeout = 100;
+          format = "$all";
+          palette = "catppuccin_${flavour}";
+        } // builtins.fromTOML (builtins.readFile
+          (pkgs.fetchFromGitHub
+            {
+              owner = "catppuccin";
+              repo = "starship";
+              rev = "5629d2356f62a9f2f8efad3ff37476c19969bd4f";
+              sha256 = "sha256-nsRuxQFKbQkyEI4TXgvAjcroVdG+heKX5Pauq/4Ota0=";
+            } + /palettes/${flavour}.toml));
+      };
   };
 
   services.colima = {
