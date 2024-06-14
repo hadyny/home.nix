@@ -13,7 +13,6 @@
         "bradlc.vscode-tailwindcss"
         "catppuccin.catppuccin-vsc"
         "dbaeumer.vscode-eslint"
-        "dracula-theme.theme-dracula"
         "eamodio.gitlens"
         "ecmel.vscode-html-css"
         "esbenp.prettier-vscode"
@@ -61,18 +60,6 @@
       "slack"
       "spotify"
       "vivaldi"
-      "vlc"
-    ];
-
-    brews = [
-      {
-        name = "neovim";
-        args = [ "--HEAD" ];
-      }
-      {
-        name = "neovide";
-        args = [ "HEAD" ];
-      }
     ];
 
     global.brewfile = true;
