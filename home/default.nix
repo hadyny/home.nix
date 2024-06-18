@@ -158,12 +158,14 @@ in
       };
   };
 
-  services.colima = {
-    enable = true;
+  services = {
+    colima = {
+      enable = true;
 
-    config = {
-      cpu = 4;
-      memory = 8;
+      config = {
+        cpu = 4;
+        memory = 8;
+      };
     };
   };
 

@@ -1,5 +1,3 @@
-{ config, lib, pkgs, ... }:
-
 {
   darwin.apps = {
     raycast.enable = true;
@@ -65,6 +63,6 @@
     global.brewfile = true;
     onActivation.cleanup = "zap";
 
-    taps = [];
+    taps = [ ];
   };
 }

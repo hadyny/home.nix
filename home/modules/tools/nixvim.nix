@@ -1,3 +1,5 @@
+{ pkgs, ... }:
+
 {
   programs = {
     nixvim = {
@@ -42,7 +44,6 @@
         shiftwidth = 4;
         softtabstop = 4;
       };
-      # TODO: Add LspSaga and commenting
       keymaps = [
         {
           mode = "n";
@@ -52,48 +53,23 @@
         {
           mode = "n";
           key = "<leader>gl";
-          action = "<cmd>[L]azyGit<CR>";
+          action = "<cmd>LazyGit<CR>";
           options = {
-            desc = "LazyGit";
+            desc = "[L]azyGit";
           };
         }
-        # LspSaga
         {
           mode = "n";
           key = "<leader>ca";
-          action = "<cmd>Lspsaga code_action<CR>";
+          action = "<cmd>lua vim.lsp.buf.code_action()<CR>";
           options = {
             desc = "[C]ode [A]ctions";
           };
         }
         {
           mode = "n";
-          key = "<leader>cd";
-          action = "<cmd>Lspsaga peek_definition<CR>";
-          options = {
-            desc = "[C]ode [D]efinition";
-          };
-        }
-        {
-          mode = "n";
-          key = "<leader>ct";
-          action = "<cmd>Lspsaga peek_type_definition<CR>";
-          options = {
-            desc = "[C]ode [T]ype Definition";
-          };
-        }
-        {
-          mode = "n";
-          key = "<leader>cd";
-          action = "<cmd>Lspsaga peek_definition<CR>";
-          options = {
-            desc = "[C]ode [D]efinition";
-          };
-        }
-        {
-          mode = "n";
           key = "<leader>co";
-          action = "<cmd>Lspsaga outline<CR>";
+          action = "<cmd>AerialToggle!<CR>";
           options = {
             desc = "[C]ode [O]utline";
           };
@@ -101,17 +77,18 @@
         {
           mode = "n";
           key = "<leader>cr";
-          action = "<cmd>Lspsaga rename<CR>";
+          action = "<cmd>lua vim.lsp.buf.rename()<CR>";
           options = {
             desc = "[C]ode [R]ename";
           };
         }
-        # Hover
         {
           mode = "n";
-          key = "K";
-          options.silent = true;
-          action = "<cmd>Lspsaga hover_doc<CR>";
+          key = "<leader>ft";
+          action = "<cmd>TodoTelescope<CR>";
+          options = {
+            desc = "[F]ind [T]odos";
+          };
         }
       ];
 
@@ -124,14 +101,33 @@
       #    callback = "function() vim.highlight.on_yank() end";
       #  }
       #];
+      extraPlugins = [
+        pkgs.vimPlugins.dropbar-nvim
+        pkgs.vimPlugins.aerial-nvim
+        pkgs.vimPlugins.nvim-treesitter-parsers.lua
+        pkgs.vimPlugins.nvim-treesitter-parsers.nix
+        pkgs.vimPlugins.nvim-treesitter-parsers.norg
+        pkgs.vimPlugins.nvim-treesitter-parsers.typescript
+        pkgs.vimPlugins.nvim-treesitter-parsers.tsx
+        pkgs.vimPlugins.nvim-treesitter-parsers.c_sharp
+      ];
+
+      extraConfigLua = ''
+        require("aerial").setup({
+          -- optionally use on_attach to set keymaps when aerial has attached to a buffers
+          on_attach = function(bufnr)
+            -- Jump forwards/backwards with '{' and '}'
+            vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
+            vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
+          end,
+        })
+        	'';
 
       plugins = {
-        chadtree.enable = true;
         comment.enable = true;
         gitsigns = {
           enable = true;
           settings = {
-            current_line_blame = true;
             preview_config = {
               border = "single";
               style = "minimal";
@@ -149,10 +145,6 @@
             };
           };
         };
-        git-worktree = {
-          enable = true;
-          enableTelescope = true;
-        };
         lualine = {
           enable = true;
           extensions = [ "fzf" ];
@@ -168,16 +160,26 @@
             use_neovim_remote = true;
           };
         };
+        neorg = {
+          enable = true;
+          modules = {
+            "core.defaults".__empty = null;
+            "core.dirman".config = {
+              workspaces = {
+                notes = "~/notes";
+              };
+              default_workspace = "notes";
+            };
+            "core.concealer".__empty = null;
+            "core.completion".config.engine = "nvim-cmp";
+          };
+        };
         nvim-autopairs.enable = true;
         ts-autotag.enable = true;
         none-ls = {
           enable = true;
-          enableLspFormat = true;
           sources = {
             formatting = {
-              csharpier.enable = true;
-              prettier.enable = true;
-              rustywind.enable = true;
               stylua.enable = true;
               nixpkgs_fmt.enable = true;
               gofmt.enable = true;
@@ -218,10 +220,10 @@
                 desc = "[F]ind [F]ile";
               };
             };
-            "<leader>ft" = {
+            "<leader>fw" = {
               action = "live_grep";
               options = {
-                desc = "[F]ind [T]ext";
+                desc = "[F]ind [W]ords";
               };
             };
             "<leader>fb" = {
@@ -276,6 +278,10 @@
           nixGrammars = true;
           ensureInstalled = "all";
           incrementalSelection.enable = true;
+          grammarPackages = with pkgs.tree-sitter-grammars; [
+            tree-sitter-norg
+            tree-sitter-norg-meta
+          ];
         };
         treesitter-refactor = {
           enable = true;
@@ -296,12 +302,13 @@
             cssls.enable = true;
             eslint = {
               enable = true;
-              # TODO: Is this needed?
-              onAttach.function = "if client and client.name == 'eslint' then\n
-                                    client.server_capabilities.documentFormattingProvider = true\n
-                                  elseif client and client.name == 'typescript-tools' or client and client.name == 'tsserver' then\n
-                                    client.server_capabilities.documentFormattingProvider = false\n
-                                  end";
+              onAttach.function = ''
+                					if client and client.name == "eslint" then
+                						client.server_capabilities.documentFormattingProvider = true
+                                    elseif client and client.name == "typescript-tools" or client and client.name == "tsserver" then
+                						client.server_capabilities.documentFormattingProvider = false
+                                     end
+              '';
             };
             lua-ls.enable = true;
             omnisharp = {
@@ -313,15 +320,16 @@
                 organizeImportsOnFormat = true;
               };
             };
-            # TODO: Not loading in lsp
             tailwindcss = {
               enable = true;
               filetypes = [
                 "html"
-                "js"
-                "ts"
-                "jsx"
-                "tsx"
+                "css"
+                "scss"
+                "javascript"
+                "typescript"
+                "javascriptreact"
+                "typescriptreact"
               ];
             };
             gopls.enable = true;
@@ -334,7 +342,7 @@
               gd = { action = "definition"; desc = "Go to Definition"; };
               gI = { action = "implementation"; desc = "Go to Implementation"; };
               gt = { action = "type_definition"; desc = "Go to Type Definition"; };
-			  gr = { action = "references"; desc = "Go to References"; };
+              gr = { action = "references"; desc = "Go to References"; };
             };
 
             diagnostic = {
@@ -344,15 +352,6 @@
           };
         };
         lsp-format.enable = true;
-        lspsaga = {
-          enable = true;
-          lightbulb.enable = false;
-          codeAction = {
-            extendGitSigns = true;
-            showServerName = true;
-          };
-          ui.border = "rounded";
-        };
         lspkind = {
           enable = true;
           cmp.enable = true;
@@ -361,7 +360,7 @@
         trouble.enable = true;
         typescript-tools = {
           enable = true;
-          settings.codeLens = "all"; # TODO: monitor performance
+          settings.codeLens = "all";
         };
         todo-comments = {
           enable = true;
@@ -394,6 +393,7 @@
               { name = "path"; }
               { name = "buffer"; }
               { name = "nvim_lua"; }
+              { name = "neorg"; }
             ];
 
             window = {
