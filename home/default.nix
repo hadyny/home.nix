@@ -28,8 +28,10 @@ in
   '';
 
   imports = [
-    # Development packages
+    # nixvim
     nixvim.homeManagerModules.nixvim
+
+    # Development packages
     ./development.nix
 
     # everything for work

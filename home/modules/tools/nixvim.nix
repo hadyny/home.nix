@@ -10,17 +10,51 @@
       colorschemes = {
         catppuccin = {
           enable = true;
-          settings.flavour = "mocha";
+          settings = {
+            flavour = "mocha";
+            integrations = {
+              cmp = true;
+              noice = true;
+              notify = true;
+              gitsigns = true;
+              which_key = true;
+              illuminate = {
+                enabled = true;
+              };
+              treesitter = true;
+              treesitter_context = true;
+              telescope.enabled = true;
+              indent_blankline.enabled = true;
+              mini.enabled = true;
+              native_lsp = {
+                enabled = true;
+                inlay_hints = {
+                  background = true;
+                };
+                underlines = {
+                  errors = [ "underline" ];
+                  hints = [ "underline" ];
+                  information = [ "underline" ];
+                  warnings = [ "underline" ];
+                };
+              };
+            };
+          };
         };
       };
 
       globals = {
         mapleader = " ";
         maplocalleader = " ";
+        loaded_netrw = 1;
+        loaded_netrwPlugin = 1;
+      };
+
+      localOpts = {
+        conceallevel = 2;
       };
 
       opts = {
-        number = false;
         mouse = "a";
         showmode = false;
         clipboard = "unnamedplus";
@@ -31,19 +65,19 @@
         signcolumn = "yes";
         updatetime = 250;
         timeoutlen = 300;
-        splitright = true;
-        splitbelow = true;
         list = true;
         listchars = { tab = "» "; trail = "·"; nbsp = "␣"; };
         inccommand = "split";
         cursorline = true;
         hlsearch = true;
+        termguicolors = true;
 
         # Use 4 spaces instead of tabs
         tabstop = 4;
         shiftwidth = 4;
         softtabstop = 4;
       };
+
       keymaps = [
         {
           mode = "n";
@@ -61,7 +95,7 @@
         {
           mode = "n";
           key = "<leader>ca";
-          action = "<cmd>lua vim.lsp.buf.code_action()<CR>";
+          action = "<cmd>Lspsaga code_action<CR>";
           options = {
             desc = "[C]ode [A]ctions";
           };
@@ -69,7 +103,7 @@
         {
           mode = "n";
           key = "<leader>co";
-          action = "<cmd>AerialToggle!<CR>";
+          action = "<cmd>Lspsaga outline<CR>";
           options = {
             desc = "[C]ode [O]utline";
           };
@@ -77,7 +111,7 @@
         {
           mode = "n";
           key = "<leader>cr";
-          action = "<cmd>lua vim.lsp.buf.rename()<CR>";
+          action = "<cmd>Lspsaga rename<CR>";
           options = {
             desc = "[C]ode [R]ename";
           };
@@ -90,6 +124,87 @@
             desc = "[F]ind [T]odos";
           };
         }
+        {
+          mode = "n";
+          key = "<leader>oo";
+          action = "<cmd>ObsidianOpen<CR>";
+          options = {
+            desc = "[O]bsidian [O]pen";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>of";
+          action = "<cmd>ObsidianQuickFind<CR>";
+          options = {
+            desc = "[O]bsidian [F]ind File";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>os";
+          action = "<cmd>ObsidianSearch<CR>";
+          options = {
+            desc = "[O]bsidian [S]earch";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>ct";
+          action = "<cmd>Trouble<CR>";
+          options = {
+            desc = "[C]ode [T]rouble";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>t";
+          action = "<cmd>Telescope<CR>";
+          options = {
+            desc = "[T]elescope";
+          };
+        }
+        {
+          mode = "n";
+          key = "K";
+          action = "<cmd>Lspsaga hover_doc<CR>";
+          options = {
+            silent = true;
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>cd";
+          action = "<cmd>Lspsaga peek_definition<CR>";
+          options = {
+            desc = "[C]ode [D]efinition Peek";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>ct";
+          action = "<cmd>Lspsaga peek_type_definition<CR>";
+          options = {
+            desc = "[C]ode [T]ype Definition Peek";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>cf";
+          action = "<cmd>Lspsaga finder<CR>";
+          options = {
+            desc = "[C]ode [F]inder";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>fn";
+          action = "<cmd>Noice telescope<CR>";
+          options = {
+            desc = "[F]ind [N]otifications";
+          };
+        }
+
       ];
 
       # TODO: Get this working
@@ -102,29 +217,44 @@
       #  }
       #];
       extraPlugins = [
-        pkgs.vimPlugins.dropbar-nvim
-        pkgs.vimPlugins.aerial-nvim
         pkgs.vimPlugins.nvim-treesitter-parsers.lua
         pkgs.vimPlugins.nvim-treesitter-parsers.nix
         pkgs.vimPlugins.nvim-treesitter-parsers.norg
         pkgs.vimPlugins.nvim-treesitter-parsers.typescript
         pkgs.vimPlugins.nvim-treesitter-parsers.tsx
         pkgs.vimPlugins.nvim-treesitter-parsers.c_sharp
+        pkgs.vimPlugins.nvim-treesitter-parsers.diff
+        (pkgs.vimUtils.buildVimPlugin {
+          name = "hlchunk";
+          src = pkgs.fetchFromGitHub {
+            owner = "shellRaining";
+            repo = "hlchunk.nvim";
+            rev = "882d1bc86d459fa8884398223c841fd09ea61b6b";
+            hash = "sha256-fvFvV7KAOo7xtOCjhGS5bDUzwd10DndAKs3++dunED8=";
+          };
+        })
       ];
 
       extraConfigLua = ''
-        require("aerial").setup({
-          -- optionally use on_attach to set keymaps when aerial has attached to a buffers
-          on_attach = function(bufnr)
-            -- Jump forwards/backwards with '{' and '}'
-            vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
-            vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
-          end,
-        })
-        	'';
+                 require('hlchunk').setup({
+                    chunk = {
+                        enable = true
+                    },
+                    line_num = {
+                        enable = true
+                    },
+        			indent = {
+        				enable = false
+        			},
+        			blank = {
+        				enable = false
+        			}
+                })
+      '';
 
       plugins = {
         comment.enable = true;
+        notify.enable = true;
         gitsigns = {
           enable = true;
           settings = {
@@ -160,22 +290,93 @@
             use_neovim_remote = true;
           };
         };
-        neorg = {
+        lspsaga = {
           enable = true;
-          modules = {
-            "core.defaults".__empty = null;
-            "core.dirman".config = {
-              workspaces = {
-                notes = "~/notes";
-              };
-              default_workspace = "notes";
+          beacon.enable = false;
+          ui.border = "single";
+          symbolInWinbar = {
+            enable = true; # Breadcrumbs
+          };
+          lightbulb = {
+            enable = false;
+            sign = false;
+            virtualText = true;
+          };
+          outline = {
+            autoClose = true;
+            autoPreview = true;
+            closeAfterJump = true;
+            layout = "normal"; # normal or float
+            winPosition = "right"; # left or right
+            keys = {
+              jump = "e";
+              quit = "q";
+              toggleOrJump = "o";
             };
-            "core.concealer".__empty = null;
-            "core.completion".config.engine = "nvim-cmp";
+          };
+        };
+        noice = {
+          enable = true;
+          notify = {
+            enabled = true;
+          };
+          messages = {
+            enabled = true;
+          };
+          lsp = {
+            message = {
+              enabled = true;
+            };
+            progress = {
+              enabled = true;
+              view = "mini";
+            };
+            override = {
+              "vim.lsp.util.convert_input_to_markdown_lines" = true;
+              "vim.lsp.util.stylize_markdown" = true;
+              "cmp.entry.get_documentation" = true;
+            };
+          };
+          presets = {
+            bottom_search = true;
+            command_palette = true;
+            long_message_to_split = true;
+            lsp_doc_border = "single";
+          };
+          views = {
+            popupmenu = {
+              enabled = true;
+              kind_icons = true;
+            };
+
+            format = {
+              filter = {
+                pattern = [ ":%s*%%s*s:%s*" ":%s*%%s*s!%s*" ":%s*%%s*s/%s*" "%s*s:%s*" ":%s*s!%s*" ":%s*s/%s*" ];
+                icon = "";
+                lang = "regex";
+              };
+              replace = {
+                pattern = [ ":%s*%%s*s:%w*:%s*" ":%s*%%s*s!%w*!%s*" ":%s*%%s*s/%w*/%s*" "%s*s:%w*:%s*" ":%s*s!%w*!%s*" ":%s*s/%w*/%s*" ];
+                icon = "󱞪";
+                lang = "regex";
+              };
+            };
+          };
+        };
+
+        obsidian = {
+          enable = true;
+          settings = {
+            completion.nvim_cmp = true;
+            workspaces = [
+              {
+                name = "notes";
+                path = "~/Documents/Vault";
+              }
+            ];
           };
         };
         nvim-autopairs.enable = true;
-        ts-autotag.enable = true;
         none-ls = {
           enable = true;
           sources = {
@@ -196,21 +397,24 @@
           enable = true;
           registrations = {
             "<leader>c" = "[C]ode";
-            "<leader>d" = "[D]ocument";
             "<leader>f" = "[F]ind";
             "<leader>g" = "[G]it";
             "<leader>r" = "[R]ename";
             "<leader>u" = "[U]I";
-            "<leader>w" = "[W]orkspace";
+            "<leader>o" = "[O]bsidian";
           };
         };
 
         telescope = {
           enable = true;
-          extensions.fzf-native.enable = true;
+          extensions = {
+            fzf-native.enable = true;
+            file-browser.enable = true;
+          };
           settings = {
-            pickers.find_files = {
-              hidden = true;
+            pickers = {
+              colorscheme.enable_preview = true;
+              find_files.hidden = true;
             };
           };
           keymaps = {
@@ -250,12 +454,12 @@
                 desc = "[F]ind [R]ecent";
               };
             };
-            #"<leader>fc" = {
-            #  actions = "git_commits";
-            #  options = {
-            #    desc = "[F]ind Git [Commits]";
-            #  };
-            #};
+            "<leader>fc" = {
+              action = "git_commits";
+              options = {
+                desc = "[F]ind Git [Commits]";
+              };
+            };
             "<leader>s" = {
               action = "current_buffer_fuzzy_find";
               options = {
@@ -266,6 +470,12 @@
               action = "colorscheme";
               options = {
                 desc = "[U]I [C]olorscheme preview";
+              };
+            };
+            "<leader>e" = {
+              action = "file_browser";
+              options = {
+                desc = "[E]xplorer";
               };
             };
           };
@@ -279,6 +489,7 @@
           ensureInstalled = "all";
           incrementalSelection.enable = true;
           grammarPackages = with pkgs.tree-sitter-grammars; [
+            tree-sitter-regex
             tree-sitter-norg
             tree-sitter-norg-meta
           ];
@@ -393,12 +604,11 @@
               { name = "path"; }
               { name = "buffer"; }
               { name = "nvim_lua"; }
-              { name = "neorg"; }
             ];
 
             window = {
-              completion = { border = "rounded"; };
-              documentation = { border = "rounded"; };
+              completion = { border = "single"; };
+              documentation = { border = "single"; };
             };
           };
         };
