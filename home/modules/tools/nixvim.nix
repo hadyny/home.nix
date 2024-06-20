@@ -46,8 +46,6 @@
       globals = {
         mapleader = " ";
         maplocalleader = " ";
-        loaded_netrw = 1;
-        loaded_netrwPlugin = 1;
       };
 
       localOpts = {
@@ -95,7 +93,7 @@
         {
           mode = "n";
           key = "<leader>ca";
-          action = "<cmd>Lspsaga code_action<CR>";
+          action = "<cmd>lua vim.lsp.buf.code_action()<CR>";
           options = {
             desc = "[C]ode [A]ctions";
           };
@@ -103,7 +101,7 @@
         {
           mode = "n";
           key = "<leader>co";
-          action = "<cmd>Lspsaga outline<CR>";
+          action = "<cmd>Navbuddy<CR>";
           options = {
             desc = "[C]ode [O]utline";
           };
@@ -111,7 +109,7 @@
         {
           mode = "n";
           key = "<leader>cr";
-          action = "<cmd>Lspsaga rename<CR>";
+          action = "<cmd>lua vim.lsp.buf.rename()<CR>";
           options = {
             desc = "[C]ode [R]ename";
           };
@@ -162,38 +160,6 @@
           action = "<cmd>Telescope<CR>";
           options = {
             desc = "[T]elescope";
-          };
-        }
-        {
-          mode = "n";
-          key = "K";
-          action = "<cmd>Lspsaga hover_doc<CR>";
-          options = {
-            silent = true;
-          };
-        }
-        {
-          mode = "n";
-          key = "<leader>cd";
-          action = "<cmd>Lspsaga peek_definition<CR>";
-          options = {
-            desc = "[C]ode [D]efinition Peek";
-          };
-        }
-        {
-          mode = "n";
-          key = "<leader>ct";
-          action = "<cmd>Lspsaga peek_type_definition<CR>";
-          options = {
-            desc = "[C]ode [T]ype Definition Peek";
-          };
-        }
-        {
-          mode = "n";
-          key = "<leader>cf";
-          action = "<cmd>Lspsaga finder<CR>";
-          options = {
-            desc = "[C]ode [F]inder";
           };
         }
         {
@@ -290,31 +256,11 @@
             use_neovim_remote = true;
           };
         };
-        lspsaga = {
+        navbuddy = {
           enable = true;
-          beacon.enable = false;
-          ui.border = "single";
-          symbolInWinbar = {
-            enable = true; # Breadcrumbs
-          };
-          lightbulb = {
-            enable = false;
-            sign = false;
-            virtualText = true;
-          };
-          outline = {
-            autoClose = true;
-            autoPreview = true;
-            closeAfterJump = true;
-            layout = "normal"; # normal or float
-            winPosition = "right"; # left or right
-            keys = {
-              jump = "e";
-              quit = "q";
-              toggleOrJump = "o";
-            };
-          };
+          lsp.autoAttach = true;
         };
+
         noice = {
           enable = true;
           notify = {
@@ -322,6 +268,7 @@
           };
           messages = {
             enabled = true;
+            view = "mini";
           };
           lsp = {
             message = {
@@ -338,29 +285,9 @@
             };
           };
           presets = {
-            bottom_search = true;
             command_palette = true;
             long_message_to_split = true;
             lsp_doc_border = "single";
-          };
-          views = {
-            popupmenu = {
-              enabled = true;
-              kind_icons = true;
-            };
-
-            format = {
-              filter = {
-                pattern = [ ":%s*%%s*s:%s*" ":%s*%%s*s!%s*" ":%s*%%s*s/%s*" "%s*s:%s*" ":%s*s!%s*" ":%s*s/%s*" ];
-                icon = "";
-                lang = "regex";
-              };
-              replace = {
-                pattern = [ ":%s*%%s*s:%w*:%s*" ":%s*%%s*s!%w*!%s*" ":%s*%%s*s/%w*/%s*" "%s*s:%w*:%s*" ":%s*s!%w*!%s*" ":%s*s/%w*/%s*" ];
-                icon = "󱞪";
-                lang = "regex";
-              };
-            };
           };
         };
 
@@ -410,12 +337,26 @@
           extensions = {
             fzf-native.enable = true;
             file-browser.enable = true;
+            ui-select = {
+              enable = true;
+              settings.theme = "dropdown";
+            };
           };
           settings = {
             pickers = {
               colorscheme.enable_preview = true;
               find_files.hidden = true;
+              buffers = { theme = "dropdown"; };
+              marks = { theme = "dropdown"; };
+              git_commits = { theme = "dropdown"; };
+              live_grep = { theme = "ivy"; };
+              current_buffer_fuzzy_find = { theme = "ivy"; };
+              keymaps = { theme = "dropdown"; };
+              vim_options = { theme = "dropdown"; };
+              commands = { theme = "dropdown"; };
             };
+
+            extensions.ui-select.__raw = ''require('telescope.themes').get_dropdown()'';
           };
           keymaps = {
             "<leader>ff" = {
@@ -476,6 +417,24 @@
               action = "file_browser";
               options = {
                 desc = "[E]xplorer";
+              };
+            };
+            "<leader>cr" = {
+              action = "lsp_references";
+              options = {
+                desc = "[C]ode [R]eferences";
+              };
+            };
+            "<leader>ci" = {
+              action = "lsp_implementations";
+              options = {
+                desc = "[C]ode [I]mplementations";
+              };
+            };
+            "<leader>cd" = {
+              action = "lsp_definitions";
+              options = {
+                desc = "[C]ode [D]efinition";
               };
             };
           };
@@ -553,7 +512,6 @@
               gd = { action = "definition"; desc = "Go to Definition"; };
               gI = { action = "implementation"; desc = "Go to Implementation"; };
               gt = { action = "type_definition"; desc = "Go to Type Definition"; };
-              gr = { action = "references"; desc = "Go to References"; };
             };
 
             diagnostic = {
@@ -578,6 +536,7 @@
           signs = true;
         };
 
+        cmp-cmdline.enable = true;
         cmp-nvim-lsp.enable = true;
         luasnip.enable = true;
         cmp_luasnip.enable = true;

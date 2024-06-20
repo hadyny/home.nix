@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, ... }:
 {
   system.defaults.dock = {
     # Whether to automatically hide and show the Dock. Default is false.
@@ -24,7 +24,6 @@
     apps = [
       "Slack"
       "Vivaldi"
-      "iTerm"
       "Visual Studio Code"
       "Obsidian"
     ];
@@ -35,4 +34,3 @@
     ];
   };
 }
-
