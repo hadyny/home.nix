@@ -82,6 +82,11 @@ in
         };
       };
     };
+
+    emacs = {
+      enable = true;
+      package = pkgs.emacs-unstable;
+    };
     jq.enable = true;
     htop.enable = true;
     bottom.enable = true;

@@ -8,12 +8,17 @@
  */
 { config, pkgs, lib, ... }:
 let
-  modules = import ./lib/modules.nix {inherit lib;};
+  modules = import ./lib/modules.nix { inherit lib; };
 in
 {
   documentation.enable = false;
 
   nixpkgs.overlays = [
+    (import (builtins.fetchGit {
+      url = "https://github.com/nix-community/emacs-overlay.git";
+      ref = "master";
+      rev = "b96a106247cc8b5bce04299b905631040eaff816";
+    }))
     # sometimes it is useful to pin a version of some tool or program.
     # this can be done in "overlays/pinned.nix"
     (import ./overlays/pinned.nix)
@@ -88,5 +93,4 @@ in
     };
   };
 }
-
 
