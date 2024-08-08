@@ -47,12 +47,14 @@
 
     casks = [
       "1password"
+      "brave-browser"
       "chromium"
       "cloudflare-warp"
       "figma"
       "firefox"
       "gitkraken"
       "jetbrains-toolbox"
+      "mitmproxy"
       "obsidian"
       "postman"
       "slack"

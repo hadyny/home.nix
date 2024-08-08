@@ -4,11 +4,6 @@
 let
   secrets = import ./secrets;
   modules = import ../lib/modules.nix { inherit lib; };
-
-  nixvim = import (builtins.fetchGit {
-    url = "https://github.com/nix-community/nixvim";
-    ref = "main";
-  });
 in
 {
   # Let Home Manager install and manage itself.
@@ -28,9 +23,6 @@ in
   '';
 
   imports = [
-    # nixvim
-    nixvim.homeManagerModules.nixvim
-
     # Development packages
     ./development.nix
 
@@ -87,6 +79,8 @@ in
       enable = true;
       package = pkgs.emacs-unstable;
     };
+
+    neovim.enable = true;
     jq.enable = true;
     htop.enable = true;
     bottom.enable = true;
@@ -163,6 +157,8 @@ in
               sha256 = "sha256-nsRuxQFKbQkyEI4TXgvAjcroVdG+heKX5Pauq/4Ota0=";
             } + /palettes/${flavour}.toml));
       };
+
+    taskwarrior.enable = true;
   };
 
   services = {

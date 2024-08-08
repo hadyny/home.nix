@@ -23,7 +23,11 @@
     # Apps to be added to Dock.
     apps = [
       "Slack"
+      "Brave Browser"
       "Vivaldi"
+      "Firefox"
+      "Chromium"
+      "iTerm"
       "Visual Studio Code"
       "Obsidian"
     ];

@@ -11,7 +11,10 @@
 
     packages = with pkgs; [
       cargo
+      cmake
+      coreutils-prefixed
       csharprepl
+      discount
       tree
       broot
       curl
@@ -23,13 +26,17 @@
       gdu # better du
       go
       gopls
+      gotools
       golangci-lint
       fd # better find
       ghc
-      cabal-install
+      nixfmt-classic
       moreutils
       ripgrep # better grep
       omnisharp-roslyn
+      netcoredbg
+      csharpier
+      typescript
       nodePackages.typescript-language-server
       tailwindcss-language-server
       rustywind
@@ -39,13 +46,21 @@
       gotests
       gore
       gotools
+      fontconfig
+      golangci-lint-langserver
+      delve
+      superfile
+      graphviz
+      shfmt
+      shellcheck
+      jsbeautifier
       stylelint
+      timewarrior
       watch
       jq
       jqp #jq playground, https://github.com/noahgorstein/jqp
       mediainfo
       libmediainfo
-      # mitmproxy
       terraform
     ];
   };
