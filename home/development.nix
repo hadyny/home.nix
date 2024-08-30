@@ -52,13 +52,14 @@
       superfile
       graphviz
       shfmt
+      nil
       shellcheck
       jsbeautifier
       stylelint
       timewarrior
       watch
       jq
-      jqp #jq playground, https://github.com/noahgorstein/jqp
+      jqp # jq playground, https://github.com/noahgorstein/jqp
       mediainfo
       libmediainfo
       terraform

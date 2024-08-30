@@ -47,7 +47,6 @@
 
     casks = [
       "1password"
-      "brave-browser"
       "chromium"
       "cloudflare-warp"
       "figma"
