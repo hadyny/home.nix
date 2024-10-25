@@ -1,20 +1,25 @@
-{
-  pkgs,
-  config,
-  ...
+{ pkgs
+, config
+, ...
 }:
 {
   programs = {
     zsh = {
-        enable = true;
-        enableCompletion = true;
-        autosuggestion.enable = true;
-        syntaxHighlighting.enable = true;
-        autocd = true;
+      enable = true;
+      enableCompletion = true;
+      autosuggestion.enable = true;
+      syntaxHighlighting.enable = true;
+      autocd = true;
+      shellAliases = {
+        dcu = "docker compose up -d";
+        dcd = "docker compose down";
+        ep = "cd ~/src/ep";
+        src = "cd ~/src";
+      };
 
-        # this is to workaround zsh syntax highlighting slowness on copy/paste
-        # https://github.com/zsh-users/zsh-syntax-highlighting/issues/295#issuecomment-214581607
-        initExtra = ''
+      # this is to workaround zsh syntax highlighting slowness on copy/paste
+      # https://github.com/zsh-users/zsh-syntax-highlighting/issues/295#issuecomment-214581607
+      initExtra = ''
         zstyle ':bracketed-paste-magic' active-widgets '.self-*'
 
         autoload -U add-zsh-hook
@@ -245,20 +250,20 @@
         if [ "''$funcstack[1]" = "_gh" ]; then
             _gh
         fi
-        '';
+      '';
 
-        oh-my-zsh = {
-            enable = true;
-            plugins = [
-                "aws"
-                "dirhistory"
-                "git-extras"
-                "git"
-                "gitfast"
-                "github"
-                "nvm"
-            ];
-        };
+      oh-my-zsh = {
+        enable = true;
+        plugins = [
+          "aws"
+          "dirhistory"
+          "git-extras"
+          "git"
+          "gitfast"
+          "github"
+          "nvm"
+        ];
+      };
     };
   };
 }

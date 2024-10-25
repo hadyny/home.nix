@@ -41,7 +41,7 @@ in
           options = {
             decorations = {
               blame-palette = "#1e1e2e #181825 #11111b #313244 #45475a";
-	            commit-decoration-style = "box ul";
+              commit-decoration-style = "box ul";
               dark = true;
               file-decoration-style = "#cdd6f4";
               file-style = "#cdd6f4";
