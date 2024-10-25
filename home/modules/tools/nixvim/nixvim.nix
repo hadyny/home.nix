@@ -88,26 +88,26 @@
       ];
 
       extraConfigLua = ''
-        require('hlchunk').setup({
-           chunk = {
-               enable = true
-           },
-           line_num = {
-               enable = true
-           },
-           indent = {
-             enable = false
-           },
-             blank = {
-               enable = false
-             }
-           })
+         require('hlchunk').setup({
+          chunk = {
+              enable = true
+          },
+          line_num = {
+              enable = true
+          },
+          indent = {
+            enable = false
+          },
+            blank = {
+              enable = false
+          }
+        })
       '';
 
       plugins = {
-        barbar = {
+        bufferline = {
           enable = true;
-          settings.auto_hide = 1;
+          settings.options.always_show_bufferline = false;
         };
         barbecue.enable = true;
         better-escape.enable = true;
@@ -157,17 +157,17 @@
         };
         lualine = {
           enable = true;
-          extensions = [ "fzf" ];
+          settings.extensions = [ "fzf" ];
         };
         lazygit = {
           enable = true;
           settings = {
             config_file_path = [ ];
             floating_window_scaling_factor = 0.9;
-            floating_window_use_plenary = false;
+            floating_window_use_plenary = 0;
             floating_window_winblend = 0;
-            use_custom_config_file_path = false;
-            use_neovim_remote = true;
+            use_custom_config_file_path = 0;
+            use_neovim_remote = 1;
           };
         };
         navbuddy = {
@@ -218,15 +218,29 @@
           };
         };
         nvim-autopairs.enable = true;
+
+        neotest = {
+          enable = true;
+          adapters = {
+            dotnet.enable = true;
+            golang.enable = true;
+            vitest.enable = true;
+          };
+        };
+
         none-ls = {
           enable = true;
           sources = {
             formatting = {
+              csharpier.enable = true;
               stylua.enable = true;
               nixpkgs_fmt.enable = true;
               gofmt.enable = true;
               goimports.enable = true;
-              prettier.enable = true;
+              prettier = {
+                enable = true;
+                disableTsServerFormatter = true;
+              };
             };
             code_actions = {
               gitrebase.enable = true;
@@ -290,10 +304,12 @@
         };
         lsp = {
           enable = true;
+          inlayHints = true;
           servers = {
-            nil-ls.enable = true;
+            nil_ls.enable = true;
             html.enable = true;
             cssls.enable = true;
+            graphql.enable = true;
             eslint = {
               enable = true;
               onAttach.function = ''
@@ -304,7 +320,7 @@
                 end
               '';
             };
-            lua-ls.enable = true;
+            lua_ls.enable = true;
             omnisharp = {
               enable = true;
               settings = {
@@ -340,9 +356,32 @@
         trouble.enable = true;
         typescript-tools = {
           enable = true;
+          onAttach = ''
+            function(client, bufnr)
+              client.server_capabilities.documentFormattingProvider = false
+              client.server_capabilities.documentRangeFormattingProvider = false
+
+              if vim.lsp.inlay_hint then
+                vim.lsp.inlay_hint.enable()
+              end
+            end
+          '';
           settings = {
             codeLens = "all";
             completeFunctionCalls = true;
+            tsserverFilePreferences = {
+              includeCompletionsForModuleExports = true;
+              quotePreference = "auto";
+              # Inlay Hints
+              includeInlayParameterNameHints = "all";
+              includeInlayParameterNameHintsWhenArgumentMatchesName = true;
+              includeInlayFunctionParameterTypeHints = true;
+              includeInlayVariableTypeHints = true;
+              includeInlayVariableTypeHintsWhenTypeMatchesName = true;
+              includeInlayPropertyDeclarationTypeHints = true;
+              includeInlayFunctionLikeReturnTypeHints = true;
+              includeInlayEnumMemberValueHints = true;
+            };
           };
         };
         todo-comments = {
@@ -352,8 +391,13 @@
 
         diffview.enable = true;
         fugitive.enable = true;
-        navic.enable = true;
+        navic = {
+          enable = true;
+          settings.lsp.autoAttach = true;
+        };
         neo-tree.enable = true;
+
+        web-devicons.enable = true;
 
         yanky = {
           enable = true;
