@@ -1,18 +1,13 @@
 {
   "workbench.colorTheme": "Catppuccin Macchiato",
-  "editor.fontFamily": "'Hack Nerd Font Mono', 'Droid Sans Mono', 'monospace', monospace",
+  "editor.fontFamily": "'GeistMono Nerd Font Propo', 'Droid Sans Mono', monospace",
   "editor.fontLigatures": true,
   "workbench.preferredDarkColorTheme": "Catppuccin Mocha",
   "workbench.preferredLightColorTheme": "Catppuccin Latte",
   "window.autoDetectColorScheme": true,
   "githubPullRequests.pullBranch": "never",
   "git.autofetch": true,
-  "haskell.manageHLS": "PATH",
-  "extensions.experimental.affinity": {
-    "asvetliakov.vscode-neovim": 1
-  },
   "workbench.activityBar.location": "hidden",
-  "workbench.editor.showTabs": "none",
   "workbench.startupEditor": "none",
   "editor.minimap.enabled": false,
   "editor.lineNumbers": "off",
@@ -29,5 +24,8 @@
     "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb",
     "*.mts": "${capture}.typegen.ts",
     "*.cts": "${capture}.typegen.ts"
-  } 
+  },
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  }
 }

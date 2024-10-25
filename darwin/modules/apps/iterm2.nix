@@ -23,7 +23,7 @@ in
 
     font = mkOption {
       type = types.str;
-      default = "FiraCodeNFM-Reg 12";
+      default = "GeistMonoNerdFontPropo-Light 13";
     };
 
     columns = mkOption {
