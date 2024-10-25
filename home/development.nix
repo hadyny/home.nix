@@ -11,6 +11,7 @@
 
     packages = with pkgs; [
       cargo
+      cascadia-code
       cmake
       coreutils-prefixed
       csharprepl

@@ -60,7 +60,7 @@ in
     _1password
 
     # fonts
-    (nerdfonts.override { fonts = [ "Hack" "FiraCode" "FiraMono" "VictorMono" ]; })
+    (nerdfonts.override { fonts = [ "GeistMono" "FiraCode" "VictorMono" ]; })
   ];
 
   programs = {
@@ -96,7 +96,7 @@ in
     eza = {
       enable = true;
       git = true;
-      icons = true;
+      icons = "auto";
       extraOptions = [
         "--group-directories-first"
         "--header"
@@ -127,20 +127,6 @@ in
         "fg+" = "#cdd6f4";
         "prompt" = "#cba6f7";
         "hl+" = "#f38ba8";
-      };
-    };
-
-    kitty = {
-      enable = true;
-      font = {
-        size = 13;
-        name = "VictorMono Nerd Font";
-      };
-      shellIntegration.enableZshIntegration = true;
-      theme = "Catppuccin-Mocha";
-      settings = {
-        enable_audio_bell = false;
-        window_padding_width = 20;
       };
     };
 
