@@ -44,6 +44,9 @@ in
     homeDirectory = config.user.home;
     wallpaper.file = ./config/wallpaper/wallpaper.jpg;
 
+    # Doom configuration
+    file.".doom.d/".source = ./modules/tools/doom.d;
+
     sessionVariables = { };
 
     sessionPath = [
