@@ -24,7 +24,7 @@ let
   populateSecrets = namespace: variables: sshKeys:
     let
       opGetItem = vault: field: item: ''
-        ${pkgs._1password}/bin/op read --session $token 'op://${vault}/${item}/${field}'
+        ${pkgs._1password-cli}/bin/op read --session $token 'op://${vault}/${item}/${field}'
       '';
 
       syncOneVariable = key: item: ''
@@ -45,7 +45,7 @@ let
     in
     pkgs.writeShellScript "populateKeys" ''
       set -e
-      token=$(${pkgs._1password}/bin/op signin --raw)
+      token=$(${pkgs._1password-cli}/bin/op signin --raw)
       ${syncAllVariables variables}
       ${syncAllKeys sshKeys}
     '';

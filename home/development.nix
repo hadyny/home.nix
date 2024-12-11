@@ -11,7 +11,6 @@
 
     packages = with pkgs; [
       cargo
-      cascadia-code
       cmake
       coreutils-prefixed
       csharprepl
@@ -26,6 +25,7 @@
       duf # better df
       gdu # better du
       go
+      neovide
       gopls
       gotools
       golangci-lint
@@ -57,7 +57,6 @@
       shellcheck
       jsbeautifier
       stylelint
-      timewarrior
       watch
       jq
       jqp # jq playground, https://github.com/noahgorstein/jqp

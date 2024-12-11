@@ -63,8 +63,6 @@ in
 
   services = {
     nix-daemon.enable = true;
-    # Recreate /run/current-system symlink after boot.
-    activate-system.enable = true;
   };
 
   # nixpkgs.config.allowBroken = true;

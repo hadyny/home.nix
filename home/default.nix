@@ -57,10 +57,12 @@ in
 
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
-    _1password
+    _1password-cli
 
     # fonts
-    (nerdfonts.override { fonts = [ "GeistMono" "FiraCode" "VictorMono" ]; })
+    nerd-fonts.geist-mono
+    nerd-fonts.fira-code
+    nerd-fonts.victor-mono
   ];
 
   programs = {
@@ -87,7 +89,6 @@ in
       package = pkgs.emacs-unstable;
     };
 
-    # neovim.enable = true;
     jq.enable = true;
     htop.enable = true;
     bottom.enable = true;

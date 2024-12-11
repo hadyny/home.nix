@@ -48,6 +48,7 @@
       "cloudflare-warp"
       "figma"
       "firefox@developer-edition"
+      "messenger"
       "Rider"
       "DataGrip"
       "GoLand"
@@ -56,12 +57,13 @@
       "postman"
       "slack"
       "spotify"
-      "vivaldi"
     ];
 
     global.brewfile = true;
     onActivation.cleanup = "zap";
 
-    taps = [ ];
+    taps = [ "FelixKratz/formulae" ];
+
+    brews = [ "sketchybar" ];
   };
 }
