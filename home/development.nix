@@ -63,6 +63,7 @@
       mediainfo
       libmediainfo
       terraform
+      vtsls
     ];
   };
 }

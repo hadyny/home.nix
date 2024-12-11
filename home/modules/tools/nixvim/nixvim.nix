@@ -59,15 +59,6 @@
         shiftwidth = 4;
       };
 
-      # TODO: Get this working
-      #autoCmd = [
-      #  {
-      #    event = "TextYankPost";
-      #    desc = "Highlight when yanking (copying) text";
-      #    group = "vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true })";
-      #    callback = "function() vim.highlight.on_yank() end";
-      #  }
-      #];
       extraPlugins = [
         pkgs.vimPlugins.nvim-treesitter-parsers.lua
         pkgs.vimPlugins.nvim-treesitter-parsers.nix
@@ -224,7 +215,7 @@
         neotest = {
           enable = true;
           adapters = {
-            dotnet.enable = true;
+            dotnet.enable = false;
             golang.enable = true;
             vitest.enable = true;
           };
@@ -309,7 +300,7 @@
               onAttach.function = ''
                 if client and client.name == "eslint" then
                   client.server_capabilities.documentFormattingProvider = true
-                elseif client and client.name == "typescript-tools" or client and client.name == "tsserver" then
+                elseif client and client.name == "vtsls" then
                   client.server_capabilities.documentFormattingProvider = false
                 end
               '';
@@ -339,6 +330,10 @@
               ];
             };
             gopls.enable = true;
+            vtsls = {
+              enable = true;
+              package = null;
+            };
           };
         };
         lsp-format.enable = true;
@@ -348,38 +343,6 @@
         };
         copilot-chat.enable = true;
         trouble.enable = true;
-        typescript-tools = {
-          enable = true;
-          settings = {
-            on_attach = ''
-              function(client, bufnr)
-                client.server_capabilities.documentFormattingProvider = false
-                client.server_capabilities.documentRangeFormattingProvider = false
-
-                if vim.lsp.inlay_hint then
-                  vim.lsp.inlay_hint.enable()
-                end
-              end
-            '';
-            settings = {
-              code_lens = "all";
-              complete_function_calls = true;
-              tsserver_file_preferences = {
-                includeCompletionsForModuleExports = true;
-                quotePreference = "auto";
-                # Inlay Hints
-                includeInlayParameterNameHints = "all";
-                includeInlayParameterNameHintsWhenArgumentMatchesName = true;
-                includeInlayFunctionParameterTypeHints = true;
-                includeInlayVariableTypeHints = true;
-                includeInlayVariableTypeHintsWhenTypeMatchesName = true;
-                includeInlayPropertyDeclarationTypeHints = true;
-                includeInlayFunctionLikeReturnTypeHints = true;
-                includeInlayEnumMemberValueHints = true;
-              };
-            };
-          };
-        };
         todo-comments = {
           enable = true;
           settings.signs = true;
