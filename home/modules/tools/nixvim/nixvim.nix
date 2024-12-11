@@ -177,31 +177,33 @@
 
         noice = {
           enable = true;
-          notify = {
-            enabled = true;
-          };
-          messages = {
-            enabled = true;
-            view = "mini";
-          };
-          lsp = {
-            message = {
+          settings = {
+            notify = {
               enabled = true;
             };
-            progress = {
+            messages = {
               enabled = true;
               view = "mini";
             };
-            override = {
-              "vim.lsp.util.convert_input_to_markdown_lines" = true;
-              "vim.lsp.util.stylize_markdown" = true;
-              "cmp.entry.get_documentation" = true;
+            lsp = {
+              message = {
+                enabled = true;
+              };
+              progress = {
+                enabled = true;
+                view = "mini";
+              };
+              override = {
+                "vim.lsp.util.convert_input_to_markdown_lines" = true;
+                "vim.lsp.util.stylize_markdown" = true;
+                "cmp.entry.get_documentation" = true;
+              };
             };
-          };
-          presets = {
-            command_palette = true;
-            long_message_to_split = true;
-            lsp_doc_border = "single";
+            presets = {
+              command_palette = true;
+              long_message_to_split = true;
+              lsp_doc_border = "single";
+            };
           };
         };
 
@@ -294,14 +296,6 @@
         };
         treesitter-context.enable = true;
         treesitter-refactor.enable = true;
-        nvim-colorizer = {
-          enable = true;
-          userDefaultOptions = {
-            css = true;
-            mode = "foreground";
-            tailwind = "both";
-          };
-        };
         lsp = {
           enable = true;
           inlayHints = true;
@@ -356,31 +350,33 @@
         trouble.enable = true;
         typescript-tools = {
           enable = true;
-          onAttach = ''
-            function(client, bufnr)
-              client.server_capabilities.documentFormattingProvider = false
-              client.server_capabilities.documentRangeFormattingProvider = false
-
-              if vim.lsp.inlay_hint then
-                vim.lsp.inlay_hint.enable()
-              end
-            end
-          '';
           settings = {
-            codeLens = "all";
-            completeFunctionCalls = true;
-            tsserverFilePreferences = {
-              includeCompletionsForModuleExports = true;
-              quotePreference = "auto";
-              # Inlay Hints
-              includeInlayParameterNameHints = "all";
-              includeInlayParameterNameHintsWhenArgumentMatchesName = true;
-              includeInlayFunctionParameterTypeHints = true;
-              includeInlayVariableTypeHints = true;
-              includeInlayVariableTypeHintsWhenTypeMatchesName = true;
-              includeInlayPropertyDeclarationTypeHints = true;
-              includeInlayFunctionLikeReturnTypeHints = true;
-              includeInlayEnumMemberValueHints = true;
+            on_attach = ''
+              function(client, bufnr)
+                client.server_capabilities.documentFormattingProvider = false
+                client.server_capabilities.documentRangeFormattingProvider = false
+
+                if vim.lsp.inlay_hint then
+                  vim.lsp.inlay_hint.enable()
+                end
+              end
+            '';
+            settings = {
+              code_lens = "all";
+              complete_function_calls = true;
+              tsserver_file_preferences = {
+                includeCompletionsForModuleExports = true;
+                quotePreference = "auto";
+                # Inlay Hints
+                includeInlayParameterNameHints = "all";
+                includeInlayParameterNameHintsWhenArgumentMatchesName = true;
+                includeInlayFunctionParameterTypeHints = true;
+                includeInlayVariableTypeHints = true;
+                includeInlayVariableTypeHintsWhenTypeMatchesName = true;
+                includeInlayPropertyDeclarationTypeHints = true;
+                includeInlayFunctionLikeReturnTypeHints = true;
+                includeInlayEnumMemberValueHints = true;
+              };
             };
           };
         };
