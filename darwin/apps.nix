@@ -62,8 +62,8 @@
     global.brewfile = true;
     onActivation.cleanup = "zap";
 
-    taps = [ "FelixKratz/formulae" ];
+    taps = [ ];
 
-    brews = [ "sketchybar" ];
+    brews = [ ];
   };
 }

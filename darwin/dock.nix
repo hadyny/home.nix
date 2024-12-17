@@ -2,7 +2,7 @@
 {
   system.defaults.dock = {
     # Whether to automatically hide and show the Dock. Default is false.
-    autohide = false;
+    autohide = true;
     # Sets the speed of the autohide delay. Default is "0.24".
     autohide-delay = 0.0;
     # Sets the speed of animation when hiding/showing the Dock. Default is "1.0".
