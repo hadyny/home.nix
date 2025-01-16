@@ -47,7 +47,9 @@ in
     # Doom configuration
     file.".doom.d/".source = ./modules/tools/doom.d;
 
-    sessionVariables = { };
+    sessionVariables = {
+      EDITOR = "nvim";
+    };
 
     sessionPath = [
     ];
@@ -69,6 +71,8 @@ in
   ];
 
   programs = {
+    atuin.enable = true;
+
     bat = {
       enable = true;
       config = {
@@ -80,7 +84,7 @@ in
             owner = "catppuccin";
             repo = "bat";
             rev = "main";
-            sha256 = "sha256-Q5B4NDrfCIK3UAMs94vdXnR42k4AXCqZz6sRn8bzmf4=";
+            sha256 = "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=";
           };
           file = "themes/Catppuccin Mocha.tmTheme";
         };
@@ -92,13 +96,15 @@ in
       package = pkgs.emacs-unstable;
     };
 
-    jq.enable = true;
+    fish.enable = true;
     htop.enable = true;
     bottom.enable = true;
     ssh.enable = true;
 
     eza = {
       enable = true;
+      enableZshIntegration = false;
+      enableFishIntegration = true;
       git = true;
       icons = "auto";
       extraOptions = [
@@ -110,13 +116,12 @@ in
 
     direnv = {
       enable = true;
-      enableZshIntegration = true;
       nix-direnv.enable = true;
     };
 
     fzf = {
       enable = true;
-      enableZshIntegration = true;
+      enableFishIntegration = true;
       enableBashIntegration = true;
       colors = {
         "bg+" = "#313244";
@@ -139,8 +144,8 @@ in
         flavour = "mocha";
       in
       {
-        enable = true;
-        enableZshIntegration = true;
+        enable = false;
+        enableFishIntegration = false;
         settings = {
           scan_timeout = 100;
           format = "$all";

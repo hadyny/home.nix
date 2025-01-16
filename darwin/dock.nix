@@ -25,6 +25,7 @@
       "Slack"
       "Firefox Developer Edition"
       "Brave Browser"
+      "Microsoft Edge"
       "iTerm"
       "Visual Studio Code"
       "Rider"

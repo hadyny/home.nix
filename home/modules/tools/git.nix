@@ -183,5 +183,9 @@ in
       git-standup
       tig
     ];
+
+    home.sessionVariables = {
+      GH_PAGER = "delta";
+    };
   };
 }
