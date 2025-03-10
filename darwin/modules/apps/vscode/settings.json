@@ -28,5 +28,12 @@
   "extensions.experimental.affinity": {
     "asvetliakov.vscode-neovim": 1
   },
-  "editor.accessibilitySupport": "off"
+  "editor.accessibilitySupport": "off",
+  "git.blame.editorDecoration.enabled": true,
+  "workbench.sideBar.location": "right",
+  "csharp.preview.improvedLaunchExperience": true,
+  "editor.inlineSuggest.syntaxHighlightingEnabled": true,
+  "workbench.statusBar.visible": false,
+  "catppuccin.extraBordersEnabled": true,
+  "editor.guides.indentation": false
 }
