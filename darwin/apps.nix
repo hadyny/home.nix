@@ -44,15 +44,15 @@
 
     casks = [
       "1password"
-      "brave-browser"
       "cloudflare-warp"
       "figma"
       "firefox@developer-edition"
       "messenger"
-      "microsoft-edge"
+      "vivaldi"
       "Rider"
       "DataGrip"
       "GoLand"
+      "ghostty"
       "mediainfo"
       "mitmproxy"
       "obsidian"
