@@ -14,10 +14,12 @@ in
   documentation.enable = false;
 
   nixpkgs.overlays = [
-    (import (builtins.fetchGit {
-      url = "https://github.com/nix-community/emacs-overlay.git";
-      ref = "master";
-      rev = "b96a106247cc8b5bce04299b905631040eaff816";
+    # (import (builtins.fetchTarball {
+    #   url = "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
+    # }))
+
+    (import (builtins.fetchTarball {
+      url = "https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz";
     }))
     # sometimes it is useful to pin a version of some tool or program.
     # this can be done in "overlays/pinned.nix"
@@ -45,6 +47,8 @@ in
   # $ darwin-rebuild changelog
   system.stateVersion = 4;
 
+  ids.gids.nixbld = 350;
+
   # set up current user
   users.users.${config.user.name} = {
     name = config.user.name;
@@ -59,10 +63,6 @@ in
       inherit pkgs;
       inherit lib;
     };
-  };
-
-  services = {
-    nix-daemon.enable = true;
   };
 
   # nixpkgs.config.allowBroken = true;

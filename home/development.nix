@@ -2,7 +2,8 @@
 
 {
   home.packages = with pkgs; [
-    # general development
+    # general development & utils
+    httpie
     moreutils
     ripgrep # better grep
     cmake
@@ -12,13 +13,23 @@
     curl
     wget
     glibtool
+    gcc
+    libgccjit
     fd # better find
     fontconfig
     superfile
     shfmt
     shellcheck
     stylelint
+    stylua
     terraform
+    lua-language-server
+    sqlite
+    sqlitebrowser
+    # kafka
+    redpanda-client
+    kafkactl
+    kcat
 
     # docker
     docker
@@ -52,11 +63,12 @@
 
     # frontend dev
     typescript
-    nodePackages.typescript-language-server
+    typescript-language-server
     tailwindcss-language-server
     rustywind
     vscode-langservers-extracted
     jsbeautifier
     vtsls
+    nodejs_23
   ];
 }

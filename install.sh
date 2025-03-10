@@ -105,11 +105,11 @@ install_rosetta() {
   header "Setting up Rosetta"
 
   if arch -x86_64 /usr/bin/true 2> /dev/null; then
-        info "Rosetta is already installed, skipping"
-    else
-        warn "Rosetta is not installed, installing now"
-        /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-    fi
+    info "Rosetta is already installed, skipping"
+  else
+    warn "Rosetta is not installed, installing now"
+    /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+  fi
 }
 
 clone_repository() {

@@ -12,13 +12,13 @@
 
 (package! catppuccin-theme)
 
-(package! tide)
-
 (package! treesit-auto)
 
 (package! exec-path-from-shell)
 
 (package! nix-ts-mode)
+
+(package! package-lint :pin "21edc6d0d0eadd2d0a537f422fb9b7b8a3ae6991")
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;; (package! some-package)

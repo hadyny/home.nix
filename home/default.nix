@@ -1,16 +1,10 @@
-/* Main user-level configuration */
+# Main user-level configuration
 { config, lib, pkgs, ... }:
 
 let
   secrets = import ./secrets;
   modules = import ../lib/modules.nix { inherit lib; };
-
-  nixvim = import (builtins.fetchGit {
-    url = "https://github.com/nix-community/nixvim";
-    ref = "main";
-  });
-in
-{
+in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
@@ -28,8 +22,6 @@ in
   '';
 
   imports = [
-    # nixvim
-    nixvim.homeManagerModules.nixvim
     # Development packages
     ./development.nix
 
@@ -47,12 +39,9 @@ in
     # Doom configuration
     file.".doom.d/".source = ./modules/tools/doom.d;
 
-    sessionVariables = {
-      EDITOR = "nvim";
-    };
+    sessionVariables = { EDITOR = "nvim"; };
 
-    sessionPath = [
-    ];
+    sessionPath = [ "/opt/homebrew/bin" ];
 
     keyboard = {
       enableKeyMapping = true;
@@ -71,13 +60,14 @@ in
   ];
 
   programs = {
-    atuin.enable = true;
+    atuin = {
+      enable = true;
+      flags = [ "--disable-up-arrow" ];
+    };
 
     bat = {
       enable = true;
-      config = {
-        theme = "catppuccin";
-      };
+      config = { theme = "catppuccin"; };
       themes = {
         catppuccin = {
           src = pkgs.fetchFromGitHub {
@@ -91,27 +81,29 @@ in
       };
     };
 
-    emacs = {
-      enable = true;
-      package = pkgs.emacs-unstable;
-    };
+    btop.enable = true;
 
-    fish.enable = true;
+    # Currently broken
+    # ghostty = {
+    #   enable = true;
+    #   installBatSyntax = true;
+    #   settings = {
+    #     font-family = "GeistMono NFM";
+    #     window-padding-x = 20;
+    #     window-padding-y = 10;
+    #     theme = "dark:catppuccin-mocha,light:catppuccin-latte";
+    #   };
+    # };
+
     htop.enable = true;
-    bottom.enable = true;
     ssh.enable = true;
 
     eza = {
       enable = true;
-      enableZshIntegration = false;
-      enableFishIntegration = true;
+      enableZshIntegration = true;
       git = true;
       icons = "auto";
-      extraOptions = [
-        "--group-directories-first"
-        "--header"
-        "--long"
-      ];
+      extraOptions = [ "--group-directories-first" "--header" "--long" ];
     };
 
     direnv = {
@@ -121,8 +113,7 @@ in
 
     fzf = {
       enable = true;
-      enableFishIntegration = true;
-      enableBashIntegration = true;
+      enableZshIntegration = true;
       colors = {
         "bg+" = "#313244";
         "bg" = "#1e1e2e";
@@ -139,26 +130,62 @@ in
       };
     };
 
-    starship =
-      let
-        flavour = "mocha";
-      in
-      {
-        enable = false;
-        enableFishIntegration = false;
-        settings = {
-          scan_timeout = 100;
-          format = "$all";
-          palette = "catppuccin_${flavour}";
-        } // builtins.fromTOML (builtins.readFile
-          (pkgs.fetchFromGitHub
-            {
-              owner = "catppuccin";
-              repo = "starship";
-              rev = "5629d2356f62a9f2f8efad3ff37476c19969bd4f";
-              sha256 = "sha256-nsRuxQFKbQkyEI4TXgvAjcroVdG+heKX5Pauq/4Ota0=";
-            } + /palettes/${flavour}.toml));
+    neovim = { enable = true; };
+
+    zsh = {
+      enable = true;
+      enableCompletion = true;
+      autocd = true;
+      autosuggestion.enable = true;
+      dirHashes = {
+        dl = "$HOME/Downloads";
+        src = "$HOME/src";
+        ep = "$HOME/src/ep";
       };
+      oh-my-zsh = {
+        enable = true;
+        plugins = [
+          "1password"
+          "aws"
+          "docker"
+          "docker-compose"
+          "dotnet"
+          "git"
+          "iterm2"
+          "nvm"
+        ];
+      };
+      shellAliases = {
+        nu = "nvm use";
+        dcu = "docker compose up";
+        dcd = "docker compose down";
+      };
+      syntaxHighlighting = {
+        enable = true;
+        highlighters = [ "main" "brackets" ];
+      };
+    };
+
+    zoxide = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
+    starship = let flavour = "mocha";
+    in {
+      enable = true;
+      enableZshIntegration = true;
+      settings = {
+        scan_timeout = 100;
+        format = "$all";
+        palette = "catppuccin_${flavour}";
+      } // builtins.fromTOML (builtins.readFile (pkgs.fetchFromGitHub {
+        owner = "catppuccin";
+        repo = "starship";
+        rev = "5629d2356f62a9f2f8efad3ff37476c19969bd4f";
+        sha256 = "sha256-nsRuxQFKbQkyEI4TXgvAjcroVdG+heKX5Pauq/4Ota0=";
+      } + /palettes/${flavour}.toml));
+    };
   };
 
   services = {
