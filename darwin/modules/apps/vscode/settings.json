@@ -1,7 +1,7 @@
 {
   "workbench.colorTheme": "Catppuccin Macchiato",
-  "editor.fontFamily": "'GeistMono Nerd Font Propo', 'Droid Sans Mono', monospace",
-  "editor.fontLigatures": true,
+  "editor.fontFamily": "'VictorMono Nerd Font Mono', 'Droid Sans Mono', monospace",
+  "editor.fontLigatures": "'ss01, 'ss02', 'ss07'",
   "workbench.preferredDarkColorTheme": "Catppuccin Mocha",
   "workbench.preferredLightColorTheme": "Catppuccin Latte",
   "window.autoDetectColorScheme": true,
@@ -35,5 +35,8 @@
   "editor.inlineSuggest.syntaxHighlightingEnabled": true,
   "workbench.statusBar.visible": false,
   "catppuccin.extraBordersEnabled": true,
-  "editor.guides.indentation": false
+  "editor.guides.indentation": false,
+  "workbench.editor.showTabs": "none",
+  "editor.stickyScroll.enabled": false,
+  "editor.fontSize": 13
 }

@@ -12,12 +12,9 @@
     gdu # better du
     curl
     wget
-    glibtool
     gcc
-    libgccjit
     fd # better find
     fontconfig
-    superfile
     shfmt
     shellcheck
     stylelint
@@ -26,6 +23,10 @@
     lua-language-server
     sqlite
     sqlitebrowser
+    spicedb
+    spicedb-zed
+    mitmproxy
+
     # kafka
     redpanda-client
     kafkactl
@@ -47,7 +48,6 @@
     gotests
     gore
     gotools
-    cargo
     golangci-lint-langserver
     delve
 
@@ -70,5 +70,7 @@
     jsbeautifier
     vtsls
     nodejs_23
+    graphql-language-service-cli
+    multimarkdown
   ];
 }

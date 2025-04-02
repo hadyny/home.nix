@@ -1,37 +1,23 @@
-/* Global MacOS configuration using nix-darwin (https://github.com/LnL7/nix-darwin).
- * Sets up minimal required system-level configuration, such as
- * Darwin-specific modules, certificates, etc.
- *
- * Also enables Home Manager.
- * Home Manager is used for the rest of user-level configuration.
- * Home Manager configuratio is located in ./home folder.
- */
+# Global MacOS configuration using nix-darwin (https://github.com/LnL7/nix-darwin).
+# Sets up minimal required system-level configuration, such as
+# Darwin-specific modules, certificates, etc.
+#
+# Also enables Home Manager.
+# Home Manager is used for the rest of user-level configuration.
+# Home Manager configuratio is located in ./home folder.
 { config, pkgs, lib, ... }:
-let
-  modules = import ./lib/modules.nix { inherit lib; };
-in
-{
+let modules = import ./lib/modules.nix { inherit lib; };
+in {
   documentation.enable = false;
 
   nixpkgs.overlays = [
-    # (import (builtins.fetchTarball {
-    #   url = "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
-    # }))
-
-    (import (builtins.fetchTarball {
-      url = "https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz";
-    }))
     # sometimes it is useful to pin a version of some tool or program.
     # this can be done in "overlays/pinned.nix"
     (import ./overlays/pinned.nix)
   ];
 
-
-  imports = [
-    ./certificates.nix
-    ./users.nix
-    <home-manager/nix-darwin>
-  ] ++ (modules.importAllModules ./darwin);
+  imports = [ ./certificates.nix ./users.nix <home-manager/nix-darwin> ]
+    ++ (modules.importAllModules ./darwin);
 
   programs.zsh.enable = true;
 

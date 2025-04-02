@@ -36,9 +36,6 @@ in {
     homeDirectory = config.user.home;
     wallpaper.file = ./config/wallpaper/wallpaper.jpg;
 
-    # Doom configuration
-    file.".doom.d/".source = ./modules/tools/doom.d;
-
     sessionVariables = { EDITOR = "nvim"; };
 
     sessionPath = [ "/opt/homebrew/bin" ];
@@ -83,18 +80,7 @@ in {
 
     btop.enable = true;
 
-    # Currently broken
-    # ghostty = {
-    #   enable = true;
-    #   installBatSyntax = true;
-    #   settings = {
-    #     font-family = "GeistMono NFM";
-    #     window-padding-x = 20;
-    #     window-padding-y = 10;
-    #     theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-    #   };
-    # };
-
+    jq.enable = true;
     htop.enable = true;
     ssh.enable = true;
 
@@ -130,7 +116,16 @@ in {
       };
     };
 
-    neovim = { enable = true; };
+    kitty = {
+      enable = true;
+      extraConfig = builtins.readFile ./config/kitty/kitty.conf;
+    };
+
+    neovim = {
+      enable = true;
+      defaultEditor = true;
+      vimAlias = true;
+    };
 
     zsh = {
       enable = true;
