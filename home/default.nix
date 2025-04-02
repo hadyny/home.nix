@@ -146,7 +146,27 @@ in {
        
       ];
       plugins = with pkgs.vimPlugins; [
-        
+        mini-basics
+        mini-bufremove
+        mini-extra
+        mini-icons
+        catppuccin-nvim
+        lualine-nvim
+        nvim-highlight-colors
+        blink-cmp
+        colorful-menu-nvim
+        friendly-snippets
+        which-key-nvim
+        nvim-treesitter.withAllGrammars
+        gitsigns-nvim
+        nvim-lspconfig
+        none-ls-nvim
+        snacks-nvim
+        neogit
+        typescript-tools-nvim
+        tsc-nvim
+        actions-preview-nvim
+        neotest-vitest
       ];
     };
 

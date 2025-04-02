@@ -1,21 +1,4 @@
 local vim = vim
-local path_package = vim.fn.stdpath("data") .. "/site"
-local mini_path = path_package .. "/pack/deps/start/mini.nvim"
-if not vim.loop.fs_stat(mini_path) then
-	vim.cmd('echo "Installing `mini.nvim`" | redraw')
-	local clone_cmd = {
-		"git",
-		"clone",
-		"--filter=blob:none",
-		-- Uncomment next line to use 'stable' branch
-		-- '--branch', 'stable',
-		"https://github.com/echasnovski/mini.nvim",
-		mini_path,
-	}
-	vim.fn.system(clone_cmd)
-	vim.cmd("packadd mini.nvim | helptags ALL")
-end
-
 vim.o.termguicolors = true
 vim.o.cursorline = true
 vim.o.tabstop = 4
@@ -56,13 +39,9 @@ end
 require("mini.basics").setup()
 require("mini.bufremove").setup()
 require("mini.extra").setup()
-require("mini.deps").setup({ path = { package = path_package } })
 require("mini.icons").setup()
 MiniIcons.mock_nvim_web_devicons()
 
-local add = MiniDeps.add
-
-add({ source = "catppuccin/nvim" })
 require("catppuccin").setup({
 	flavour = "mocha",
 	dim_inactive = { enabled = true },
@@ -82,28 +61,18 @@ require("catppuccin").setup({
 })
 vim.cmd("colorscheme catppuccin-mocha")
 
-add({ source = "nvim-lualine/lualine.nvim", depends = { "catppuccin/nvim" } })
 require("lualine").setup({
 	options = {
 		theme = "catppuccin",
 	},
 })
 
-local blinkcmp_version = "v1.0.0"
-
-add({ source = "brenoprata10/nvim-highlight-colors" })
 require("nvim-highlight-colors").setup({
 	enable_tailwind = true,
 	render = "foreground",
 })
 
-add({
-	source = "saghen/blink.cmp",
-	depends = { "rafamadriz/friendly-snippets", "nvim-highlight-colors", "xzbdmw/colorful-menu.nvim" },
-	checkout = blinkcmp_version,
-})
 require("blink.cmp").setup({
-	fuzzy = { prebuilt_binaries = { force_version = blinkcmp_version } },
 	completion = {
 		list = { selection = { preselect = false, auto_insert = true } },
 		menu = {
@@ -160,7 +129,6 @@ require("blink.cmp").setup({
 	},
 })
 
-add({ source = "folke/which-key.nvim" })
 local wk = require("which-key")
 wk.setup({ preset = "helix" })
 wk.add({
@@ -551,36 +519,11 @@ wk.add({
 	},
 })
 
-add({
-	source = "nvim-treesitter/nvim-treesitter",
-	hooks = {
-		post_checkout = function()
-			vim.cmd("TSUpdate")
-		end,
-	},
-})
 require("nvim-treesitter.configs").setup({
-	ensure_installed = {
-		"bash",
-		"graphql",
-		"javascript",
-		"json",
-		"nix",
-		"norg",
-		"terraform",
-		"lua",
-		"vimdoc",
-		"c_sharp",
-		"typescript",
-		"tsx",
-	},
 	highlight = { enable = true },
 })
 
-add({ source = "lewis6991/gitsigns.nvim" })
 require("gitsigns").setup()
-
-add({ source = "neovim/nvim-lspconfig" })
 
 local capabilities = require("blink.cmp").get_lsp_capabilities()
 local lspconfig = require("lspconfig")
@@ -599,7 +542,6 @@ lspconfig.graphql.setup({ capabilities = capabilities })
 lspconfig.lua_ls.setup({ capabilities = capabilities })
 lspconfig.nil_ls.setup({ capabilities = capabilities })
 
-add({ source = "nvimtools/none-ls.nvim", depends = { "nvim-lua/plenary.nvim" } })
 local null_ls = require("null-ls")
 null_ls.setup({
 	sources = {
@@ -615,7 +557,6 @@ null_ls.setup({
 	},
 })
 
-add({ source = "folke/snacks.nvim" })
 require("Snacks").setup({
 	animate = { enabled = true },
 	dim = { enabled = true },
@@ -629,21 +570,12 @@ require("Snacks").setup({
 	picker = { enabled = true, sources = { explorer = { layout = { layout = { position = "right" } } } } },
 })
 
-add({ source = "NeogitOrg/neogit", depends = { "ibhagwan/fzf-lua", "sindrets/diffview.nvim" } })
 require("neogit").setup({ graph_style = "kitty" })
 
-add({ source = "pmizio/typescript-tools.nvim", depends = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" } })
 require("typescript-tools").setup({})
 
-add({
-	source = "luckasRanarison/tailwind-tools.nvim",
-	depends = { "nvim-treesitter/nvim-treesitter", "neovim/nvim-lspconfig" },
-})
-
-add({ source = "dmmulroy/tsc.nvim" })
 require("tsc").setup()
 
-add({ source = "aznhe21/actions-preview.nvim", depends = { "folke/snacks.nvim" } })
 require("actions-preview").setup({
 	highlight_command = {
 		require("actions-preview.highlight").delta(),
@@ -659,16 +591,6 @@ require("actions-preview").setup({
 	},
 })
 
-add({
-	source = "marilari88/neotest-vitest",
-	depends = {
-		"nvim-neotest/neotest",
-		"nvim-neotest/nvim-nio",
-		"nvim-lua/plenary.nvim",
-		"antoinemadec/FixCursorHold.nvim",
-		"nvim-treesitter/nvim-treesitter",
-	},
-})
 require("neotest").setup({
 	adapters = {
 		require("neotest-vitest"),
