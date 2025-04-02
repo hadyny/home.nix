@@ -125,6 +125,7 @@ in {
       enable = true;
       defaultEditor = true;
       vimAlias = true;
+      extraLuaConfig = builtins.readFile ./config/neovim/init.lua;
     };
 
     zsh = {
