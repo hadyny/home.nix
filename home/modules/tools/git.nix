@@ -6,7 +6,6 @@ let
   cfg = config.tools.git;
 in
 {
-
   options.tools.git = {
     enable = mkEnableOption "Enable GIT";
 

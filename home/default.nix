@@ -126,6 +126,28 @@ in {
       defaultEditor = true;
       vimAlias = true;
       extraLuaConfig = builtins.readFile ./config/neovim/init.lua;
+      extraPackages = with pkgs; [
+        lua-language-server
+        stylua
+        
+        nixfmt-classic
+        nil
+
+        omnisharp-roslyn
+        netcoredbg
+        csharpier
+
+        typescript-language-server
+        tailwindcss-language-server
+        rustywind
+        graphql-language-service-cli
+        vscode-langservers-extracted
+        graphql-language-service-cli
+       
+      ];
+      plugins = with pkgs.vimPlugins; [
+        
+      ];
     };
 
     zsh = {

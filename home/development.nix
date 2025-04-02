@@ -18,14 +18,14 @@
     shfmt
     shellcheck
     stylelint
-    stylua
     terraform
-    lua-language-server
     sqlite
     sqlitebrowser
     spicedb
     spicedb-zed
     mitmproxy
+    csharprepl
+    nodejs_23
 
     # kafka
     redpanda-client
@@ -37,40 +37,5 @@
     docker-credential-helpers
     lazydocker # docker UI
     dockfmt
-
-    # golang
-    go
-    gopls
-    gotools
-    golangci-lint
-    ghc
-    gomodifytags
-    gotests
-    gore
-    gotools
-    golangci-lint-langserver
-    delve
-
-    # nix
-    nixfmt-classic
-    nil
-
-    # dotnet
-    omnisharp-roslyn
-    netcoredbg
-    csharpier
-    csharprepl
-
-    # frontend dev
-    typescript
-    typescript-language-server
-    tailwindcss-language-server
-    rustywind
-    vscode-langservers-extracted
-    jsbeautifier
-    vtsls
-    nodejs_23
-    graphql-language-service-cli
-    multimarkdown
   ];
 }
