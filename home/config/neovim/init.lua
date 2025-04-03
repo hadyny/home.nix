@@ -42,28 +42,12 @@ require("mini.extra").setup()
 require("mini.icons").setup()
 MiniIcons.mock_nvim_web_devicons()
 
-require("catppuccin").setup({
-	flavour = "mocha",
-	dim_inactive = { enabled = true },
-	integrations = {
-		diffview = true,
-		gitgraph = true,
-		which_key = true,
-		snacks = {
-			enabled = false,
-			indent_scope_color = "lavender",
-		},
-		mini = {
-			enabled = true,
-			indentscope_color = "lavender",
-		},
-	},
-})
-vim.cmd("colorscheme catppuccin-mocha")
+require("rose-pine").setup({dark_variant = "moon"})
+vim.cmd("colorscheme rose-pine-moon")
 
 require("lualine").setup({
 	options = {
-		theme = "catppuccin",
+		theme = "rose-pine",
 	},
 })
 
@@ -137,7 +121,7 @@ wk.add({
 	{ "<leader>g", group = "git" },
 	{ "<leader>s", group = "search" },
 	{ "<leader>u", group = "ui" },
-	{ "g", group = "goto" },
+	{ "g",         group = "goto" },
 	{ "<leader>w", proxy = "<c-w>", group = "windows" },
 	{
 		"<leader>b",

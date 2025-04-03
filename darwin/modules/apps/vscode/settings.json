@@ -1,9 +1,9 @@
 {
-  "workbench.colorTheme": "Catppuccin Macchiato",
-  "editor.fontFamily": "'VictorMono Nerd Font Mono', 'Droid Sans Mono', monospace",
+  "workbench.colorTheme": "Rosé Pine",
+  "editor.fontFamily": "'GeistMono Nerd Font Mono', 'Droid Sans Mono', monospace",
   "editor.fontLigatures": "'ss01, 'ss02', 'ss07'",
-  "workbench.preferredDarkColorTheme": "Catppuccin Mocha",
-  "workbench.preferredLightColorTheme": "Catppuccin Latte",
+  "workbench.preferredDarkColorTheme": "Rosé Pine Moon",
+  "workbench.preferredLightColorTheme": "Rosé Pine Dawn",
   "window.autoDetectColorScheme": true,
   "githubPullRequests.pullBranch": "never",
   "git.autofetch": true,
@@ -34,9 +34,8 @@
   "csharp.preview.improvedLaunchExperience": true,
   "editor.inlineSuggest.syntaxHighlightingEnabled": true,
   "workbench.statusBar.visible": false,
-  "catppuccin.extraBordersEnabled": true,
   "editor.guides.indentation": false,
   "workbench.editor.showTabs": "none",
   "editor.stickyScroll.enabled": false,
-  "editor.fontSize": 13
+  "editor.fontSize": 14
 }

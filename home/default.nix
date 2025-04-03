@@ -64,21 +64,14 @@ in {
 
     bat = {
       enable = true;
-      config = { theme = "catppuccin"; };
-      themes = {
-        catppuccin = {
-          src = pkgs.fetchFromGitHub {
-            owner = "catppuccin";
-            repo = "bat";
-            rev = "main";
-            sha256 = "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=";
-          };
-          file = "themes/Catppuccin Mocha.tmTheme";
-        };
-      };
     };
 
-    btop.enable = true;
+    btop = {
+      enable = true;
+      settings ={
+        theme_background = false;
+      };
+    };
 
     jq.enable = true;
     htop.enable = true;
@@ -118,6 +111,7 @@ in {
 
     kitty = {
       enable = true;
+      themeFile = "rose-pine-moon";
       extraConfig = builtins.readFile ./config/kitty/kitty.conf;
     };
 
@@ -150,7 +144,7 @@ in {
         mini-bufremove
         mini-extra
         mini-icons
-        catppuccin-nvim
+        rose-pine
         lualine-nvim
         nvim-highlight-colors
         blink-cmp
@@ -167,7 +161,16 @@ in {
         tsc-nvim
         actions-preview-nvim
         neotest-vitest
+        obsidian-nvim
       ];
+    };
+
+    tmux = {
+        enable = true;
+        tmuxinator.enable = true;
+        keyMode = "vi";
+        mouse = true;
+        plugins = [pkgs.tmuxPlugins.rose-pine];
     };
 
     zsh = {
@@ -209,20 +212,12 @@ in {
       enableZshIntegration = true;
     };
 
-    starship = let flavour = "mocha";
-    in {
+    starship = {
       enable = true;
       enableZshIntegration = true;
       settings = {
         scan_timeout = 100;
-        format = "$all";
-        palette = "catppuccin_${flavour}";
-      } // builtins.fromTOML (builtins.readFile (pkgs.fetchFromGitHub {
-        owner = "catppuccin";
-        repo = "starship";
-        rev = "5629d2356f62a9f2f8efad3ff37476c19969bd4f";
-        sha256 = "sha256-nsRuxQFKbQkyEI4TXgvAjcroVdG+heKX5Pauq/4Ota0=";
-      } + /palettes/${flavour}.toml));
+      };
     };
   };
 

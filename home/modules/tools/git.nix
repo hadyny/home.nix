@@ -63,8 +63,6 @@ in
               # 10% green 90% base
               plus-style = "syntax #2c333a";
               map-styles = "bold purple => syntax \"#494060\", bold blue => syntax \"#394361\", bold cyan => syntax \"#384d5e\", bold yellow => syntax \"#544f4e\"";
-              # Should match the name of the bat theme
-              syntax-theme = "catppuccin";
             };
             lazygit = {
               hyperlinks = false;
