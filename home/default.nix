@@ -62,15 +62,11 @@ in {
       flags = [ "--disable-up-arrow" ];
     };
 
-    bat = {
-      enable = true;
-    };
+    bat = { enable = true; };
 
     btop = {
       enable = true;
-      settings ={
-        theme_background = false;
-      };
+      settings = { theme_background = false; };
     };
 
     jq.enable = true;
@@ -93,20 +89,6 @@ in {
     fzf = {
       enable = true;
       enableZshIntegration = true;
-      colors = {
-        "bg+" = "#313244";
-        "bg" = "#1e1e2e";
-        "spinner" = "#f5e0dc";
-        "hl" = "#f38ba8";
-        "fg" = "#cdd6f4";
-        "header" = "#f38ba8";
-        "info" = "#cba6f7";
-        "pointer" = "#f5e0dc";
-        "marker" = "#f5e0dc";
-        "fg+" = "#cdd6f4";
-        "prompt" = "#cba6f7";
-        "hl+" = "#f38ba8";
-      };
     };
 
     kitty = {
@@ -123,7 +105,7 @@ in {
       extraPackages = with pkgs; [
         lua-language-server
         stylua
-        
+
         nixfmt-classic
         nil
 
@@ -137,7 +119,7 @@ in {
         graphql-language-service-cli
         vscode-langservers-extracted
         graphql-language-service-cli
-       
+
       ];
       plugins = with pkgs.vimPlugins; [
         mini-basics
@@ -166,11 +148,11 @@ in {
     };
 
     tmux = {
-        enable = true;
-        tmuxinator.enable = true;
-        keyMode = "vi";
-        mouse = true;
-        plugins = [pkgs.tmuxPlugins.rose-pine];
+      enable = true;
+      tmuxinator.enable = true;
+      keyMode = "vi";
+      mouse = true;
+      plugins = [ pkgs.tmuxPlugins.rose-pine ];
     };
 
     zsh = {
@@ -215,9 +197,7 @@ in {
     starship = {
       enable = true;
       enableZshIntegration = true;
-      settings = {
-        scan_timeout = 100;
-      };
+      settings = { scan_timeout = 100; };
     };
   };
 
