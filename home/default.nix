@@ -151,8 +151,14 @@ in {
       enable = true;
       tmuxinator.enable = true;
       keyMode = "vi";
+      focusEvents = true;
+      baseIndex = 1;
       mouse = true;
-      plugins = [ pkgs.tmuxPlugins.rose-pine ];
+      plugins = with pkgs.tmuxPlugins; [
+        better-mouse-mode
+        rose-pine
+        tmux-which-key
+      ];
     };
 
     zsh = {

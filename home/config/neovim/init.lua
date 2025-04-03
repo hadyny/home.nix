@@ -10,7 +10,7 @@ vim.o.ignorecase = true
 vim.o.hlsearch = false
 vim.o.winborder = "solid"
 vim.o.laststatus = 3
-vim.o.statusline = " %f %m %= %l:%c ✷ "
+vim.o.statusline = " %f %m %= %l:%c ✽ [%{mode()}] "
 
 vim.diagnostic.config({
     virtual_text = false,
@@ -47,7 +47,7 @@ MiniIcons.mock_nvim_web_devicons()
 require("rose-pine").setup({
     dark_variant = "moon",
     highlight_groups = {
-        StatusLine = { fg = "pine", bg = "pine", blend = 10 },
+        StatusLine = { fg = "iris", bg = "iris", blend = 10 },
         StatusLineNC = { fg = "subtle", bg = "surface" },
     },
 })

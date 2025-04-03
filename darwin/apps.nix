@@ -53,7 +53,6 @@
       "chromium"
       "firefox@developer-edition"
       "messenger"
-      "vivaldi"
       "Rider"
       "DataGrip"
       "GoLand"
