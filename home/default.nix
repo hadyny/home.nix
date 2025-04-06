@@ -137,7 +137,6 @@ in {
         nvim-lspconfig
         none-ls-nvim
         snacks-nvim
-        neogit
         typescript-tools-nvim
         tsc-nvim
         actions-preview-nvim

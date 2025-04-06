@@ -4,6 +4,7 @@ vim.o.cursorline = true
 vim.o.tabstop = 4
 vim.o.expandtab = true
 vim.o.softtabstop = 4
+vim.o.smartindent = true
 vim.o.shiftwidth = 4
 vim.o.smartcase = true
 vim.o.ignorecase = true
@@ -11,6 +12,9 @@ vim.o.hlsearch = false
 vim.o.winborder = "solid"
 vim.o.laststatus = 3
 vim.o.statusline = " %f %m %= %l:%c ✽ [%{mode()}] "
+vim.o.relativenumber = true
+vim.o.scrolloff = 4
+vim.o.sidescrolloff = 8
 
 vim.diagnostic.config({
     virtual_text = false,
@@ -31,7 +35,6 @@ vim.keymap.set("n", "<Leader>bd", "<Cmd>lua MiniBufremove.delete()<cr>", { desc 
 vim.keymap.set("n", "<Leader>e", "<Cmd>lua Snacks.explorer()<cr>", { desc = "Explorer" })
 vim.keymap.set("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
 vim.keymap.set("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
-vim.keymap.set("n", "<Leader>gg", "<Cmd>Neogit<cr>", { desc = "Neogit" })
 vim.keymap.set("n", "<Leader>ca", "<Cmd>lua require('actions-preview').code_actions()<cr>", { desc = "Code actions" })
 
 if vim.g.vscode then
@@ -149,9 +152,9 @@ wk.add({
     {
         "<leader>/",
         function()
-            Snacks.picker.grep()
+            Snacks.picker.lines()
         end,
-        desc = "Grep",
+        desc = "Buffer Lines",
     },
     {
         "<leader>:",
@@ -167,27 +170,13 @@ wk.add({
         end,
         desc = "Notification History",
     },
-    {
-        "<leader>e",
-        function()
-            Snacks.explorer()
-        end,
-        desc = "File Explorer",
-    },
     -- find
     {
-        "<leader>fb",
+        "<leader>bl",
         function()
             Snacks.picker.buffers()
         end,
-        desc = "Buffers",
-    },
-    {
-        "<leader>fc",
-        function()
-            Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
-        end,
-        desc = "Find Config File",
+        desc = "Buffer list",
     },
     {
         "<leader>ff",
@@ -411,13 +400,6 @@ wk.add({
         desc = "Man Pages",
     },
     {
-        "<leader>sp",
-        function()
-            Snacks.picker.lazy()
-        end,
-        desc = "Search for Plugin Spec",
-    },
-    {
         "<leader>sq",
         function()
             Snacks.picker.qflist()
@@ -555,10 +537,7 @@ require("Snacks").setup({
     picker = { enabled = true, sources = { explorer = { layout = { layout = { position = "right" } } } } },
 })
 
-require("neogit").setup({ graph_style = "kitty" })
-
 require("typescript-tools").setup({})
-
 require("tsc").setup()
 
 require("actions-preview").setup({
