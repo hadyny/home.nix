@@ -109,7 +109,7 @@ in {
         nixfmt-classic
         nil
 
-        omnisharp-roslyn
+        roslyn-ls
         netcoredbg
         csharpier
 
@@ -118,7 +118,6 @@ in {
         rustywind
         graphql-language-service-cli
         vscode-langservers-extracted
-        graphql-language-service-cli
 
       ];
       plugins = with pkgs.vimPlugins; [
@@ -144,6 +143,7 @@ in {
         actions-preview-nvim
         neotest-vitest
         obsidian-nvim
+        roslyn-nvim
       ];
     };
 

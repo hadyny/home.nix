@@ -513,7 +513,6 @@ require("gitsigns").setup()
 
 local capabilities = require("blink.cmp").get_lsp_capabilities()
 local lspconfig = require("lspconfig")
-lspconfig.csharp_ls.setup({ capabilities = capabilities })
 lspconfig.eslint.setup({
     capabilities = capabilities,
     on_attach = function(client, bufnr)
@@ -581,4 +580,8 @@ require("neotest").setup({
     adapters = {
         require("neotest-vitest"),
     },
+})
+
+require("roslyn").setup({
+    exe = 'Microsoft.CodeAnalysis.LanguageServer',
 })

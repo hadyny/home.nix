@@ -50,7 +50,7 @@
     casks = [
       "1password"
       "cloudflare-warp"
-      "chromium"
+      "google-chrome"
       "firefox@developer-edition"
       "messenger"
       "Rider"

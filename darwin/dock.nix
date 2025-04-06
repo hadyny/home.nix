@@ -24,7 +24,7 @@
     apps = [
       "Slack"
       "Firefox Developer Edition"
-      "Chromium"
+      "Google Chrome"
       "Visual Studio Code"
       "Rider"
       "DataGrip"
