@@ -26,6 +26,7 @@
     mitmproxy
     csharprepl
     nodejs_23
+    netcoredbg
 
     # kafka
     redpanda-client

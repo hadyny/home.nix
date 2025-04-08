@@ -149,6 +149,7 @@ in {
         tailwind-tools-nvim
         yazi-nvim
         tiny-inline-diagnostic-nvim
+        CopilotChat-nvim
       ];
     };
 

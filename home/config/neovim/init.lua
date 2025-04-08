@@ -29,7 +29,6 @@ vim.diagnostic.config({
     underline = true,
 })
 
-
 if vim.g.vscode then
     return
 end
@@ -122,7 +121,13 @@ wk.add({
     { "g",         group = "goto" },
     { "<leader>r", group = "run" },
     { "<leader>w", proxy = "<c-w>", group = "windows" },
-    { "<leader>b", group = "buffers", expand = function() return require("which-key.extras").expand.buf() end },
+    {
+        "<leader>b",
+        group = "buffers",
+        expand = function()
+            return require("which-key.extras").expand.buf()
+        end,
+    },
 })
 
 require("nvim-treesitter.configs").setup({
@@ -171,7 +176,16 @@ require("Snacks").setup({
     scope = { enabled = true },
     scroll = { enabled = true },
     statuscolumn = { enabled = true },
-    picker = { enabled = true },
+    picker = {
+        enabled = true,
+        ui_select = true,
+        previewers = {
+            diff = {
+                builtin = false,
+                cmd = { "delta" },
+            },
+        },
+    },
 })
 
 require("typescript-tools").setup({})
@@ -199,10 +213,14 @@ require("actions-preview").setup({
     },
 })
 
+require("CopilotChat").setup({})
+
 require("neotest").setup({
     adapters = {
         require("neotest-vitest"),
-        require("neotest-dotnet"),
+        require("neotest-dotnet")({
+            dap = { justMyCode = false },
+        }),
     },
 })
 
@@ -216,20 +234,56 @@ require("roslyn").setup({
 })
 
 -- configure overseer
-require("overseer").setup()
+require("overseer").setup({})
 vim.keymap.set("n", "<Leader>rr", "<Cmd>OverseerRun<cr>", { desc = "Run task" })
 vim.keymap.set("n", "<Leader>rv", "<Cmd>OverseerToggle<cr>", { desc = "View running task" })
 
 -- configure dap
+local dap = require("dap")
 
-
+-- .NET (C#) configuration
+dap.adapters.coreclr = {
+    type = "executable",
+    command = "netcoredbg", -- Replace with the path to netcoredbg
+    args = { "--interpreter=vscode" },
+}
+dap.configurations.cs = {
+    {
+        type = "coreclr",
+        name = "Launch .NET",
+        request = "launch",
+        program = function()
+            return vim.fn.input("Path to DLL: ", vim.fn.getcwd() .. "/bin/Debug/", "file")
+        end,
+    },
+}
+-- TypeScript configuration
+dap.configurations.typescript = {
+    {
+        type = "node2",
+        name = "Launch TypeScript",
+        request = "launch",
+        program = "${file}",
+        cwd = vim.fn.getcwd(),
+        sourceMaps = true,
+        protocol = "inspector",
+        outFiles = { "${workspaceFolder}/dist/**/*.js" },
+    },
+}
+dap.configurations.javascript = dap.configurations.typescript
+vim.keymap.set("n", "<F5>", "<Cmd>lua require'dap'.continue()<CR>", { desc = "Start/Continue Debugging" })
+vim.keymap.set("n", "<F10>", "<Cmd>lua require'dap'.step_over()<CR>", { desc = "Step Over" })
+vim.keymap.set("n", "<F11>", "<Cmd>lua require'dap'.step_into()<CR>", { desc = "Step Into" })
+vim.keymap.set("n", "<F12>", "<Cmd>lua require'dap'.step_out()<CR>", { desc = "Step Out" })
+vim.keymap.set("n", "<Leader>db", "<Cmd>lua require'dap'.toggle_breakpoint()<CR>", { desc = "Toggle Breakpoint" })
+vim.keymap.set("n", "<Leader>dr", "<Cmd>lua require'dap'.repl.open()<CR>", { desc = "Open REPL" })
 
 vim.g.mapleader = " "
-vim.keymap.set("n", "<Leader>bd", "<Cmd>lua MiniBufremove.delete()<cr>", { desc = "Delete" })
 vim.keymap.set("n", "<Leader>e", "<Cmd>Yazi<cr>", { desc = "Explorer" })
 vim.keymap.set("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
 vim.keymap.set("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
 vim.keymap.set("n", "<Leader>ca", "<Cmd>lua require('actions-preview').code_actions()<cr>", { desc = "Code actions" })
+vim.keymap.set("n", "<Leader>cc", "<Cmd>CopilotChat<cr>", { desc = "Copilot chat" })
 
 -- Smart mappings
 vim.keymap.set("n", "<leader><space>", "<Cmd>lua Snacks.picker.smart()<cr>", { desc = "Smart Find Files" })
@@ -240,6 +294,7 @@ vim.keymap.set("n", "<leader>n", "<Cmd>lua Snacks.picker.notifications()<cr>", {
 
 -- Buffer mappings
 vim.keymap.set("n", "<leader>bl", "<Cmd>lua Snacks.picker.buffers()<cr>", { desc = "Buffer list" })
+vim.keymap.set("n", "<Leader>bd", "<Cmd>lua MiniBufremove.delete()<cr>", { desc = "Delete" })
 
 -- Find mappings
 vim.keymap.set("n", "<leader>ff", "<Cmd>lua Snacks.picker.files()<cr>", { desc = "Find Files" })
@@ -260,7 +315,12 @@ vim.keymap.set("n", "<leader>gf", "<Cmd>lua Snacks.picker.git_log_file()<cr>", {
 vim.keymap.set("n", "<leader>sb", "<Cmd>lua Snacks.picker.lines()<cr>", { desc = "Buffer Lines" })
 vim.keymap.set("n", "<leader>sB", "<Cmd>lua Snacks.picker.grep_buffers()<cr>", { desc = "Grep Open Buffers" })
 vim.keymap.set("n", "<leader>sg", "<Cmd>lua Snacks.picker.grep()<cr>", { desc = "Grep" })
-vim.keymap.set({ "n", "x" }, "<leader>sw", "<Cmd>lua Snacks.picker.grep_word()<cr>", { desc = "Visual selection or word" })
+vim.keymap.set(
+    { "n", "x" },
+    "<leader>sw",
+    "<Cmd>lua Snacks.picker.grep_word()<cr>",
+    { desc = "Visual selection or word" }
+)
 
 -- Search mappings
 vim.keymap.set("n", '<leader>s"', "<Cmd>lua Snacks.picker.registers()<cr>", { desc = "Registers" })
@@ -290,5 +350,10 @@ vim.keymap.set("n", "gr", "<Cmd>lua Snacks.picker.lsp_references()<cr>", { desc 
 vim.keymap.set("n", "gI", "<Cmd>lua Snacks.picker.lsp_implementations()<cr>", { desc = "Goto Implementation" })
 vim.keymap.set("n", "gy", "<Cmd>lua Snacks.picker.lsp_type_definitions()<cr>", { desc = "Goto T[y]pe Definition" })
 vim.keymap.set("n", "<leader>ss", "<Cmd>lua Snacks.picker.lsp_symbols()<cr>", { desc = "LSP Symbols" })
-vim.keymap.set("n", "<leader>sS", "<Cmd>lua Snacks.picker.lsp_workspace_symbols()<cr>", { desc = "LSP Workspace Symbols" })
+vim.keymap.set(
+    "n",
+    "<leader>sS",
+    "<Cmd>lua Snacks.picker.lsp_workspace_symbols()<cr>",
+    { desc = "LSP Workspace Symbols" }
+)
 vim.keymap.set("n", "<leader>z", "<Cmd>lua Snacks.picker.zoxide()<cr>", { desc = "Zoxide projects" })
