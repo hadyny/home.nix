@@ -27,15 +27,8 @@ vim.diagnostic.config({
         },
     },
     underline = true,
-    virtual_lines = { current_line = true },
 })
 
-vim.g.mapleader = " "
-vim.keymap.set("n", "<Leader>bd", "<Cmd>lua MiniBufremove.delete()<cr>", { desc = "Delete" })
-vim.keymap.set("n", "<Leader>e", "<Cmd>lua Snacks.explorer()<cr>", { desc = "Explorer" })
-vim.keymap.set("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
-vim.keymap.set("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
-vim.keymap.set("n", "<Leader>ca", "<Cmd>lua require('actions-preview').code_actions()<cr>", { desc = "Code actions" })
 
 if vim.g.vscode then
     return
@@ -127,364 +120,9 @@ wk.add({
     { "<leader>s", group = "search" },
     { "<leader>u", group = "ui" },
     { "g",         group = "goto" },
+    { "<leader>r", group = "run" },
     { "<leader>w", proxy = "<c-w>", group = "windows" },
-    {
-        "<leader>b",
-        group = "buffers",
-        expand = function()
-            return require("which-key.extras").expand.buf()
-        end,
-    },
-    {
-        "<leader><space>",
-        function()
-            Snacks.picker.smart()
-        end,
-        desc = "Smart Find Files",
-    },
-    {
-        "<leader>,",
-        function()
-            Snacks.picker.buffers()
-        end,
-        desc = "Buffers",
-    },
-    {
-        "<leader>/",
-        function()
-            Snacks.picker.lines()
-        end,
-        desc = "Buffer Lines",
-    },
-    {
-        "<leader>:",
-        function()
-            Snacks.picker.command_history()
-        end,
-        desc = "Command History",
-    },
-    {
-        "<leader>n",
-        function()
-            Snacks.picker.notifications()
-        end,
-        desc = "Notification History",
-    },
-    -- find
-    {
-        "<leader>bl",
-        function()
-            Snacks.picker.buffers()
-        end,
-        desc = "Buffer list",
-    },
-    {
-        "<leader>ff",
-        function()
-            Snacks.picker.files()
-        end,
-        desc = "Find Files",
-    },
-    {
-        "<leader>fg",
-        function()
-            Snacks.picker.git_files()
-        end,
-        desc = "Find Git Files",
-    },
-    {
-        "<leader>fp",
-        function()
-            Snacks.picker.projects()
-        end,
-        desc = "Projects",
-    },
-    {
-        "<leader>fr",
-        function()
-            Snacks.picker.recent()
-        end,
-        desc = "Recent",
-    },
-    -- git
-    {
-        "<leader>gb",
-        function()
-            Snacks.picker.git_branches()
-        end,
-        desc = "Git Branches",
-    },
-    {
-        "<leader>gl",
-        function()
-            Snacks.picker.git_log()
-        end,
-        desc = "Git Log",
-    },
-    {
-        "<leader>gL",
-        function()
-            Snacks.picker.git_log_line()
-        end,
-        desc = "Git Log Line",
-    },
-    {
-        "<leader>gs",
-        function()
-            Snacks.picker.git_status()
-        end,
-        desc = "Git Status",
-    },
-    {
-        "<leader>gS",
-        function()
-            Snacks.picker.git_stash()
-        end,
-        desc = "Git Stash",
-    },
-    {
-        "<leader>gd",
-        function()
-            Snacks.picker.git_diff()
-        end,
-        desc = "Git Diff (Hunks)",
-    },
-    {
-        "<leader>gf",
-        function()
-            Snacks.picker.git_log_file()
-        end,
-        desc = "Git Log File",
-    },
-    -- Grep
-    {
-        "<leader>sb",
-        function()
-            Snacks.picker.lines()
-        end,
-        desc = "Buffer Lines",
-    },
-    {
-        "<leader>sB",
-        function()
-            Snacks.picker.grep_buffers()
-        end,
-        desc = "Grep Open Buffers",
-    },
-    {
-        "<leader>sg",
-        function()
-            Snacks.picker.grep()
-        end,
-        desc = "Grep",
-    },
-    {
-        "<leader>sw",
-        function()
-            Snacks.picker.grep_word()
-        end,
-        desc = "Visual selection or word",
-        mode = { "n", "x" },
-    },
-    -- search
-    {
-        '<leader>s"',
-        function()
-            Snacks.picker.registers()
-        end,
-        desc = "Registers",
-    },
-    {
-        "<leader>s/",
-        function()
-            Snacks.picker.search_history()
-        end,
-        desc = "Search History",
-    },
-    {
-        "<leader>sa",
-        function()
-            Snacks.picker.autocmds()
-        end,
-        desc = "Autocmds",
-    },
-    {
-        "<leader>sb",
-        function()
-            Snacks.picker.lines()
-        end,
-        desc = "Buffer Lines",
-    },
-    {
-        "<leader>sc",
-        function()
-            Snacks.picker.command_history()
-        end,
-        desc = "Command History",
-    },
-    {
-        "<leader>sC",
-        function()
-            Snacks.picker.commands()
-        end,
-        desc = "Commands",
-    },
-    {
-        "<leader>sd",
-        function()
-            Snacks.picker.diagnostics()
-        end,
-        desc = "Diagnostics",
-    },
-    {
-        "<leader>sD",
-        function()
-            Snacks.picker.diagnostics_buffer()
-        end,
-        desc = "Buffer Diagnostics",
-    },
-    {
-        "<leader>sh",
-        function()
-            Snacks.picker.help()
-        end,
-        desc = "Help Pages",
-    },
-    {
-        "<leader>sH",
-        function()
-            Snacks.picker.highlights()
-        end,
-        desc = "Highlights",
-    },
-    {
-        "<leader>si",
-        function()
-            Snacks.picker.icons()
-        end,
-        desc = "Icons",
-    },
-    {
-        "<leader>sj",
-        function()
-            Snacks.picker.jumps()
-        end,
-        desc = "Jumps",
-    },
-    {
-        "<leader>sk",
-        function()
-            Snacks.picker.keymaps()
-        end,
-        desc = "Keymaps",
-    },
-    {
-        "<leader>sl",
-        function()
-            Snacks.picker.loclist()
-        end,
-        desc = "Location List",
-    },
-    {
-        "<leader>sm",
-        function()
-            Snacks.picker.marks()
-        end,
-        desc = "Marks",
-    },
-    {
-        "<leader>sM",
-        function()
-            Snacks.picker.man()
-        end,
-        desc = "Man Pages",
-    },
-    {
-        "<leader>sq",
-        function()
-            Snacks.picker.qflist()
-        end,
-        desc = "Quickfix List",
-    },
-    {
-        "<leader>sR",
-        function()
-            Snacks.picker.resume()
-        end,
-        desc = "Resume",
-    },
-    {
-        "<leader>su",
-        function()
-            Snacks.picker.undo()
-        end,
-        desc = "Undo History",
-    },
-    {
-        "<leader>uC",
-        function()
-            Snacks.picker.colorschemes()
-        end,
-        desc = "Colorschemes",
-    },
-    -- LSP
-    {
-        "gd",
-        function()
-            Snacks.picker.lsp_definitions()
-        end,
-        desc = "Goto Definition",
-    },
-    {
-        "gD",
-        function()
-            Snacks.picker.lsp_declarations()
-        end,
-        desc = "Goto Declaration",
-    },
-    {
-        "gr",
-        function()
-            Snacks.picker.lsp_references()
-        end,
-        nowait = true,
-        desc = "References",
-    },
-    {
-        "gI",
-        function()
-            Snacks.picker.lsp_implementations()
-        end,
-        desc = "Goto Implementation",
-    },
-    {
-        "gy",
-        function()
-            Snacks.picker.lsp_type_definitions()
-        end,
-        desc = "Goto T[y]pe Definition",
-    },
-    {
-        "<leader>ss",
-        function()
-            Snacks.picker.lsp_symbols()
-        end,
-        desc = "LSP Symbols",
-    },
-    {
-        "<leader>sS",
-        function()
-            Snacks.picker.lsp_workspace_symbols()
-        end,
-        desc = "LSP Workspace Symbols",
-    },
-    {
-        "<leader>z",
-        function()
-            Snacks.picker.zoxide()
-        end,
-        desc = "Zoxide projects",
-    },
+    { "<leader>b", group = "buffers", expand = function() return require("which-key.extras").expand.buf() end },
 })
 
 require("nvim-treesitter.configs").setup({
@@ -527,17 +165,23 @@ null_ls.setup({
 require("Snacks").setup({
     animate = { enabled = true },
     dim = { enabled = true },
-    explorer = { enabled = true },
     image = { enabled = true },
     notifier = { enabled = true },
     rename = { enabled = true },
     scope = { enabled = true },
     scroll = { enabled = true },
     statuscolumn = { enabled = true },
-    picker = { enabled = true, sources = { explorer = { layout = { layout = { position = "right" } } } } },
+    picker = { enabled = true },
 })
 
 require("typescript-tools").setup({})
+require("tailwind-tools").setup({
+    document_color = { enabled = false },
+    conceal = {
+        enabled = true,
+        min_length = 10,
+    },
+})
 require("tsc").setup()
 
 require("actions-preview").setup({
@@ -558,9 +202,93 @@ require("actions-preview").setup({
 require("neotest").setup({
     adapters = {
         require("neotest-vitest"),
+        require("neotest-dotnet"),
     },
 })
 
-require("roslyn").setup({
-    exe = 'Microsoft.CodeAnalysis.LanguageServer',
+require("tiny-inline-diagnostic").setup({
+    multilines = true,
+    break_line = { enabled = true },
 })
+
+require("roslyn").setup({
+    exe = "Microsoft.CodeAnalysis.LanguageServer",
+})
+
+-- configure overseer
+require("overseer").setup()
+vim.keymap.set("n", "<Leader>rr", "<Cmd>OverseerRun<cr>", { desc = "Run task" })
+vim.keymap.set("n", "<Leader>rv", "<Cmd>OverseerToggle<cr>", { desc = "View running task" })
+
+-- configure dap
+
+
+
+vim.g.mapleader = " "
+vim.keymap.set("n", "<Leader>bd", "<Cmd>lua MiniBufremove.delete()<cr>", { desc = "Delete" })
+vim.keymap.set("n", "<Leader>e", "<Cmd>Yazi<cr>", { desc = "Explorer" })
+vim.keymap.set("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
+vim.keymap.set("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
+vim.keymap.set("n", "<Leader>ca", "<Cmd>lua require('actions-preview').code_actions()<cr>", { desc = "Code actions" })
+
+-- Smart mappings
+vim.keymap.set("n", "<leader><space>", "<Cmd>lua Snacks.picker.smart()<cr>", { desc = "Smart Find Files" })
+vim.keymap.set("n", "<leader>,", "<Cmd>lua Snacks.picker.buffers()<cr>", { desc = "Buffers" })
+vim.keymap.set("n", "<leader>/", "<Cmd>lua Snacks.picker.lines()<cr>", { desc = "Buffer Lines" })
+vim.keymap.set("n", "<leader>:", "<Cmd>lua Snacks.picker.command_history()<cr>", { desc = "Command History" })
+vim.keymap.set("n", "<leader>n", "<Cmd>lua Snacks.picker.notifications()<cr>", { desc = "Notification History" })
+
+-- Buffer mappings
+vim.keymap.set("n", "<leader>bl", "<Cmd>lua Snacks.picker.buffers()<cr>", { desc = "Buffer list" })
+
+-- Find mappings
+vim.keymap.set("n", "<leader>ff", "<Cmd>lua Snacks.picker.files()<cr>", { desc = "Find Files" })
+vim.keymap.set("n", "<leader>fg", "<Cmd>lua Snacks.picker.git_files()<cr>", { desc = "Find Git Files" })
+vim.keymap.set("n", "<leader>fp", "<Cmd>lua Snacks.picker.projects()<cr>", { desc = "Projects" })
+vim.keymap.set("n", "<leader>fr", "<Cmd>lua Snacks.picker.recent()<cr>", { desc = "Recent" })
+
+-- Git mappings
+vim.keymap.set("n", "<leader>gb", "<Cmd>lua Snacks.picker.git_branches()<cr>", { desc = "Git Branches" })
+vim.keymap.set("n", "<leader>gl", "<Cmd>lua Snacks.picker.git_log()<cr>", { desc = "Git Log" })
+vim.keymap.set("n", "<leader>gL", "<Cmd>lua Snacks.picker.git_log_line()<cr>", { desc = "Git Log Line" })
+vim.keymap.set("n", "<leader>gs", "<Cmd>lua Snacks.picker.git_status()<cr>", { desc = "Git Status" })
+vim.keymap.set("n", "<leader>gS", "<Cmd>lua Snacks.picker.git_stash()<cr>", { desc = "Git Stash" })
+vim.keymap.set("n", "<leader>gd", "<Cmd>lua Snacks.picker.git_diff()<cr>", { desc = "Git Diff (Hunks)" })
+vim.keymap.set("n", "<leader>gf", "<Cmd>lua Snacks.picker.git_log_file()<cr>", { desc = "Git Log File" })
+
+-- Grep mappings
+vim.keymap.set("n", "<leader>sb", "<Cmd>lua Snacks.picker.lines()<cr>", { desc = "Buffer Lines" })
+vim.keymap.set("n", "<leader>sB", "<Cmd>lua Snacks.picker.grep_buffers()<cr>", { desc = "Grep Open Buffers" })
+vim.keymap.set("n", "<leader>sg", "<Cmd>lua Snacks.picker.grep()<cr>", { desc = "Grep" })
+vim.keymap.set({ "n", "x" }, "<leader>sw", "<Cmd>lua Snacks.picker.grep_word()<cr>", { desc = "Visual selection or word" })
+
+-- Search mappings
+vim.keymap.set("n", '<leader>s"', "<Cmd>lua Snacks.picker.registers()<cr>", { desc = "Registers" })
+vim.keymap.set("n", "<leader>s/", "<Cmd>lua Snacks.picker.search_history()<cr>", { desc = "Search History" })
+vim.keymap.set("n", "<leader>sa", "<Cmd>lua Snacks.picker.autocmds()<cr>", { desc = "Autocmds" })
+vim.keymap.set("n", "<leader>sc", "<Cmd>lua Snacks.picker.command_history()<cr>", { desc = "Command History" })
+vim.keymap.set("n", "<leader>sC", "<Cmd>lua Snacks.picker.commands()<cr>", { desc = "Commands" })
+vim.keymap.set("n", "<leader>sd", "<Cmd>lua Snacks.picker.diagnostics()<cr>", { desc = "Diagnostics" })
+vim.keymap.set("n", "<leader>sD", "<Cmd>lua Snacks.picker.diagnostics_buffer()<cr>", { desc = "Buffer Diagnostics" })
+vim.keymap.set("n", "<leader>sh", "<Cmd>lua Snacks.picker.help()<cr>", { desc = "Help Pages" })
+vim.keymap.set("n", "<leader>sH", "<Cmd>lua Snacks.picker.highlights()<cr>", { desc = "Highlights" })
+vim.keymap.set("n", "<leader>si", "<Cmd>lua Snacks.picker.icons()<cr>", { desc = "Icons" })
+vim.keymap.set("n", "<leader>sj", "<Cmd>lua Snacks.picker.jumps()<cr>", { desc = "Jumps" })
+vim.keymap.set("n", "<leader>sk", "<Cmd>lua Snacks.picker.keymaps()<cr>", { desc = "Keymaps" })
+vim.keymap.set("n", "<leader>sl", "<Cmd>lua Snacks.picker.loclist()<cr>", { desc = "Location List" })
+vim.keymap.set("n", "<leader>sm", "<Cmd>lua Snacks.picker.marks()<cr>", { desc = "Marks" })
+vim.keymap.set("n", "<leader>sM", "<Cmd>lua Snacks.picker.man()<cr>", { desc = "Man Pages" })
+vim.keymap.set("n", "<leader>sq", "<Cmd>lua Snacks.picker.qflist()<cr>", { desc = "Quickfix List" })
+vim.keymap.set("n", "<leader>sR", "<Cmd>lua Snacks.picker.resume()<cr>", { desc = "Resume" })
+vim.keymap.set("n", "<leader>su", "<Cmd>lua Snacks.picker.undo()<cr>", { desc = "Undo History" })
+vim.keymap.set("n", "<leader>uC", "<Cmd>lua Snacks.picker.colorschemes()<cr>", { desc = "Colorschemes" })
+
+-- LSP mappings
+vim.keymap.set("n", "gd", "<Cmd>lua Snacks.picker.lsp_definitions()<cr>", { desc = "Goto Definition" })
+vim.keymap.set("n", "gD", "<Cmd>lua Snacks.picker.lsp_declarations()<cr>", { desc = "Goto Declaration" })
+vim.keymap.set("n", "gr", "<Cmd>lua Snacks.picker.lsp_references()<cr>", { desc = "References", nowait = true })
+vim.keymap.set("n", "gI", "<Cmd>lua Snacks.picker.lsp_implementations()<cr>", { desc = "Goto Implementation" })
+vim.keymap.set("n", "gy", "<Cmd>lua Snacks.picker.lsp_type_definitions()<cr>", { desc = "Goto T[y]pe Definition" })
+vim.keymap.set("n", "<leader>ss", "<Cmd>lua Snacks.picker.lsp_symbols()<cr>", { desc = "LSP Symbols" })
+vim.keymap.set("n", "<leader>sS", "<Cmd>lua Snacks.picker.lsp_workspace_symbols()<cr>", { desc = "LSP Workspace Symbols" })
+vim.keymap.set("n", "<leader>z", "<Cmd>lua Snacks.picker.zoxide()<cr>", { desc = "Zoxide projects" })

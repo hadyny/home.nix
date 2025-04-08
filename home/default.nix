@@ -141,8 +141,14 @@ in {
         tsc-nvim
         actions-preview-nvim
         neotest-vitest
+        neotest-dotnet
         obsidian-nvim
         roslyn-nvim
+        nvim-dap
+        overseer-nvim
+        tailwind-tools-nvim
+        yazi-nvim
+        tiny-inline-diagnostic-nvim
       ];
     };
 
@@ -159,6 +165,8 @@ in {
         tmux-which-key
       ];
     };
+
+    yazi.enable = true;
 
     zsh = {
       enable = true;
