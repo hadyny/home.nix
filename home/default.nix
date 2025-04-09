@@ -150,6 +150,7 @@ in {
         yazi-nvim
         tiny-inline-diagnostic-nvim
         CopilotChat-nvim
+        easy-dotnet-nvim
       ];
     };
 
