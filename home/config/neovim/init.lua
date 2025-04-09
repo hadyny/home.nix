@@ -33,10 +33,9 @@ if vim.g.vscode then
 	return
 end
 
-require("mini.basics").setup()
 require("mini.bufremove").setup()
-require("mini.extra").setup()
-require("mini.icons").setup()
+local MiniIcons = require("mini.icons")
+MiniIcons.setup()
 MiniIcons.mock_nvim_web_devicons()
 
 require("rose-pine").setup({
@@ -136,6 +135,10 @@ require("nvim-treesitter.configs").setup({
 
 require("gitsigns").setup()
 
+local fzf = require("fzf-lua")
+fzf.setup({ "ivy" })
+fzf.register_ui_select()
+
 local capabilities = require("blink.cmp").get_lsp_capabilities()
 local lspconfig = require("lspconfig")
 lspconfig.eslint.setup({
@@ -167,27 +170,6 @@ null_ls.setup({
 	},
 })
 
-require("Snacks").setup({
-	animate = { enabled = true },
-	dim = { enabled = true },
-	image = { enabled = true },
-	notifier = { enabled = true },
-	rename = { enabled = true },
-	scope = { enabled = true },
-	scroll = { enabled = true },
-	statuscolumn = { enabled = true },
-	picker = {
-		enabled = true,
-		ui_select = true,
-		previewers = {
-			diff = {
-				builtin = false,
-				cmd = { "delta" },
-			},
-		},
-	},
-})
-
 require("typescript-tools").setup({})
 require("tailwind-tools").setup({
 	document_color = { enabled = false },
@@ -197,21 +179,6 @@ require("tailwind-tools").setup({
 	},
 })
 require("tsc").setup()
-
-require("actions-preview").setup({
-	highlight_command = {
-		require("actions-preview.highlight").delta(),
-	},
-	backend = { "snacks", "nui" },
-	snacks = {
-		layout = {
-			preset = "vertical",
-			layout = {
-				border = "solid",
-			},
-		},
-	},
-})
 
 require("CopilotChat").setup({})
 
@@ -235,7 +202,7 @@ require("roslyn").setup({
 
 require("easy-dotnet").setup({
 	test_runner = {
-        viewmode = "float",
+		viewmode = "float",
 		mappings = {
 			run_test_from_buffer = { lhs = "<leader>r", desc = "run test from buffer" },
 			filter_failed_tests = { lhs = "<leader>fe", desc = "filter failed tests" },
@@ -253,11 +220,6 @@ require("easy-dotnet").setup({
 		},
 	},
 })
-
--- configure overseer
-require("overseer").setup({})
-vim.keymap.set("n", "<Leader>rr", "<Cmd>OverseerRun<cr>", { desc = "Run task" })
-vim.keymap.set("n", "<Leader>rv", "<Cmd>OverseerToggle<cr>", { desc = "View running task" })
 
 -- configure dap
 local dap = require("dap")
@@ -313,7 +275,6 @@ dap.configurations.cs = {
 			return vars or nil
 		end,
 		program = function()
-			require("overseer").enable_dap()
 			local dll = ensure_dll()
 			local co = coroutine.running()
 			rebuild_project(co, dll.project_path)
@@ -354,12 +315,42 @@ map("n", "<Leader>dr", "<Cmd>lua require'dap'.repl.open()<CR>", { desc = "Open R
 
 -- DAP UI widgets
 map("n", "<Leader>dk", "<Cmd>lua require'dap.ui.widgets'.hover()<CR>", { desc = "DAP Hover Widget" })
-map("n", "<Leader>ds", "<Cmd>lua require'dap.ui.widgets'.sidebar(require'dap.ui.widgets'.scopes).open()<CR>", { desc = "DAP Scopes" })
-map("n", "<Leader>df", "<Cmd>lua require'dap.ui.widgets'.sidebar(require'dap.ui.widgets'.frames).open()<CR>", { desc = "DAP Frames" })
-map("n", "<Leader>dV", "<Cmd>lua require'dap.ui.widgets'.hover(function() return vim.fn.expand('<cexpr>') end)<CR>", { desc = "DAP Hover Expression" })
-map("v", "<Leader>dv", "<Cmd>lua require'dap.ui.widgets'.hover(function() return vim.fn.expand('<cexpr>') end)<CR>", { desc = "DAP Hover Selection" })
-map("n", "<Leader>dc", "<Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>", { desc = "Conditional Breakpoint" })
-map("n", "<Leader>dm", "<Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>", { desc = "Logpoint Message" })
+map(
+	"n",
+	"<Leader>ds",
+	"<Cmd>lua require'dap.ui.widgets'.sidebar(require'dap.ui.widgets'.scopes).open()<CR>",
+	{ desc = "DAP Scopes" }
+)
+map(
+	"n",
+	"<Leader>df",
+	"<Cmd>lua require'dap.ui.widgets'.sidebar(require'dap.ui.widgets'.frames).open()<CR>",
+	{ desc = "DAP Frames" }
+)
+map(
+	"n",
+	"<Leader>dV",
+	"<Cmd>lua require'dap.ui.widgets'.hover(function() return vim.fn.expand('<cexpr>') end)<CR>",
+	{ desc = "DAP Hover Expression" }
+)
+map(
+	"v",
+	"<Leader>dv",
+	"<Cmd>lua require'dap.ui.widgets'.hover(function() return vim.fn.expand('<cexpr>') end)<CR>",
+	{ desc = "DAP Hover Selection" }
+)
+map(
+	"n",
+	"<Leader>dc",
+	"<Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
+	{ desc = "Conditional Breakpoint" }
+)
+map(
+	"n",
+	"<Leader>dm",
+	"<Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>",
+	{ desc = "Logpoint Message" }
+)
 
 -- easy-dotnet mappings
 map("n", "<Leader>db", "<Cmd>lua require('easy-dotnet').build_solution()<cr>", { desc = "Build .NET solution" })
@@ -376,85 +367,71 @@ map("n", "<Leader>td", "<Cmd>lua require('neotest').run.run({strategy = 'dap'})<
 map("n", "<Leader>ts", "<Cmd>lua require('neotest').summary.toggle()<CR>", { desc = "Toggle test summary" })
 map("n", "<Leader>to", "<Cmd>lua require('neotest').output.open()<CR>", { desc = "Show test output" })
 map("n", "<Leader>tp", "<Cmd>lua require('neotest').output_panel.toggle()<CR>", { desc = "Toggle output panel" })
-map("n", "[t", "<Cmd>lua require('neotest').jump.prev({ status = 'failed' })<CR>", { desc = "Jump to previous failed test" })
-map("n", "]t", "<Cmd>lua require('neotest').jump.next({ status = 'failed' })<CR>", { desc = "Jump to next failed test" })
+map(
+	"n",
+	"[t",
+	"<Cmd>lua require('neotest').jump.prev({ status = 'failed' })<CR>",
+	{ desc = "Jump to previous failed test" }
+)
+map(
+	"n",
+	"]t",
+	"<Cmd>lua require('neotest').jump.next({ status = 'failed' })<CR>",
+	{ desc = "Jump to next failed test" }
+)
 
 -- general mappings
 map("n", "<Leader>e", "<Cmd>Yazi<cr>", { desc = "Explorer" })
 map("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
 map("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
-map("n", "<Leader>ca", "<Cmd>lua require('actions-preview').code_actions()<cr>", { desc = "Code actions" })
+map("n", "<Leader>ca", "<Cmd>lua vim.lsp.buf.code_action()<cr>", { desc = "Code actions" })
 map("n", "<Leader>cc", "<Cmd>CopilotChat<cr>", { desc = "Copilot chat" })
 
 -- Smart mappings
-map("n", "<leader><space>", "<Cmd>lua Snacks.picker.smart()<cr>", { desc = "Smart Find Files" })
-map("n", "<leader>,", "<Cmd>lua Snacks.picker.buffers()<cr>", { desc = "Buffers" })
-map("n", "<leader>/", "<Cmd>lua Snacks.picker.lines()<cr>", { desc = "Buffer Lines" })
-map("n", "<leader>:", "<Cmd>lua Snacks.picker.command_history()<cr>", { desc = "Command History" })
-map("n", "<leader>n", "<Cmd>lua Snacks.picker.notifications()<cr>", { desc = "Notification History" })
+map("n", "<leader><space>", "<Cmd>lua require('fzf-lua').files()<cr>", { desc = "Find Files" })
+map("n", "<leader>,", "<Cmd>lua require('fzf-lua').buffers()<cr>", { desc = "Buffers" })
+map("n", "<leader>/", "<Cmd>lua require('fzf-lua').blines()<cr>", { desc = "Buffer Lines" })
+map("n", "<leader>:", "<Cmd>lua require('fzf-lua').command_history()<cr>", { desc = "Command History" })
 
 -- Buffer mappings
-map("n", "<leader>bl", "<Cmd>lua Snacks.picker.buffers()<cr>", { desc = "Buffer list" })
 map("n", "<Leader>bd", "<Cmd>lua MiniBufremove.delete()<cr>", { desc = "Delete" })
 
 -- Find mappings
-map("n", "<leader>ff", "<Cmd>lua Snacks.picker.files()<cr>", { desc = "Find Files" })
-map("n", "<leader>fg", "<Cmd>lua Snacks.picker.git_files()<cr>", { desc = "Find Git Files" })
-map("n", "<leader>fp", "<Cmd>lua Snacks.picker.projects()<cr>", { desc = "Projects" })
-map("n", "<leader>fr", "<Cmd>lua Snacks.picker.recent()<cr>", { desc = "Recent" })
+map("n", "<leader>fr", "<Cmd>lua require('fzf-lua').oldfiles()<cr>", { desc = "Recent" })
 
 -- Git mappings
-map("n", "<leader>gb", "<Cmd>lua Snacks.picker.git_branches()<cr>", { desc = "Git Branches" })
-map("n", "<leader>gl", "<Cmd>lua Snacks.picker.git_log()<cr>", { desc = "Git Log" })
-map("n", "<leader>gL", "<Cmd>lua Snacks.picker.git_log_line()<cr>", { desc = "Git Log Line" })
-map("n", "<leader>gs", "<Cmd>lua Snacks.picker.git_status()<cr>", { desc = "Git Status" })
-map("n", "<leader>gS", "<Cmd>lua Snacks.picker.git_stash()<cr>", { desc = "Git Stash" })
-map("n", "<leader>gd", "<Cmd>lua Snacks.picker.git_diff()<cr>", { desc = "Git Diff (Hunks)" })
-map("n", "<leader>gf", "<Cmd>lua Snacks.picker.git_log_file()<cr>", { desc = "Git Log File" })
+map("n", "<leader>gb", "<Cmd>lua require('fzf-lua').git_branches()<cr>", { desc = "Git Branches" })
+map("n", "<leader>gs", "<Cmd>lua require('fzf-lua').git_status()<cr>", { desc = "Git Status" })
+map("n", "<leader>gS", "<Cmd>lua require('fzf-lua').git_stash()<cr>", { desc = "Git Stash" })
+map("n", "<leader>gp", "<Cmd>lua require('fzf-lua').git_commits()<cr>", { desc = "Project Commits" })
+map("n", "<leader>gc", "<Cmd>lua require('fzf-lua').git_bcommits()<cr>", { desc = "Buffer Commits" })
+map("n", "<leader>gB", "<Cmd>lua require('fzf-lua').git_blame()<cr>", { desc = "Git Blame" })
 
 -- Grep mappings
-map("n", "<leader>sb", "<Cmd>lua Snacks.picker.lines()<cr>", { desc = "Buffer Lines" })
-map("n", "<leader>sB", "<Cmd>lua Snacks.picker.grep_buffers()<cr>", { desc = "Grep Open Buffers" })
-map("n", "<leader>sg", "<Cmd>lua Snacks.picker.grep()<cr>", { desc = "Grep" })
-map(
-	{ "n", "x" },
-	"<leader>sw",
-	"<Cmd>lua Snacks.picker.grep_word()<cr>",
-	{ desc = "Visual selection or word" }
-)
+map("n", "<leader>sg", "<Cmd>lua require('fzf-lua').live_grep_native()<cr>", { desc = "Grep project" })
 
 -- Search mappings
-map("n", '<leader>s"', "<Cmd>lua Snacks.picker.registers()<cr>", { desc = "Registers" })
-map("n", "<leader>s/", "<Cmd>lua Snacks.picker.search_history()<cr>", { desc = "Search History" })
-map("n", "<leader>sa", "<Cmd>lua Snacks.picker.autocmds()<cr>", { desc = "Autocmds" })
-map("n", "<leader>sc", "<Cmd>lua Snacks.picker.command_history()<cr>", { desc = "Command History" })
-map("n", "<leader>sC", "<Cmd>lua Snacks.picker.commands()<cr>", { desc = "Commands" })
-map("n", "<leader>sd", "<Cmd>lua Snacks.picker.diagnostics()<cr>", { desc = "Diagnostics" })
-map("n", "<leader>sD", "<Cmd>lua Snacks.picker.diagnostics_buffer()<cr>", { desc = "Buffer Diagnostics" })
-map("n", "<leader>sh", "<Cmd>lua Snacks.picker.help()<cr>", { desc = "Help Pages" })
-map("n", "<leader>sH", "<Cmd>lua Snacks.picker.highlights()<cr>", { desc = "Highlights" })
-map("n", "<leader>si", "<Cmd>lua Snacks.picker.icons()<cr>", { desc = "Icons" })
-map("n", "<leader>sj", "<Cmd>lua Snacks.picker.jumps()<cr>", { desc = "Jumps" })
-map("n", "<leader>sk", "<Cmd>lua Snacks.picker.keymaps()<cr>", { desc = "Keymaps" })
-map("n", "<leader>sl", "<Cmd>lua Snacks.picker.loclist()<cr>", { desc = "Location List" })
-map("n", "<leader>sm", "<Cmd>lua Snacks.picker.marks()<cr>", { desc = "Marks" })
-map("n", "<leader>sM", "<Cmd>lua Snacks.picker.man()<cr>", { desc = "Man Pages" })
-map("n", "<leader>sq", "<Cmd>lua Snacks.picker.qflist()<cr>", { desc = "Quickfix List" })
-map("n", "<leader>sR", "<Cmd>lua Snacks.picker.resume()<cr>", { desc = "Resume" })
-map("n", "<leader>su", "<Cmd>lua Snacks.picker.undo()<cr>", { desc = "Undo History" })
-map("n", "<leader>uC", "<Cmd>lua Snacks.picker.colorschemes()<cr>", { desc = "Colorschemes" })
+map("n", '<leader>s"', "<Cmd>lua require('fzf-lua').registers()<cr>", { desc = "Registers" })
+map("n", "<leader>s/", "<Cmd>lua require('fzf-lua').search_history()<cr>", { desc = "Search History" })
+map("n", "<leader>sa", "<Cmd>lua require('fzf-lua').autocmds()<cr>", { desc = "Autocmds" })
+map("n", "<leader>sc", "<Cmd>lua require('fzf-lua').command_history()<cr>", { desc = "Command History" })
+map("n", "<leader>sC", "<Cmd>lua require('fzf-lua').commands()<cr>", { desc = "Commands" })
+map("n", "<leader>sd", "<Cmd>lua require('fzf-lua').diagnostics_workspace()<cr>", { desc = "Diagnostics" })
+map("n", "<leader>sD", "<Cmd>lua require('fzf-lua').diagnostics_document()<cr>", { desc = "Buffer Diagnostics" })
+map("n", "<leader>sH", "<Cmd>lua require('fzf-lua').highlights()<cr>", { desc = "Highlights" })
+map("n", "<leader>sj", "<Cmd>lua require('fzf-lua').jumps()<cr>", { desc = "Jumps" })
+map("n", "<leader>sk", "<Cmd>lua require('fzf-lua').keymaps()<cr>", { desc = "Keymaps" })
+map("n", "<leader>sl", "<Cmd>lua require('fzf-lua').grep_loclist()<cr>", { desc = "Location List" })
+map("n", "<leader>sm", "<Cmd>lua require('fzf-lua').marks()<cr>", { desc = "Marks" })
+map("n", "<leader>sM", "<Cmd>lua require('fzf-lua').manpages()<cr>", { desc = "Man Pages" })
+map("n", "<leader>sq", "<Cmd>lua require('fzf-lua').grep_quickfix()<cr>", { desc = "Quickfix List" })
+map("n", "<leader>uC", "<Cmd>lua require('fzf-lua').colorschemes()<cr>", { desc = "Colorschemes" })
 
 -- LSP mappings
-map("n", "gd", "<Cmd>lua Snacks.picker.lsp_definitions()<cr>", { desc = "Goto Definition" })
-map("n", "gD", "<Cmd>lua Snacks.picker.lsp_declarations()<cr>", { desc = "Goto Declaration" })
-map("n", "gr", "<Cmd>lua Snacks.picker.lsp_references()<cr>", { desc = "References", nowait = true })
-map("n", "gI", "<Cmd>lua Snacks.picker.lsp_implementations()<cr>", { desc = "Goto Implementation" })
-map("n", "gy", "<Cmd>lua Snacks.picker.lsp_type_definitions()<cr>", { desc = "Goto T[y]pe Definition" })
-map("n", "<leader>ss", "<Cmd>lua Snacks.picker.lsp_symbols()<cr>", { desc = "LSP Symbols" })
-map(
-	"n",
-	"<leader>sS",
-	"<Cmd>lua Snacks.picker.lsp_workspace_symbols()<cr>",
-	{ desc = "LSP Workspace Symbols" }
-)
-map("n", "<leader>z", "<Cmd>lua Snacks.picker.zoxide()<cr>", { desc = "Zoxide projects" })
+map("n", "gd", "<Cmd>lua require('fzf-lua').lsp_definitions()<cr>", { desc = "Goto Definition" })
+map("n", "gD", "<Cmd>lua require('fzf-lua').lsp_declarations()<cr>", { desc = "Goto Declaration" })
+map("n", "gr", "<Cmd>lua require('fzf-lua').lsp_references()<cr>", { desc = "References", nowait = true })
+map("n", "gI", "<Cmd>lua require('fzf-lua').lsp_implementations()<cr>", { desc = "Goto Implementation" })
+map("n", "<leader>ss", "<Cmd>lua require('fzf-lua').lsp_document_symbols()<cr>", { desc = "LSP Symbols" })
+map("n", "<leader>sS", "<Cmd>lua require('fzf-lua').lsp_workspace_symbols()<cr>", { desc = "LSP Workspace Symbols" })
+map("n", "<leader>z", "<Cmd>lua require('fzf-lua').zoxide()<cr>", { desc = "Zoxide projects" })

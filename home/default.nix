@@ -121,12 +121,9 @@ in {
 
       ];
       plugins = with pkgs.vimPlugins; [
-        mini-basics
         mini-bufremove
-        mini-extra
         mini-icons
         rose-pine
-        lualine-nvim
         nvim-highlight-colors
         blink-cmp
         colorful-menu-nvim
@@ -136,21 +133,19 @@ in {
         gitsigns-nvim
         nvim-lspconfig
         none-ls-nvim
-        snacks-nvim
         typescript-tools-nvim
         tsc-nvim
-        actions-preview-nvim
         neotest-vitest
         neotest-dotnet
         obsidian-nvim
         roslyn-nvim
         nvim-dap
-        overseer-nvim
         tailwind-tools-nvim
         yazi-nvim
         tiny-inline-diagnostic-nvim
         CopilotChat-nvim
         easy-dotnet-nvim
+        fzf-lua
       ];
     };
 
