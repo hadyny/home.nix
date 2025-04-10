@@ -1,4 +1,6 @@
 local vim = vim
+local border = "solid"
+
 vim.o.termguicolors = true
 vim.o.cursorline = true
 vim.o.tabstop = 4
@@ -9,7 +11,7 @@ vim.o.shiftwidth = 4
 vim.o.smartcase = true
 vim.o.ignorecase = true
 vim.o.hlsearch = false
-vim.o.winborder = "solid"
+vim.o.winborder = border
 vim.o.laststatus = 3
 vim.o.statusline = " %f %m %= %l:%c ✽ [%{mode()}] "
 vim.o.relativenumber = true
@@ -39,6 +41,7 @@ MiniIcons.setup()
 MiniIcons.mock_nvim_web_devicons()
 
 require("rose-pine").setup({
+    variant = "auto",
 	dark_variant = "moon",
 	highlight_groups = {
 		StatusLine = { fg = "iris", bg = "iris", blend = 10 },
@@ -136,7 +139,7 @@ require("nvim-treesitter.configs").setup({
 require("gitsigns").setup()
 
 local fzf = require("fzf-lua")
-fzf.setup({ "ivy" })
+fzf.setup({ "ivy","borderless-full", code_actions = { previewer = "codeaction_native" }})
 fzf.register_ui_select()
 
 local capabilities = require("blink.cmp").get_lsp_capabilities()

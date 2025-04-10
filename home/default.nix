@@ -91,12 +91,6 @@ in {
       enableZshIntegration = true;
     };
 
-    kitty = {
-      enable = true;
-      themeFile = "rose-pine-moon";
-      extraConfig = builtins.readFile ./config/kitty/kitty.conf;
-    };
-
     neovim = {
       enable = true;
       defaultEditor = true;
