@@ -91,58 +91,6 @@ in {
       enableZshIntegration = true;
     };
 
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-      vimAlias = true;
-      extraLuaConfig = builtins.readFile ./config/neovim/init.lua;
-      extraPackages = with pkgs; [
-        lua-language-server
-        stylua
-
-        nixfmt-classic
-        nil
-
-        roslyn-ls
-        netcoredbg
-        csharpier
-
-        typescript-language-server
-        tailwindcss-language-server
-        rustywind
-        graphql-language-service-cli
-        vscode-langservers-extracted
-
-      ];
-      plugins = with pkgs.vimPlugins; [
-        mini-bufremove
-        mini-icons
-        rose-pine
-        nvim-highlight-colors
-        blink-cmp
-        colorful-menu-nvim
-        friendly-snippets
-        which-key-nvim
-        nvim-treesitter.withAllGrammars
-        gitsigns-nvim
-        nvim-lspconfig
-        none-ls-nvim
-        typescript-tools-nvim
-        tsc-nvim
-        neotest-vitest
-        neotest-dotnet
-        obsidian-nvim
-        roslyn-nvim
-        nvim-dap
-        tailwind-tools-nvim
-        yazi-nvim
-        tiny-inline-diagnostic-nvim
-        CopilotChat-nvim
-        easy-dotnet-nvim
-        fzf-lua
-      ];
-    };
-
     tmux = {
       enable = true;
       tmuxinator.enable = true;
