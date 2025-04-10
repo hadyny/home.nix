@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }: {
+{ ... }: {
   programs.kitty = {
     enable = true;
     themeFile = "rose-pine-moon";
@@ -21,6 +21,10 @@
 
       wayland_titlebar_color = "#2a273f";
       macos_titlebar_color = "#2a273f";
+
+      bold_font = "auto";
+      italic_font = "auto";
+      bold_italic_font = "auto";
     };
   };
   xdg.configFile = {

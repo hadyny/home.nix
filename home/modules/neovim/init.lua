@@ -19,20 +19,20 @@ vim.o.scrolloff = 4
 vim.o.sidescrolloff = 8
 
 vim.diagnostic.config({
-	virtual_text = false,
-	signs = {
-		text = {
-			[vim.diagnostic.severity.ERROR] = "󰅙",
-			[vim.diagnostic.severity.WARN] = "",
-			[vim.diagnostic.severity.INFO] = "󰋼",
-			[vim.diagnostic.severity.HINT] = "󰌵",
-		},
-	},
-	underline = true,
+    virtual_text = false,
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = "󰅙",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.INFO] = "󰋼",
+            [vim.diagnostic.severity.HINT] = "󰌵",
+        },
+    },
+    underline = true,
 })
 
 if vim.g.vscode then
-	return
+    return
 end
 
 require("mini.bufremove").setup()
@@ -42,116 +42,120 @@ MiniIcons.mock_nvim_web_devicons()
 
 require("rose-pine").setup({
     variant = "auto",
-	dark_variant = "moon",
-	highlight_groups = {
-		StatusLine = { fg = "iris", bg = "iris", blend = 10 },
-		StatusLineNC = { fg = "subtle", bg = "surface" },
-	},
+    dark_variant = "moon",
+    highlight_groups = {
+        StatusLine = { fg = "iris", bg = "iris", blend = 10 },
+        StatusLineNC = { fg = "subtle", bg = "surface" },
+    },
+    styles = {
+        bold = true,
+        italic = true,
+    },
 })
 vim.cmd("colorscheme rose-pine-moon")
 
 require("nvim-highlight-colors").setup({
-	enable_tailwind = true,
-	render = "foreground",
+    enable_tailwind = true,
+    render = "foreground",
 })
 
 require("blink.cmp").setup({
-	completion = {
-		list = { selection = { preselect = false, auto_insert = true } },
-		menu = {
-			scrolloff = 2,
-			scrollbar = false,
-			draw = {
-				columns = { { "kind_icon" }, { "label", gap = 1 } },
-				components = {
-					-- customize the drawing of kind icons
-					kind_icon = {
-						text = function(ctx)
-							-- default kind icon
-							local icon = ctx.kind_icon
-							-- if LSP source, check for color derived from documentation
-							if ctx.item.source_name == "LSP" then
-								local color_item =
-									require("nvim-highlight-colors").format(ctx.item.documentation, { kind = ctx.kind })
-								if color_item and color_item.abbr then
-									icon = color_item.abbr
-								end
-							end
-							return icon .. ctx.icon_gap
-						end,
-						highlight = function(ctx)
-							-- default highlight group
-							local highlight = "BlinkCmpKind" .. ctx.kind
-							-- if LSP source, check for color derived from documentation
-							if ctx.item.source_name == "LSP" then
-								local color_item =
-									require("nvim-highlight-colors").format(ctx.item.documentation, { kind = ctx.kind })
-								if color_item and color_item.abbr_hl_group then
-									highlight = color_item.abbr_hl_group
-								end
-							end
-							return highlight
-						end,
-					},
-					label = {
-						text = function(ctx)
-							return require("colorful-menu").blink_components_text(ctx)
-						end,
-						highlight = function(ctx)
-							return require("colorful-menu").blink_components_highlight(ctx)
-						end,
-					},
-				},
-			},
-		},
-		documentation = { auto_show = true, auto_show_delay_ms = 250 },
-	},
-	keymap = {
-		preset = "default",
-		["<CR>"] = { "select_and_accept", "fallback" },
-	},
+    completion = {
+        list = { selection = { preselect = false, auto_insert = true } },
+        menu = {
+            scrolloff = 2,
+            scrollbar = false,
+            draw = {
+                columns = { { "kind_icon" }, { "label", gap = 1 } },
+                components = {
+                    -- customize the drawing of kind icons
+                    kind_icon = {
+                        text = function(ctx)
+                            -- default kind icon
+                            local icon = ctx.kind_icon
+                            -- if LSP source, check for color derived from documentation
+                            if ctx.item.source_name == "LSP" then
+                                local color_item =
+                                    require("nvim-highlight-colors").format(ctx.item.documentation, { kind = ctx.kind })
+                                if color_item and color_item.abbr then
+                                    icon = color_item.abbr
+                                end
+                            end
+                            return icon .. ctx.icon_gap
+                        end,
+                        highlight = function(ctx)
+                            -- default highlight group
+                            local highlight = "BlinkCmpKind" .. ctx.kind
+                            -- if LSP source, check for color derived from documentation
+                            if ctx.item.source_name == "LSP" then
+                                local color_item =
+                                    require("nvim-highlight-colors").format(ctx.item.documentation, { kind = ctx.kind })
+                                if color_item and color_item.abbr_hl_group then
+                                    highlight = color_item.abbr_hl_group
+                                end
+                            end
+                            return highlight
+                        end,
+                    },
+                    label = {
+                        text = function(ctx)
+                            return require("colorful-menu").blink_components_text(ctx)
+                        end,
+                        highlight = function(ctx)
+                            return require("colorful-menu").blink_components_highlight(ctx)
+                        end,
+                    },
+                },
+            },
+        },
+        documentation = { auto_show = true, auto_show_delay_ms = 250 },
+    },
+    keymap = {
+        preset = "default",
+        ["<CR>"] = { "select_and_accept", "fallback" },
+    },
 })
 
 local wk = require("which-key")
 wk.setup({ preset = "helix" })
 wk.add({
-	{ "<leader>f", group = "file" },
-	{ "<leader>c", group = "code" },
-	{ "<leader>g", group = "git" },
-	{ "<leader>s", group = "search" },
-	{ "<leader>u", group = "ui" },
-	{ "g", group = "goto" },
-	{ "<leader>r", group = "run" },
-	{ "<leader>w", proxy = "<c-w>", group = "windows" },
-	{
-		"<leader>b",
-		group = "buffers",
-		expand = function()
-			return require("which-key.extras").expand.buf()
-		end,
-	},
+    { "<leader>f", group = "file" },
+    { "<leader>c", group = "code" },
+    { "<leader>g", group = "git" },
+    { "<leader>s", group = "search" },
+    { "<leader>u", group = "ui" },
+    { "g",         group = "goto" },
+    { "<leader>r", group = "run" },
+    { "<leader>w", proxy = "<c-w>", group = "windows" },
+    {
+        "<leader>b",
+        group = "buffers",
+        expand = function()
+            return require("which-key.extras").expand.buf()
+        end,
+    },
 })
 
 require("nvim-treesitter.configs").setup({
-	highlight = { enable = true },
+    highlight = { enable = true },
 })
 
 require("gitsigns").setup()
 
 local fzf = require("fzf-lua")
-fzf.setup({ "ivy","borderless-full", code_actions = { previewer = "codeaction_native" }})
+fzf.setup({ "ivy", "borderless-full", code_actions = { previewer = "codeaction_native" } })
 fzf.register_ui_select()
 
 local capabilities = require("blink.cmp").get_lsp_capabilities()
 local lspconfig = require("lspconfig")
 lspconfig.eslint.setup({
-	capabilities = capabilities,
-	on_attach = function(client, bufnr)
-		vim.api.nvim_create_autocmd("BufWritePre", {
-			buffer = bufnr,
-			command = "EslintFixAll",
-		})
-	end,
+    capabilities = capabilities,
+    on_attach = function(client, bufnr)
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            command = "EslintFixAll",
+        })
+    end,
 })
 lspconfig.tailwindcss.setup({ capabilities = capabilities })
 lspconfig.graphql.setup({ capabilities = capabilities })
@@ -160,68 +164,68 @@ lspconfig.nil_ls.setup({ capabilities = capabilities })
 
 local null_ls = require("null-ls")
 null_ls.setup({
-	sources = {
-		null_ls.builtins.formatting.stylua,
-		null_ls.builtins.completion.spell,
-		null_ls.builtins.code_actions.gitsigns,
-		null_ls.builtins.code_actions.refactoring,
-		null_ls.builtins.diagnostics.terraform_validate,
-		null_ls.builtins.formatting.csharpier,
-		null_ls.builtins.formatting.nixfmt,
-		null_ls.builtins.formatting.rustywind,
-		null_ls.builtins.formatting.terraform_fmt,
-	},
+    sources = {
+        null_ls.builtins.formatting.stylua,
+        null_ls.builtins.completion.spell,
+        null_ls.builtins.code_actions.gitsigns,
+        null_ls.builtins.code_actions.refactoring,
+        null_ls.builtins.diagnostics.terraform_validate,
+        null_ls.builtins.formatting.csharpier,
+        null_ls.builtins.formatting.nixfmt,
+        null_ls.builtins.formatting.rustywind,
+        null_ls.builtins.formatting.terraform_fmt,
+    },
 })
 
 require("typescript-tools").setup({})
 require("tailwind-tools").setup({
-	document_color = { enabled = false },
-	conceal = {
-		enabled = true,
-		min_length = 10,
-	},
+    document_color = { enabled = false },
+    conceal = {
+        enabled = true,
+        min_length = 10,
+    },
 })
 require("tsc").setup()
 
 require("CopilotChat").setup({})
 
 require("neotest").setup({
-	adapters = {
-		require("neotest-vitest"),
-		require("neotest-dotnet")({
-			dap = { justMyCode = false },
-		}),
-	},
+    adapters = {
+        require("neotest-vitest"),
+        require("neotest-dotnet")({
+            dap = { justMyCode = false },
+        }),
+    },
 })
 
 require("tiny-inline-diagnostic").setup({
-	multilines = true,
-	break_line = { enabled = true },
+    multilines = true,
+    break_line = { enabled = true },
 })
 
 require("roslyn").setup({
-	exe = "Microsoft.CodeAnalysis.LanguageServer",
+    exe = "Microsoft.CodeAnalysis.LanguageServer",
 })
 
 require("easy-dotnet").setup({
-	test_runner = {
-		viewmode = "float",
-		mappings = {
-			run_test_from_buffer = { lhs = "<leader>r", desc = "run test from buffer" },
-			filter_failed_tests = { lhs = "<leader>fe", desc = "filter failed tests" },
-			debug_test = { lhs = "<leader>dd", desc = "debug test" },
-			go_to_file = { lhs = "g", desc = "got to file" },
-			run_all = { lhs = "<leader>R", desc = "run all tests" },
-			run = { lhs = "<leader>rt", desc = "run test" },
-			peek_stacktrace = { lhs = "<leader>p", desc = "peek stacktrace of failed test" },
-			expand = { lhs = "o", desc = "expand" },
-			expand_node = { lhs = "E", desc = "expand node" },
-			expand_all = { lhs = "-", desc = "expand all" },
-			collapse_all = { lhs = "W", desc = "collapse all" },
-			close = { lhs = "q", desc = "close testrunner" },
-			refresh_testrunner = { lhs = "<C-r>", desc = "refresh testrunner" },
-		},
-	},
+    test_runner = {
+        viewmode = "float",
+        mappings = {
+            run_test_from_buffer = { lhs = "<leader>r", desc = "run test from buffer" },
+            filter_failed_tests = { lhs = "<leader>fe", desc = "filter failed tests" },
+            debug_test = { lhs = "<leader>dd", desc = "debug test" },
+            go_to_file = { lhs = "g", desc = "got to file" },
+            run_all = { lhs = "<leader>R", desc = "run all tests" },
+            run = { lhs = "<leader>rt", desc = "run test" },
+            peek_stacktrace = { lhs = "<leader>p", desc = "peek stacktrace of failed test" },
+            expand = { lhs = "o", desc = "expand" },
+            expand_node = { lhs = "E", desc = "expand node" },
+            expand_all = { lhs = "-", desc = "expand all" },
+            collapse_all = { lhs = "W", desc = "collapse all" },
+            close = { lhs = "q", desc = "close testrunner" },
+            refresh_testrunner = { lhs = "<C-r>", desc = "refresh testrunner" },
+        },
+    },
 })
 
 -- configure dap
@@ -233,74 +237,74 @@ local dotnet = require("easy-dotnet")
 local debug_dll = nil
 
 local function ensure_dll()
-	if debug_dll ~= nil then
-		return debug_dll
-	end
-	local dll = dotnet.get_debug_dll()
-	debug_dll = dll
-	return dll
+    if debug_dll ~= nil then
+        return debug_dll
+    end
+    local dll = dotnet.get_debug_dll()
+    debug_dll = dll
+    return dll
 end
 local function rebuild_project(co, path)
-	local spinner = require("easy-dotnet.ui-modules.spinner").new()
-	spinner:start_spinner("Building")
-	vim.fn.jobstart(string.format("dotnet build %s", path), {
-		on_exit = function(_, return_code)
-			if return_code == 0 then
-				spinner:stop_spinner("Built successfully")
-			else
-				spinner:stop_spinner("Build failed with exit code " .. return_code, vim.log.levels.ERROR)
-				error("Build failed")
-			end
-			coroutine.resume(co)
-		end,
-	})
-	coroutine.yield()
+    local spinner = require("easy-dotnet.ui-modules.spinner").new()
+    spinner:start_spinner("Building")
+    vim.fn.jobstart(string.format("dotnet build %s", path), {
+        on_exit = function(_, return_code)
+            if return_code == 0 then
+                spinner:stop_spinner("Built successfully")
+            else
+                spinner:stop_spinner("Build failed with exit code " .. return_code, vim.log.levels.ERROR)
+                error("Build failed")
+            end
+            coroutine.resume(co)
+        end,
+    })
+    coroutine.yield()
 end
 
 dap.listeners.before["event_terminated"]["easy-dotnet"] = function()
-	debug_dll = nil
+    debug_dll = nil
 end
 -- end easy-dotnet setup
 
 dap.adapters.coreclr = {
-	type = "executable",
-	command = "netcoredbg",
-	args = { "--interpreter=vscode" },
+    type = "executable",
+    command = "netcoredbg",
+    args = { "--interpreter=vscode" },
 }
 dap.configurations.cs = {
-	{
-		type = "coreclr",
-		name = "Launch .NET",
-		request = "launch",
-		env = function()
-			local dll = ensure_dll()
-			local vars = dotnet.get_environment_variables(dll.project_name, dll.relative_project_path)
-			return vars or nil
-		end,
-		program = function()
-			local dll = ensure_dll()
-			local co = coroutine.running()
-			rebuild_project(co, dll.project_path)
-			return dll.relative_dll_path
-		end,
-		cwd = function()
-			local dll = ensure_dll()
-			return dll.relative_project_path
-		end,
-	},
+    {
+        type = "coreclr",
+        name = "Launch .NET",
+        request = "launch",
+        env = function()
+            local dll = ensure_dll()
+            local vars = dotnet.get_environment_variables(dll.project_name, dll.relative_project_path)
+            return vars or nil
+        end,
+        program = function()
+            local dll = ensure_dll()
+            local co = coroutine.running()
+            rebuild_project(co, dll.project_path)
+            return dll.relative_dll_path
+        end,
+        cwd = function()
+            local dll = ensure_dll()
+            return dll.relative_project_path
+        end,
+    },
 }
 -- TypeScript configuration
 dap.configurations.typescript = {
-	{
-		type = "node2",
-		name = "Launch TypeScript",
-		request = "launch",
-		program = "${file}",
-		cwd = vim.fn.getcwd(),
-		sourceMaps = true,
-		protocol = "inspector",
-		outFiles = { "${workspaceFolder}/dist/**/*.js" },
-	},
+    {
+        type = "node2",
+        name = "Launch TypeScript",
+        request = "launch",
+        program = "${file}",
+        cwd = vim.fn.getcwd(),
+        sourceMaps = true,
+        protocol = "inspector",
+        outFiles = { "${workspaceFolder}/dist/**/*.js" },
+    },
 }
 dap.configurations.javascript = dap.configurations.typescript
 
@@ -319,40 +323,40 @@ map("n", "<Leader>dr", "<Cmd>lua require'dap'.repl.open()<CR>", { desc = "Open R
 -- DAP UI widgets
 map("n", "<Leader>dk", "<Cmd>lua require'dap.ui.widgets'.hover()<CR>", { desc = "DAP Hover Widget" })
 map(
-	"n",
-	"<Leader>ds",
-	"<Cmd>lua require'dap.ui.widgets'.sidebar(require'dap.ui.widgets'.scopes).open()<CR>",
-	{ desc = "DAP Scopes" }
+    "n",
+    "<Leader>ds",
+    "<Cmd>lua require'dap.ui.widgets'.sidebar(require'dap.ui.widgets'.scopes).open()<CR>",
+    { desc = "DAP Scopes" }
 )
 map(
-	"n",
-	"<Leader>df",
-	"<Cmd>lua require'dap.ui.widgets'.sidebar(require'dap.ui.widgets'.frames).open()<CR>",
-	{ desc = "DAP Frames" }
+    "n",
+    "<Leader>df",
+    "<Cmd>lua require'dap.ui.widgets'.sidebar(require'dap.ui.widgets'.frames).open()<CR>",
+    { desc = "DAP Frames" }
 )
 map(
-	"n",
-	"<Leader>dV",
-	"<Cmd>lua require'dap.ui.widgets'.hover(function() return vim.fn.expand('<cexpr>') end)<CR>",
-	{ desc = "DAP Hover Expression" }
+    "n",
+    "<Leader>dV",
+    "<Cmd>lua require'dap.ui.widgets'.hover(function() return vim.fn.expand('<cexpr>') end)<CR>",
+    { desc = "DAP Hover Expression" }
 )
 map(
-	"v",
-	"<Leader>dv",
-	"<Cmd>lua require'dap.ui.widgets'.hover(function() return vim.fn.expand('<cexpr>') end)<CR>",
-	{ desc = "DAP Hover Selection" }
+    "v",
+    "<Leader>dv",
+    "<Cmd>lua require'dap.ui.widgets'.hover(function() return vim.fn.expand('<cexpr>') end)<CR>",
+    { desc = "DAP Hover Selection" }
 )
 map(
-	"n",
-	"<Leader>dc",
-	"<Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
-	{ desc = "Conditional Breakpoint" }
+    "n",
+    "<Leader>dc",
+    "<Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
+    { desc = "Conditional Breakpoint" }
 )
 map(
-	"n",
-	"<Leader>dm",
-	"<Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>",
-	{ desc = "Logpoint Message" }
+    "n",
+    "<Leader>dm",
+    "<Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>",
+    { desc = "Logpoint Message" }
 )
 
 -- easy-dotnet mappings
@@ -371,16 +375,16 @@ map("n", "<Leader>ts", "<Cmd>lua require('neotest').summary.toggle()<CR>", { des
 map("n", "<Leader>to", "<Cmd>lua require('neotest').output.open()<CR>", { desc = "Show test output" })
 map("n", "<Leader>tp", "<Cmd>lua require('neotest').output_panel.toggle()<CR>", { desc = "Toggle output panel" })
 map(
-	"n",
-	"[t",
-	"<Cmd>lua require('neotest').jump.prev({ status = 'failed' })<CR>",
-	{ desc = "Jump to previous failed test" }
+    "n",
+    "[t",
+    "<Cmd>lua require('neotest').jump.prev({ status = 'failed' })<CR>",
+    { desc = "Jump to previous failed test" }
 )
 map(
-	"n",
-	"]t",
-	"<Cmd>lua require('neotest').jump.next({ status = 'failed' })<CR>",
-	{ desc = "Jump to next failed test" }
+    "n",
+    "]t",
+    "<Cmd>lua require('neotest').jump.next({ status = 'failed' })<CR>",
+    { desc = "Jump to next failed test" }
 )
 
 -- general mappings
