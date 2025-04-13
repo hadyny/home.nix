@@ -44,7 +44,7 @@ in
       };
       EP_NPM_TOKEN = {
         vault = "Dev - Shared";
-        item = "EP_NPM_TOKEN read";
+        item = "NPM readonly token";
         field = "token";
       };
     };
