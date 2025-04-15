@@ -60,6 +60,7 @@
       "postman"
       "slack"
       "spotify"
+      "ghostty"
     ];
 
     global.brewfile = true;

@@ -1,5 +1,6 @@
 local vim = vim
-local border = "solid"
+local default_border = "solid"
+local secondary_border = "single"
 
 vim.o.termguicolors = true
 vim.o.cursorline = true
@@ -10,13 +11,20 @@ vim.o.smartindent = true
 vim.o.shiftwidth = 4
 vim.o.smartcase = true
 vim.o.ignorecase = true
-vim.o.hlsearch = false
-vim.o.winborder = border
+vim.o.winborder = default_border
 vim.o.laststatus = 3
 vim.o.statusline = " %f %m %= %l:%c ✽ [%{mode()}] "
+vim.o.number = true
 vim.o.relativenumber = true
 vim.o.scrolloff = 4
 vim.o.sidescrolloff = 8
+vim.o.completeopt = "menu,menuone,noselect"
+vim.o.confirm = true
+vim.o.showmode = false
+
+vim.schedule(function()
+    vim.opt.clipboard = "unnamedplus"
+end)
 
 vim.diagnostic.config({
     virtual_text = false,
@@ -36,9 +44,11 @@ if vim.g.vscode then
 end
 
 require("mini.bufremove").setup()
+
 local MiniIcons = require("mini.icons")
 MiniIcons.setup()
 MiniIcons.mock_nvim_web_devicons()
+MiniIcons.tweak_lsp_kind()
 
 require("rose-pine").setup({
     variant = "auto",
@@ -117,7 +127,7 @@ require("blink.cmp").setup({
 })
 
 local wk = require("which-key")
-wk.setup({ preset = "helix" })
+wk.setup({ preset = "classic" })
 wk.add({
     { "<leader>f", group = "file" },
     { "<leader>c", group = "code" },
@@ -125,8 +135,9 @@ wk.add({
     { "<leader>s", group = "search" },
     { "<leader>u", group = "ui" },
     { "g",         group = "goto" },
-    { "<leader>r", group = "run" },
-    { "<leader>w", proxy = "<c-w>", group = "windows" },
+    { "<leader>t", group = "typescript" },
+    { "<leader>d", group = "dotnet" },
+    { "<leader>w", proxy = "<c-w>",     group = "windows" },
     {
         "<leader>b",
         group = "buffers",
@@ -140,10 +151,45 @@ require("nvim-treesitter.configs").setup({
     highlight = { enable = true },
 })
 
+require("conform").setup({
+    formatters_by_ft = {
+        lua = { "stylua" },
+        typescript = { "prettier" },
+        typescriptreact = { "prettier" },
+        csharp = { "csharpier" },
+        nix = { "nixfmt" },
+    },
+})
+vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+
 require("gitsigns").setup()
 
 local fzf = require("fzf-lua")
-fzf.setup({ "ivy", "borderless-full", code_actions = { previewer = "codeaction_native" } })
+fzf.setup({
+    winopts = {
+        width = 0.50,
+        height = 0.60,
+        row = 0,
+        col = 0.50,
+        border = "solid",
+        preview = {
+            border = secondary_border,
+            scrollbar = false,
+            title = false,
+            layout = "vertical",
+            vertical = "down:70%", -- up|down:size
+        },
+    },
+    files = {
+        code_actions = { previewer = "codeaction_native" },
+    },
+    previewers = {
+        codeaction_native = {
+            diff_opts = { ctxlen = 3 },
+            pager = [[delta --width=$COLUMNS --hunk-header-style="omit" --file-style="omit"]],
+        },
+    },
+})
 fzf.register_ui_select()
 
 local capabilities = require("blink.cmp").get_lsp_capabilities()
@@ -161,21 +207,6 @@ lspconfig.tailwindcss.setup({ capabilities = capabilities })
 lspconfig.graphql.setup({ capabilities = capabilities })
 lspconfig.lua_ls.setup({ capabilities = capabilities })
 lspconfig.nil_ls.setup({ capabilities = capabilities })
-
-local null_ls = require("null-ls")
-null_ls.setup({
-    sources = {
-        null_ls.builtins.formatting.stylua,
-        null_ls.builtins.completion.spell,
-        null_ls.builtins.code_actions.gitsigns,
-        null_ls.builtins.code_actions.refactoring,
-        null_ls.builtins.diagnostics.terraform_validate,
-        null_ls.builtins.formatting.csharpier,
-        null_ls.builtins.formatting.nixfmt,
-        null_ls.builtins.formatting.rustywind,
-        null_ls.builtins.formatting.terraform_fmt,
-    },
-})
 
 require("typescript-tools").setup({})
 require("tailwind-tools").setup({
@@ -201,6 +232,7 @@ require("neotest").setup({
 require("tiny-inline-diagnostic").setup({
     multilines = true,
     break_line = { enabled = true },
+    enable_on_insert = false,
 })
 
 require("roslyn").setup({
@@ -312,6 +344,92 @@ dap.configurations.javascript = dap.configurations.typescript
 vim.g.mapleader = " "
 local map = vim.keymap.set
 
+map("n", "<leader><leader>", "<Cmd>lua require('fzf-lua').buffers()<cr>", { desc = "Buffers" })
+map("n", "<leader>/", "<Cmd>lua require('fzf-lua').blines()<cr>", { desc = "Buffer Lines" })
+map("n", "<leader>:", "<Cmd>lua require('fzf-lua').command_history()<cr>", { desc = "Command History" })
+map("n", "<Leader>e", "<Cmd>Yazi<cr>", { desc = "Explorer" })
+
+-- LSP mappings
+map("n", "gd", "<Cmd>lua require('fzf-lua').lsp_definitions()<cr>", { desc = "Goto Definition" })
+map("n", "gD", "<Cmd>lua require('fzf-lua').lsp_declarations()<cr>", { desc = "Goto Declaration" })
+map("n", "gr", "<Cmd>lua require('fzf-lua').lsp_references()<cr>", { desc = "References", nowait = true })
+map("n", "gI", "<Cmd>lua require('fzf-lua').lsp_implementations()<cr>", { desc = "Goto Implementation" })
+map("n", "<leader>ss", "<Cmd>lua require('fzf-lua').lsp_document_symbols()<cr>", { desc = "LSP Symbols" })
+map("n", "<leader>sS", "<Cmd>lua require('fzf-lua').lsp_workspace_symbols()<cr>", { desc = "LSP Workspace Symbols" })
+map("n", "<leader>z", "<Cmd>lua require('fzf-lua').zoxide()<cr>", { desc = "Zoxide projects" })
+
+-- file
+map("n", "<leader>ff", "<Cmd>lua require('fzf-lua').files()<cr>", { desc = "Find Files" })
+map("n", "<leader>fr", "<Cmd>lua require('fzf-lua').oldfiles()<cr>", { desc = "Recent" })
+
+-- Buffer mappings
+map("n", "<Leader>bd", "<Cmd>lua MiniBufremove.delete()<cr>", { desc = "Delete" })
+
+-- code
+map("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
+map("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
+map("n", "<Leader>ca", "<Cmd>lua vim.lsp.buf.code_action()<cr>", { desc = "Code actions" })
+map("n", "<Leader>cc", "<Cmd>CopilotChat<cr>", { desc = "Copilot chat" })
+
+-- git
+map("n", "<leader>gb", "<Cmd>lua require('fzf-lua').git_branches()<cr>", { desc = "Git Branches" })
+map("n", "<leader>gs", "<Cmd>lua require('fzf-lua').git_status()<cr>", { desc = "Git Status" })
+map("n", "<leader>gS", "<Cmd>lua require('fzf-lua').git_stash()<cr>", { desc = "Git Stash" })
+map("n", "<leader>gp", "<Cmd>lua require('fzf-lua').git_commits()<cr>", { desc = "Project Commits" })
+map("n", "<leader>gc", "<Cmd>lua require('fzf-lua').git_bcommits()<cr>", { desc = "Buffer Commits" })
+map("n", "<leader>gB", "<Cmd>lua require('fzf-lua').git_blame()<cr>", { desc = "Git Blame" })
+
+-- search
+map("n", "<leader>sg", "<Cmd>lua require('fzf-lua').live_grep_native()<cr>", { desc = "Grep project" })
+map("n", '<leader>s"', "<Cmd>lua require('fzf-lua').registers()<cr>", { desc = "Registers" })
+map("n", "<leader>s/", "<Cmd>lua require('fzf-lua').search_history()<cr>", { desc = "Search History" })
+map("n", "<leader>sa", "<Cmd>lua require('fzf-lua').autocmds()<cr>", { desc = "Autocmds" })
+map("n", "<leader>sc", "<Cmd>lua require('fzf-lua').command_history()<cr>", { desc = "Command History" })
+map("n", "<leader>sC", "<Cmd>lua require('fzf-lua').commands()<cr>", { desc = "Commands" })
+map("n", "<leader>sd", "<Cmd>lua require('fzf-lua').diagnostics_workspace()<cr>", { desc = "Diagnostics" })
+map("n", "<leader>sD", "<Cmd>lua require('fzf-lua').diagnostics_document()<cr>", { desc = "Buffer Diagnostics" })
+map("n", "<leader>sH", "<Cmd>lua require('fzf-lua').highlights()<cr>", { desc = "Highlights" })
+map("n", "<leader>sj", "<Cmd>lua require('fzf-lua').jumps()<cr>", { desc = "Jumps" })
+map("n", "<leader>sk", "<Cmd>lua require('fzf-lua').keymaps()<cr>", { desc = "Keymaps" })
+map("n", "<leader>sl", "<Cmd>lua require('fzf-lua').grep_loclist()<cr>", { desc = "Location List" })
+map("n", "<leader>sm", "<Cmd>lua require('fzf-lua').marks()<cr>", { desc = "Marks" })
+map("n", "<leader>sM", "<Cmd>lua require('fzf-lua').manpages()<cr>", { desc = "Man Pages" })
+map("n", "<leader>sq", "<Cmd>lua require('fzf-lua').grep_quickfix()<cr>", { desc = "Quickfix List" })
+
+-- ui
+map("n", "<leader>uC", "<Cmd>lua require('fzf-lua').colorschemes()<cr>", { desc = "Colorschemes" })
+
+-- typescript
+map("n", "<Leader>tn", "<Cmd>lua require('neotest').run.run()<CR>", { desc = "Run nearest test" })
+map("n", "<Leader>tf", "<Cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>", { desc = "Run test file" })
+map("n", "<Leader>tl", "<Cmd>lua require('neotest').run.run_last()<CR>", { desc = "Run last test" })
+map("n", "<Leader>td", "<Cmd>lua require('neotest').run.run({strategy = 'dap'})<CR>", { desc = "Debug nearest test" })
+map("n", "<Leader>ts", "<Cmd>lua require('neotest').summary.toggle()<CR>", { desc = "Toggle test summary" })
+map("n", "<Leader>to", "<Cmd>lua require('neotest').output.open()<CR>", { desc = "Show test output" })
+map("n", "<Leader>tp", "<Cmd>lua require('neotest').output_panel.toggle()<CR>", { desc = "Toggle output panel" })
+map("n", "<Leader>tt", "<Cmd>TailwindConcealToggle<cr>", { desc = "Toggle Tailwind concealing" })
+map("n", "<Leader>tt", "<Cmd>TSC<cr>", { desc = "Solution type checking" })
+
+map(
+    "n",
+    "[t",
+    "<Cmd>lua require('neotest').jump.prev({ status = 'failed' })<CR>",
+    { desc = "Jump to previous failed test" }
+)
+map(
+    "n",
+    "]t",
+    "<Cmd>lua require('neotest').jump.next({ status = 'failed' })<CR>",
+    { desc = "Jump to next failed test" }
+)
+
+-- dotnet
+map("n", "<Leader>db", "<Cmd>lua require('easy-dotnet').build_solution()<cr>", { desc = "Build .NET solution" })
+map("n", "<Leader>dr", "<Cmd>lua require('easy-dotnet').run()<cr>", { desc = "Run .NET project" })
+map("n", "<Leader>dt", "<Cmd>lua require('easy-dotnet').test()<cr>", { desc = "Run tests" })
+map("n", "<Leader>dp", "<Cmd>lua require('easy-dotnet').testrunner()<cr>", { desc = "Test runner" })
+map("n", "<Leader>da", "<Cmd>lua require('easy-dotnet').project_view()<cr>", { desc = "Manage Projects" })
+
 -- DAP mappings
 map("n", "<F5>", "<Cmd>lua require'dap'.continue()<CR>", { desc = "Start/Continue Debugging" })
 map("n", "<F10>", "<Cmd>lua require'dap'.step_over()<CR>", { desc = "Step Over" })
@@ -358,87 +476,3 @@ map(
     "<Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>",
     { desc = "Logpoint Message" }
 )
-
--- easy-dotnet mappings
-map("n", "<Leader>db", "<Cmd>lua require('easy-dotnet').build_solution()<cr>", { desc = "Build .NET solution" })
-map("n", "<Leader>dr", "<Cmd>lua require('easy-dotnet').run()<cr>", { desc = "Run .NET project" })
-map("n", "<Leader>dt", "<Cmd>lua require('easy-dotnet').test()<cr>", { desc = "Run tests" })
-map("n", "<Leader>dp", "<Cmd>lua require('easy-dotnet').testrunner()<cr>", { desc = "Test runner" })
-map("n", "<Leader>da", "<Cmd>lua require('easy-dotnet').project_view()<cr>", { desc = "Manage Projects" })
-
--- neotest mappings
-map("n", "<Leader>tn", "<Cmd>lua require('neotest').run.run()<CR>", { desc = "Run nearest test" })
-map("n", "<Leader>tf", "<Cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>", { desc = "Run test file" })
-map("n", "<Leader>tl", "<Cmd>lua require('neotest').run.run_last()<CR>", { desc = "Run last test" })
-map("n", "<Leader>td", "<Cmd>lua require('neotest').run.run({strategy = 'dap'})<CR>", { desc = "Debug nearest test" })
-map("n", "<Leader>ts", "<Cmd>lua require('neotest').summary.toggle()<CR>", { desc = "Toggle test summary" })
-map("n", "<Leader>to", "<Cmd>lua require('neotest').output.open()<CR>", { desc = "Show test output" })
-map("n", "<Leader>tp", "<Cmd>lua require('neotest').output_panel.toggle()<CR>", { desc = "Toggle output panel" })
-map(
-    "n",
-    "[t",
-    "<Cmd>lua require('neotest').jump.prev({ status = 'failed' })<CR>",
-    { desc = "Jump to previous failed test" }
-)
-map(
-    "n",
-    "]t",
-    "<Cmd>lua require('neotest').jump.next({ status = 'failed' })<CR>",
-    { desc = "Jump to next failed test" }
-)
-
--- general mappings
-map("n", "<Leader>e", "<Cmd>Yazi<cr>", { desc = "Explorer" })
-map("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
-map("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
-map("n", "<Leader>ca", "<Cmd>lua vim.lsp.buf.code_action()<cr>", { desc = "Code actions" })
-map("n", "<Leader>cc", "<Cmd>CopilotChat<cr>", { desc = "Copilot chat" })
-
--- Smart mappings
-map("n", "<leader><space>", "<Cmd>lua require('fzf-lua').files()<cr>", { desc = "Find Files" })
-map("n", "<leader>,", "<Cmd>lua require('fzf-lua').buffers()<cr>", { desc = "Buffers" })
-map("n", "<leader>/", "<Cmd>lua require('fzf-lua').blines()<cr>", { desc = "Buffer Lines" })
-map("n", "<leader>:", "<Cmd>lua require('fzf-lua').command_history()<cr>", { desc = "Command History" })
-
--- Buffer mappings
-map("n", "<Leader>bd", "<Cmd>lua MiniBufremove.delete()<cr>", { desc = "Delete" })
-
--- Find mappings
-map("n", "<leader>fr", "<Cmd>lua require('fzf-lua').oldfiles()<cr>", { desc = "Recent" })
-
--- Git mappings
-map("n", "<leader>gb", "<Cmd>lua require('fzf-lua').git_branches()<cr>", { desc = "Git Branches" })
-map("n", "<leader>gs", "<Cmd>lua require('fzf-lua').git_status()<cr>", { desc = "Git Status" })
-map("n", "<leader>gS", "<Cmd>lua require('fzf-lua').git_stash()<cr>", { desc = "Git Stash" })
-map("n", "<leader>gp", "<Cmd>lua require('fzf-lua').git_commits()<cr>", { desc = "Project Commits" })
-map("n", "<leader>gc", "<Cmd>lua require('fzf-lua').git_bcommits()<cr>", { desc = "Buffer Commits" })
-map("n", "<leader>gB", "<Cmd>lua require('fzf-lua').git_blame()<cr>", { desc = "Git Blame" })
-
--- Grep mappings
-map("n", "<leader>sg", "<Cmd>lua require('fzf-lua').live_grep_native()<cr>", { desc = "Grep project" })
-
--- Search mappings
-map("n", '<leader>s"', "<Cmd>lua require('fzf-lua').registers()<cr>", { desc = "Registers" })
-map("n", "<leader>s/", "<Cmd>lua require('fzf-lua').search_history()<cr>", { desc = "Search History" })
-map("n", "<leader>sa", "<Cmd>lua require('fzf-lua').autocmds()<cr>", { desc = "Autocmds" })
-map("n", "<leader>sc", "<Cmd>lua require('fzf-lua').command_history()<cr>", { desc = "Command History" })
-map("n", "<leader>sC", "<Cmd>lua require('fzf-lua').commands()<cr>", { desc = "Commands" })
-map("n", "<leader>sd", "<Cmd>lua require('fzf-lua').diagnostics_workspace()<cr>", { desc = "Diagnostics" })
-map("n", "<leader>sD", "<Cmd>lua require('fzf-lua').diagnostics_document()<cr>", { desc = "Buffer Diagnostics" })
-map("n", "<leader>sH", "<Cmd>lua require('fzf-lua').highlights()<cr>", { desc = "Highlights" })
-map("n", "<leader>sj", "<Cmd>lua require('fzf-lua').jumps()<cr>", { desc = "Jumps" })
-map("n", "<leader>sk", "<Cmd>lua require('fzf-lua').keymaps()<cr>", { desc = "Keymaps" })
-map("n", "<leader>sl", "<Cmd>lua require('fzf-lua').grep_loclist()<cr>", { desc = "Location List" })
-map("n", "<leader>sm", "<Cmd>lua require('fzf-lua').marks()<cr>", { desc = "Marks" })
-map("n", "<leader>sM", "<Cmd>lua require('fzf-lua').manpages()<cr>", { desc = "Man Pages" })
-map("n", "<leader>sq", "<Cmd>lua require('fzf-lua').grep_quickfix()<cr>", { desc = "Quickfix List" })
-map("n", "<leader>uC", "<Cmd>lua require('fzf-lua').colorschemes()<cr>", { desc = "Colorschemes" })
-
--- LSP mappings
-map("n", "gd", "<Cmd>lua require('fzf-lua').lsp_definitions()<cr>", { desc = "Goto Definition" })
-map("n", "gD", "<Cmd>lua require('fzf-lua').lsp_declarations()<cr>", { desc = "Goto Declaration" })
-map("n", "gr", "<Cmd>lua require('fzf-lua').lsp_references()<cr>", { desc = "References", nowait = true })
-map("n", "gI", "<Cmd>lua require('fzf-lua').lsp_implementations()<cr>", { desc = "Goto Implementation" })
-map("n", "<leader>ss", "<Cmd>lua require('fzf-lua').lsp_document_symbols()<cr>", { desc = "LSP Symbols" })
-map("n", "<leader>sS", "<Cmd>lua require('fzf-lua').lsp_workspace_symbols()<cr>", { desc = "LSP Workspace Symbols" })
-map("n", "<leader>z", "<Cmd>lua require('fzf-lua').zoxide()<cr>", { desc = "Zoxide projects" })

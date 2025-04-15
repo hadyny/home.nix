@@ -34,12 +34,10 @@
       nvim-treesitter.withAllGrammars
       gitsigns-nvim
       nvim-lspconfig
-      none-ls-nvim
       typescript-tools-nvim
       tsc-nvim
       neotest-vitest
       neotest-dotnet
-      obsidian-nvim
       roslyn-nvim
       nvim-dap
       tailwind-tools-nvim
@@ -48,6 +46,7 @@
       CopilotChat-nvim
       easy-dotnet-nvim
       fzf-lua
+      conform-nvim
     ];
   };
 }
