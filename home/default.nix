@@ -62,7 +62,7 @@ in {
       flags = [ "--disable-up-arrow" ];
     };
 
-    bat = { enable = true; };
+    bat = { enable = true; config = { theme="ansi"; }; };
 
     btop = {
       enable = true;

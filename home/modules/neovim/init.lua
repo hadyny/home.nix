@@ -147,6 +147,24 @@ wk.add({
     },
 })
 
+require("trouble").setup({
+    follow = false,
+    focus = true,
+    preview = {
+        type = "float",
+        relative = "editor",
+        border = secondary_border,
+        title = "Preview",
+        title_pos = "center",
+        position = { 0, -2 },
+        size = { width = 0.3, height = 0.3 },
+        zindex = 200,
+    },
+})
+local config = require("fzf-lua.config")
+local actions = require("trouble.sources.fzf").actions
+config.defaults.actions.files["ctrl-t"] = actions.open
+
 require("nvim-treesitter.configs").setup({
     highlight = { enable = true },
 })
@@ -166,6 +184,7 @@ require("gitsigns").setup()
 
 local fzf = require("fzf-lua")
 fzf.setup({
+    {'max-perf', 'hide'},
     winopts = {
         width = 0.50,
         height = 0.60,
@@ -179,9 +198,6 @@ fzf.setup({
             layout = "vertical",
             vertical = "down:70%", -- up|down:size
         },
-    },
-    files = {
-        code_actions = { previewer = "codeaction_native" },
     },
     previewers = {
         codeaction_native = {
@@ -344,10 +360,13 @@ dap.configurations.javascript = dap.configurations.typescript
 vim.g.mapleader = " "
 local map = vim.keymap.set
 
+map('n', '<Esc>', ':noh<CR><Esc>', { noremap = true, silent = true }) -- escape to cancel search
+
 map("n", "<leader><leader>", "<Cmd>lua require('fzf-lua').buffers()<cr>", { desc = "Buffers" })
 map("n", "<leader>/", "<Cmd>lua require('fzf-lua').blines()<cr>", { desc = "Buffer Lines" })
 map("n", "<leader>:", "<Cmd>lua require('fzf-lua').command_history()<cr>", { desc = "Command History" })
 map("n", "<Leader>e", "<Cmd>Yazi<cr>", { desc = "Explorer" })
+map("n", "<Leader>x", "<Cmd>Trouble<cr>", { desc = "Trouble" })
 
 -- LSP mappings
 map("n", "gd", "<Cmd>lua require('fzf-lua').lsp_definitions()<cr>", { desc = "Goto Definition" })
@@ -395,6 +414,7 @@ map("n", "<leader>sl", "<Cmd>lua require('fzf-lua').grep_loclist()<cr>", { desc 
 map("n", "<leader>sm", "<Cmd>lua require('fzf-lua').marks()<cr>", { desc = "Marks" })
 map("n", "<leader>sM", "<Cmd>lua require('fzf-lua').manpages()<cr>", { desc = "Man Pages" })
 map("n", "<leader>sq", "<Cmd>lua require('fzf-lua').grep_quickfix()<cr>", { desc = "Quickfix List" })
+map("n", "<leader>so", "<Cmd>FzfLua<cr>", { desc = "Search options" })
 
 -- ui
 map("n", "<leader>uC", "<Cmd>lua require('fzf-lua').colorschemes()<cr>", { desc = "Colorschemes" })

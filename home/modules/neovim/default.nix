@@ -29,7 +29,6 @@
       nvim-highlight-colors
       blink-cmp
       colorful-menu-nvim
-      friendly-snippets
       which-key-nvim
       nvim-treesitter.withAllGrammars
       gitsigns-nvim
@@ -47,6 +46,7 @@
       easy-dotnet-nvim
       fzf-lua
       conform-nvim
+      trouble-nvim
     ];
   };
 }
