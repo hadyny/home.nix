@@ -1,6 +1,10 @@
 { pkgs, ... }:
-
-{
+let
+  nvm = builtins.fetchGit {
+    url = "https://github.com/nvm-sh/nvm";
+    rev = "977563e97ddc66facf3a8e31c6cff01d236f09bd";
+  };
+in {
   home.packages = with pkgs; [
     # general development & utils
     httpie
@@ -57,4 +61,14 @@
     vscode-langservers-extracted
 
   ];
+
+  home.file.".nvm" = {
+    source = nvm;
+    recursive = true;
+  };
+
+  programs.zsh.initExtra = ''
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  '';
 }

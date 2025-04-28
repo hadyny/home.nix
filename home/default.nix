@@ -49,6 +49,7 @@ in {
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
     _1password-cli
+    # _1password-gui
 
     # fonts
     nerd-fonts.geist-mono
@@ -112,10 +113,6 @@ in {
       enableCompletion = true;
       autocd = true;
       autosuggestion.enable = true;
-      oh-my-zsh = {
-        enable = true;
-        plugins = [ "git" "nvm" ];
-      };
       shellAliases = {
         nu = "nvm use";
         dcu = "docker compose up";
@@ -125,7 +122,6 @@ in {
         enable = true;
         highlighters = [ "main" "brackets" ];
       };
-
       plugins = [{
         name = "pure";
         src = "${pkgs.pure-prompt}/share/zsh/site-functions";
