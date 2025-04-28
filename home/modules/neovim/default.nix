@@ -4,24 +4,6 @@
     defaultEditor = true;
     vimAlias = true;
     extraLuaConfig = builtins.readFile ./init.lua;
-    extraPackages = with pkgs; [
-      lua-language-server
-      stylua
-
-      nixfmt-classic
-      nil
-
-      roslyn-ls
-      netcoredbg
-      csharpier
-
-      typescript-language-server
-      tailwindcss-language-server
-      rustywind
-      graphql-language-service-cli
-      vscode-langservers-extracted
-
-    ];
     plugins = with pkgs.vimPlugins; [
       mini-bufremove
       mini-icons
@@ -47,6 +29,8 @@
       fzf-lua
       conform-nvim
       trouble-nvim
+      vim-fugitive
+      render-markdown-nvim
     ];
   };
 }

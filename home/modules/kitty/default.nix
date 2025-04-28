@@ -4,7 +4,7 @@
     themeFile = "rose-pine-moon";
 
     font = {
-      name = "GeistMono Nerd Font Mono";
+      name = "CommitMono Regular";
       size = 14;
     };
 
