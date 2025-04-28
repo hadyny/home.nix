@@ -38,5 +38,23 @@
     docker-credential-helpers
     lazydocker # docker UI
     dockfmt
+
+    # language servers
+    lua-language-server
+    stylua
+
+    nixfmt-classic
+    nil
+
+    roslyn-ls
+    netcoredbg
+    csharpier
+
+    typescript-language-server
+    tailwindcss-language-server
+    rustywind
+    graphql-language-service-cli
+    vscode-langservers-extracted
+
   ];
 }

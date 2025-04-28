@@ -54,6 +54,7 @@ in {
     nerd-fonts.geist-mono
     nerd-fonts.fira-code
     nerd-fonts.victor-mono
+    commit-mono
   ];
 
   programs = {
@@ -62,7 +63,10 @@ in {
       flags = [ "--disable-up-arrow" ];
     };
 
-    bat = { enable = true; config = { theme="ansi"; }; };
+    bat = {
+      enable = true;
+      config = { theme = "ansi"; };
+    };
 
     btop = {
       enable = true;
@@ -95,14 +99,10 @@ in {
       enable = true;
       tmuxinator.enable = true;
       keyMode = "vi";
+      terminal = "screen-256color";
       focusEvents = true;
       baseIndex = 1;
       mouse = true;
-      plugins = with pkgs.tmuxPlugins; [
-        better-mouse-mode
-        rose-pine
-        tmux-which-key
-      ];
     };
 
     yazi.enable = true;
@@ -163,6 +163,8 @@ in {
       };
     };
   };
+
+  modules = { vscode.enable = true; };
 
   tools = {
     aws.enable = true;
