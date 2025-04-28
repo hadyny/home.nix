@@ -71,8 +71,7 @@ with lib;
           "explorer.fileNesting.enabled" = true;
           "explorer.fileNesting.patterns" = {
             "*.ts" = "\${capture}.js, \${capture}.typegen.ts";
-            "*.js" =
-              "\${capture}.js.map, \${capture}.min.js, \${capture}.d.ts";
+            "*.js" = "\${capture}.js.map, \${capture}.min.js, \${capture}.d.ts";
             "*.jsx" = "\${capture}.js";
             "*.tsx" = "\${capture}.ts, \${capture}.typegen.ts";
             "tsconfig.json" = "tsconfig.*.json";
@@ -96,6 +95,9 @@ with lib;
           "editor.fontSize" = 14;
           "nix.enableLanguageServer" = true;
           "nix.serverPath" = "nil";
+          "nix.serverSettings" = {
+            "nil" = { "formatting" = { "command" = [ "nixfmt" ]; }; };
+          };
         };
 
         # Keybindings

@@ -112,23 +112,9 @@ in {
       enableCompletion = true;
       autocd = true;
       autosuggestion.enable = true;
-      dirHashes = {
-        dl = "$HOME/Downloads";
-        src = "$HOME/src";
-        ep = "$HOME/src/ep";
-      };
       oh-my-zsh = {
         enable = true;
-        plugins = [
-          "1password"
-          "aws"
-          "docker"
-          "docker-compose"
-          "dotnet"
-          "git"
-          "iterm2"
-          "nvm"
-        ];
+        plugins = [ "git" "nvm" ];
       };
       shellAliases = {
         nu = "nvm use";
@@ -139,6 +125,16 @@ in {
         enable = true;
         highlighters = [ "main" "brackets" ];
       };
+
+      plugins = [{
+        name = "pure";
+        src = "${pkgs.pure-prompt}/share/zsh/site-functions";
+      }];
+      initExtra = ''
+        autoload -U promptinit; promptinit
+        prompt pure
+        zstyle :prompt:pure:git:stash show yes
+      '';
     };
 
     zoxide = {
@@ -146,11 +142,6 @@ in {
       enableZshIntegration = true;
     };
 
-    starship = {
-      enable = true;
-      enableZshIntegration = true;
-      settings = { scan_timeout = 100; };
-    };
   };
 
   services = {
@@ -164,7 +155,11 @@ in {
     };
   };
 
-  modules = { vscode.enable = true; };
+  modules = {
+    vscode.enable = true;
+    kitty.enable = true;
+    neovim.enable = true;
+  };
 
   tools = {
     aws.enable = true;
