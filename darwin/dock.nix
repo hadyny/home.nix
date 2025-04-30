@@ -1,5 +1,4 @@
-{ config, ... }:
-{
+{ config, ... }: {
   system.defaults.dock = {
     # Whether to automatically hide and show the Dock. Default is false.
     autohide = true;
@@ -21,19 +20,13 @@
 
   targets.darwin.dock = {
     # Apps to be added to Dock.
-    apps = [
-      "Slack"
-      "Firefox Developer Edition"
-      "Google Chrome"
-      "Visual Studio Code"
-      "Rider"
-      "DataGrip"
-      "Obsidian"
-    ];
+    apps = [ "Slack" "Firefox Developer Edition" "Google Chrome" "Obsidian" ];
 
     # "Others" section in Dock (the one after the bar, where the Bin sits).
-    others = [
-      ({ path = "${config.user.home}/Downloads"; sort = "dateadded"; view = "grid"; })
-    ];
+    others = [({
+      path = "${config.user.home}/Downloads";
+      sort = "dateadded";
+      view = "grid";
+    })];
   };
 }

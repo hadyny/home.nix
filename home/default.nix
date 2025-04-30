@@ -56,6 +56,12 @@ in {
     nerd-fonts.fira-code
     nerd-fonts.victor-mono
     commit-mono
+
+    jetbrains.datagrip
+    jetbrains.rider
+    jetbrains.goland
+
+    brave
   ];
 
   programs = {
@@ -126,7 +132,7 @@ in {
         name = "pure";
         src = "${pkgs.pure-prompt}/share/zsh/site-functions";
       }];
-      initExtra = ''
+      initContent = ''
         autoload -U promptinit; promptinit
         prompt pure
         zstyle :prompt:pure:git:stash show yes
