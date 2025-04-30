@@ -23,13 +23,10 @@ in {
     shellcheck
     stylelint
     terraform
-    sqlite
-    sqlitebrowser
     spicedb
     spicedb-zed
     mitmproxy
-    csharprepl
-    nodejs_23
+
     netcoredbg
 
     # kafka
@@ -38,7 +35,6 @@ in {
     kcat
 
     # docker
-    docker
     docker-credential-helpers
     lazydocker # docker UI
     dockfmt
@@ -53,6 +49,7 @@ in {
     roslyn-ls
     netcoredbg
     csharpier
+    csharprepl
 
     typescript-language-server
     tailwindcss-language-server
