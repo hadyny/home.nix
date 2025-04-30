@@ -13,17 +13,24 @@ let
     rev = "4999d188aba9e470fa921367288ab6d5074b5324";
     sha256 = "sha256-HXmZty8emMoUtyuJpLLY+IfHBIJjG9wUJNGv0a3hJBc=";
   };
-  utilities = builtins.attrNames (builtins.readDir "${shell_integration}/utilities");
-  aliases = lib.concatMapStringsSep ";" (x: "alias ${x}='${shell_integration}/utilities/${x}'") utilities;
+  utilities =
+    builtins.attrNames (builtins.readDir "${shell_integration}/utilities");
+  aliases = lib.concatMapStringsSep ";"
+    (x: "alias ${x}='${shell_integration}/utilities/${x}'") utilities;
 
-in
-{
+in {
   options.darwin.apps.iterm2 = {
-    enable = mkEnableOption "Enable iTerm2 - the best terminal for MacOS";
+    enable = mkEnableOption "Enable iTerm2";
 
     font = mkOption {
       type = types.str;
-      default = "GeistMonoNerdFontPropo-Light 13";
+      default = "CommitMono-Regular 14";
+    };
+
+    nonAsciiFont = mkOption {
+      type = types.str;
+      default = "FiraCodeNFM-Reg 14";
+      description = "Font for non-ASCII characters";
     };
 
     columns = mkOption {
@@ -41,15 +48,20 @@ in
 
   config = mkIf enabled {
     # Install iTerm2 from Homebrew
-    homebrew = {
-      casks = [ "iterm2" ];
-    };
+    homebrew = { casks = [ "iterm2" ]; };
 
     targets.darwin.plists = {
       "Library/Preferences/com.googlecode.iterm2.plist" = {
         "New Bookmarks:0:Normal Font" = cfg.font;
+        "New Bookmarks:0:Vertical Spacing" = "1.2";
+        "New Bookmarks:0:ASCII Anti Aliased" = "true";
+        "New Bookmarks:0:ASCII Ligatures" = "true";
         "New Bookmarks:0:Columns" = toString cfg.columns;
         "New Bookmarks:0:Rows" = toString cfg.rows;
+        "New Bookmarks:0:Non Ascii Font" = toString cfg.nonAsciiFont;
+        "New Bookmarks:0:Non-ASCII Anti Aliased" = "true";
+        "New Bookmarks:0:Non-ASCII Ligatures" = "true";
+        "New Bookmarks:0:Use Non-ASCII Font" = "true";
       };
     };
 
