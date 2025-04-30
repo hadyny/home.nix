@@ -14,7 +14,7 @@ with lib;
       # Common extensions
       profiles.default = {
         extensions = with pkgs.vscode-extensions; [
-          asvetliakov.vscode-neovim
+          vscodevim.vim
           bodil.file-browser
           bradlc.vscode-tailwindcss
           christian-kohler.npm-intellisense
@@ -27,7 +27,6 @@ with lib;
           github.copilot-chat
           github.vscode-github-actions
           github.vscode-pull-request-github
-          golang.go
           graphql.vscode-graphql
           graphql.vscode-graphql-syntax
           hashicorp.terraform
@@ -80,9 +79,9 @@ with lib;
             "*.mts" = "\${capture}.typegen.ts";
             "*.cts" = "\${capture}.typegen.ts";
           };
-          "extensions.experimental.affinity" = {
-            "asvetliakov.vscode-neovim" = 1;
-          };
+          "editor.bracketPairColorization.enabled" = true;
+          "editor.guides.bracketPairs" = "active";
+          "editor.guides.bracketPairsHorizontal" = true;
           "editor.accessibilitySupport" = "off";
           "git.blame.editorDecoration.enabled" = true;
           "workbench.sideBar.location" = "right";
@@ -94,10 +93,66 @@ with lib;
           "editor.stickyScroll.enabled" = false;
           "editor.fontSize" = 14;
           "nix.enableLanguageServer" = true;
+          "[nix]" = { "editor.formatOnSave" = true; };
           "nix.serverPath" = "nil";
           "nix.serverSettings" = {
             "nil" = { "formatting" = { "command" = [ "nixfmt" ]; }; };
           };
+          "vim.easymotion" = true;
+          "vim.useSystemClipboard" = true;
+          "vim.useCtrlKeys" = true;
+          "vim.hlsearch" = true;
+          "vim.insertModeKeyBindings" = [{
+            "before" = [ "j" "j" ];
+            "after" = [ "<Esc>" ];
+          }];
+          "vim.normalModeKeyBindingsNonRecursive" = [
+            {
+              "before" = [ "<space>" ];
+              "commands" = [ "vspacecode.space" ];
+            }
+            {
+              "before" = [ "," ];
+              "commands" = [
+                "vspacecode.space"
+                {
+                  "command" = "whichkey.triggerKey";
+                  "args" = "m";
+                }
+              ];
+            }
+          ];
+          "vim.visualModeKeyBindingsNonRecursive" = [
+            {
+              "before" = [ "<space>" ];
+              "commands" = [ "vspacecode.space" ];
+            }
+            {
+              "before" = [ "," ];
+              "commands" = [
+                "vspacecode.space"
+                {
+                  "command" = "whichkey.triggerKey";
+                  "args" = "m";
+                }
+              ];
+            }
+            {
+              "before" = [ ">" ];
+              "commands" = [ "editor.action.indentLines" ];
+            }
+            {
+              "before" = [ "<" ];
+              "commands" = [ "editor.action.outdentLines" ];
+            }
+          ];
+          "vim.leader" = "<space>";
+          "vim.handleKeys" = {
+            "<C-a>" = false;
+            "<C-f>" = false;
+          };
+
+          "extensions.experimental.affinity" = { "vscodevim.vim" = 1; };
         };
 
         # Keybindings
@@ -105,7 +160,8 @@ with lib;
           {
             "key" = "space";
             "command" = "vspacecode.space";
-            "when" = "editorTextFocus && neovim.mode == normal";
+            "when" =
+              "activeEditorGroupEmpty && focusedView == '' && !whichkeyActive && !inputFocus";
           }
           {
             "key" = "space";
@@ -116,19 +172,19 @@ with lib;
             "key" = "tab";
             "command" = "extension.vim_tab";
             "when" =
-              "editorTextFocus && neovim.active && !inDebugRepl && neovim.mode != 'Insert' && editorLangId != 'magit'";
+              "editorTextFocus && vim.active && !inDebugRepl && vim.mode != 'Insert' && editorLangId != 'magit'";
           }
           {
             "key" = "tab";
             "command" = "-extension.vim_tab";
             "when" =
-              "editorTextFocus && neovim.active && !inDebugRepl && neovim.mode != 'Insert'";
+              "editorTextFocus && vim.active && !inDebugRepl && vim.mode != 'Insert'";
           }
           {
             "key" = "x";
             "command" = "magit.discard-at-point";
             "when" =
-              "editorTextFocus && editorLangId == 'magit' && neovim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/";
+              "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/";
           }
           {
             "key" = "k";
@@ -138,7 +194,7 @@ with lib;
             "key" = "-";
             "command" = "magit.reverse-at-point";
             "when" =
-              "editorTextFocus && editorLangId == 'magit' && neovim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/";
+              "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/";
           }
           {
             "key" = "v";
@@ -148,7 +204,7 @@ with lib;
             "key" = "shift+-";
             "command" = "magit.reverting";
             "when" =
-              "editorTextFocus && editorLangId == 'magit' && neovim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/";
+              "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/";
           }
           {
             "key" = "shift+v";
@@ -158,7 +214,7 @@ with lib;
             "key" = "shift+o";
             "command" = "magit.resetting";
             "when" =
-              "editorTextFocus && editorLangId == 'magit' && neovim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/";
+              "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/";
           }
           {
             "key" = "shift+x";
@@ -180,19 +236,19 @@ with lib;
             "key" = "y";
             "command" = "vspacecode.showMagitRefMenu";
             "when" =
-              "editorTextFocus && editorLangId == 'magit' && neovim.mode == 'Normal'";
+              "editorTextFocus && editorLangId == 'magit' && vim.mode == 'Normal'";
           }
           {
             "key" = "g";
             "command" = "-magit.refresh";
             "when" =
-              "editorTextFocus && editorLangId == 'magit' && neovim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/";
+              "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/";
           }
           {
             "key" = "g";
             "command" = "vspacecode.showMagitRefreshMenu";
             "when" =
-              "editorTextFocus && editorLangId == 'magit' && neovim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/";
+              "editorTextFocus && editorLangId == 'magit' && vim.mode =~ /^(?!SearchInProgressMode|CommandlineInProgress).*$/";
           }
           {
             "key" = "ctrl+j";
