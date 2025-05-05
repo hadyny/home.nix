@@ -55,7 +55,7 @@ in {
     nerd-fonts.geist-mono
     nerd-fonts.fira-code
     nerd-fonts.victor-mono
-    commit-mono
+    nerd-fonts.commit-mono
 
     jetbrains.datagrip
     jetbrains.rider
@@ -158,7 +158,6 @@ in {
   };
 
   modules = {
-    vscode.enable = true;
     kitty.enable = true;
     neovim.enable = true;
   };
