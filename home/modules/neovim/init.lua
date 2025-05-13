@@ -218,6 +218,7 @@ local util = require("lspconfig.util")
 
 lspconfig.eslint.setup({
 	capabilities = capabilities,
+	filetypes = { "graphql" },
 	on_attach = function(client, bufnr)
 		vim.api.nvim_create_autocmd("BufWritePre", {
 			buffer = bufnr,
