@@ -11,12 +11,10 @@ with lib;
       vimAlias = true;
       extraLuaConfig = builtins.readFile ./init.lua;
       plugins = with pkgs.vimPlugins; [
-        mini-bufremove
         mini-icons
-        rose-pine
+        catppuccin-nvim
         nvim-highlight-colors
         blink-cmp
-        colorful-menu-nvim
         which-key-nvim
         nvim-treesitter.withAllGrammars
         gitsigns-nvim
@@ -28,15 +26,17 @@ with lib;
         roslyn-nvim
         nvim-dap
         tailwind-tools-nvim
-        yazi-nvim
         tiny-inline-diagnostic-nvim
         CopilotChat-nvim
         easy-dotnet-nvim
-        fzf-lua
         conform-nvim
-        trouble-nvim
         vim-fugitive
         render-markdown-nvim
+        snacks-nvim
+        actions-preview-nvim
+        telescope-nvim
+        telescope-fzf-native-nvim
+        telescope-frecency-nvim
       ];
     };
   };

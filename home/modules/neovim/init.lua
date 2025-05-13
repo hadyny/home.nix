@@ -1,29 +1,29 @@
 local vim = vim
-local default_border = "solid"
-local secondary_border = "single"
+local options = vim.o
 
-vim.o.termguicolors = true
-vim.o.cursorline = true
-vim.o.tabstop = 4
-vim.o.expandtab = true
-vim.o.softtabstop = 4
-vim.o.smartindent = true
-vim.o.shiftwidth = 4
-vim.o.smartcase = true
-vim.o.ignorecase = true
-vim.o.winborder = default_border
-vim.o.laststatus = 3
-vim.o.statusline = " %f %m %= %l:%c ✽ [%{mode()}] "
-vim.o.number = true
-vim.o.relativenumber = true
-vim.o.scrolloff = 4
-vim.o.sidescrolloff = 8
-vim.o.completeopt = "menu,menuone,noselect"
-vim.o.confirm = true
-vim.o.showmode = false
+options.termguicolors = true
+options.cursorline = true
+options.tabstop = 4
+options.expandtab = true
+options.softtabstop = 4
+options.smartindent = true
+options.shiftwidth = 4
+options.smartcase = true
+options.ignorecase = true
+options.laststatus = 3
+options.statusline = " %f %m %= %l:%c ✽ [%{mode()}] "
+options.number = true
+options.relativenumber = true
+options.scrolloff = 4
+options.sidescrolloff = 8
+options.completeopt = "menu,menuone,noselect"
+options.confirm = true
+options.showmode = false
+options.mouse = "a"
+options.winborder = "single"
 
 vim.schedule(function()
-	vim.opt.clipboard = "unnamedplus"
+	vim.o.clipboard = "unnamedplus"
 end)
 
 vim.diagnostic.config({
@@ -39,91 +39,61 @@ vim.diagnostic.config({
 	underline = true,
 })
 
-if vim.g.vscode then
-	return
-end
-
-require("mini.bufremove").setup()
-
 local MiniIcons = require("mini.icons")
 MiniIcons.setup()
 MiniIcons.mock_nvim_web_devicons()
 MiniIcons.tweak_lsp_kind()
 
-require("rose-pine").setup({
-	variant = "auto",
-	dark_variant = "moon",
-	highlight_groups = {
-		StatusLine = { fg = "iris", bg = "iris", blend = 10 },
-		StatusLineNC = { fg = "subtle", bg = "surface" },
+require("catppuccin").setup({
+	flavour = "auto",
+	background = {
+		light = "latte",
+		dark = "mocha",
 	},
-	styles = {
-		bold = true,
-		italic = true,
+	dim_inactive = { enabled = true },
+	integrations = {
+		diffview = true,
+		gitgraph = true,
+		which_key = true,
+		mini = {
+			enabled = true,
+			indentscope_color = "lavender",
+		},
+		telescope = {
+			enabled = true,
+		},
 	},
 })
-vim.cmd("colorscheme rose-pine-moon")
+vim.cmd("colorscheme catppuccin-mocha")
 
 require("nvim-highlight-colors").setup({
 	enable_tailwind = true,
-	render = "foreground",
+	render = "background",
 })
 
 require("blink.cmp").setup({
+	cmdline = {
+		keymap = {
+			preset = "cmdline",
+			["<CR>"] = { "select_and_accept", "fallback" },
+		},
+	},
 	completion = {
 		list = { selection = { preselect = false, auto_insert = true } },
 		menu = {
+			border = "single",
+			winhighlight = "Normal:BlinkCmpDoc,FloatBorder:BlinkCmpDocBorder,CursorLine:BlinkCmpDocCursorLine,Search:None",
 			scrolloff = 2,
 			scrollbar = false,
-			draw = {
-				columns = { { "kind_icon" }, { "label", gap = 1 } },
-				components = {
-					-- customize the drawing of kind icons
-					kind_icon = {
-						text = function(ctx)
-							-- default kind icon
-							local icon = ctx.kind_icon
-							-- if LSP source, check for color derived from documentation
-							if ctx.item.source_name == "LSP" then
-								local color_item =
-									require("nvim-highlight-colors").format(ctx.item.documentation, { kind = ctx.kind })
-								if color_item and color_item.abbr then
-									icon = color_item.abbr
-								end
-							end
-							return icon .. ctx.icon_gap
-						end,
-						highlight = function(ctx)
-							-- default highlight group
-							local highlight = "BlinkCmpKind" .. ctx.kind
-							-- if LSP source, check for color derived from documentation
-							if ctx.item.source_name == "LSP" then
-								local color_item =
-									require("nvim-highlight-colors").format(ctx.item.documentation, { kind = ctx.kind })
-								if color_item and color_item.abbr_hl_group then
-									highlight = color_item.abbr_hl_group
-								end
-							end
-							return highlight
-						end,
-					},
-					label = {
-						text = function(ctx)
-							return require("colorful-menu").blink_components_text(ctx)
-						end,
-						highlight = function(ctx)
-							return require("colorful-menu").blink_components_highlight(ctx)
-						end,
-					},
-				},
-			},
 		},
-		documentation = { auto_show = true, auto_show_delay_ms = 250 },
+		documentation = { auto_show = true, auto_show_delay_ms = 200, window = { border = "single" } },
+		ghost_text = { enabled = true },
 	},
 	keymap = {
 		preset = "default",
 		["<CR>"] = { "select_and_accept", "fallback" },
 	},
+	signature = { enabled = true },
 })
 
 local wk = require("which-key")
@@ -147,24 +117,6 @@ wk.add({
 	},
 })
 
-require("trouble").setup({
-	follow = false,
-	focus = true,
-	preview = {
-		type = "float",
-		relative = "editor",
-		border = secondary_border,
-		title = "Preview",
-		title_pos = "center",
-		position = { 0, -2 },
-		size = { width = 0.3, height = 0.3 },
-		zindex = 200,
-	},
-})
-local config = require("fzf-lua.config")
-local actions = require("trouble.sources.fzf").actions
-config.defaults.actions.files["ctrl-t"] = actions.open
-
 require("nvim-treesitter.configs").setup({
 	highlight = { enable = true },
 })
@@ -186,31 +138,41 @@ vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
 require("gitsigns").setup()
 
-local fzf = require("fzf-lua")
-fzf.setup({
-	{ "max-perf", "hide" },
-	winopts = {
-		width = 0.50,
-		height = 0.60,
-		row = 0,
-		col = 0.50,
-		border = "solid",
-		preview = {
-			border = secondary_border,
-			scrollbar = false,
-			title = false,
-			layout = "vertical",
-			vertical = "down:70%", -- up|down:size
+require("Snacks").setup({
+	animate = { enabled = true },
+	dim = { enabled = true },
+	image = { enabled = true },
+	notifier = { enabled = true },
+	rename = { enabled = true },
+	scope = { enabled = true },
+	scroll = { enabled = true },
+	statuscolumn = { enabled = true },
+	picker = { enabled = false },
+	words = { enabled = true },
+})
+
+require("actions-preview").setup({
+	telescope = vim.tbl_extend("force", require("telescope.themes").get_dropdown({ border = false }), {
+		make_value = nil,
+		make_make_display = nil,
+	}),
+})
+
+require("telescope").setup({
+	defaults = {
+		border = false,
+		windblend = 10,
+		layout_strategy = "horizontal",
+		layout_config = {
+			horizontal = {
+				prompt_position = "top",
+			},
 		},
-	},
-	previewers = {
-		codeaction_native = {
-			diff_opts = { ctxlen = 3 },
-			pager = [[delta --width=$COLUMNS --hunk-header-style="omit" --file-style="omit"]],
-		},
+		sorting_strategy = "ascending",
 	},
 })
-fzf.register_ui_select()
+pcall(require("telescope").load_extension, "fzf")
+pcall(require("telescope").load_extension, "frecency")
 
 local capabilities = require("blink.cmp").get_lsp_capabilities()
 local lspconfig = require("lspconfig")
@@ -218,7 +180,15 @@ local util = require("lspconfig.util")
 
 lspconfig.eslint.setup({
 	capabilities = capabilities,
-	filetypes = { "graphql" },
+	filetypes = {
+		"javascript",
+		"javascriptreact",
+		"javascript.jsx",
+		"typescript",
+		"typescriptreact",
+		"typescript.tsx",
+		"graphql",
+	},
 	on_attach = function(client, bufnr)
 		vim.api.nvim_create_autocmd("BufWritePre", {
 			buffer = bufnr,
@@ -230,7 +200,6 @@ lspconfig.tailwindcss.setup({ capabilities = capabilities })
 lspconfig.graphql.setup({
 	capabilities = capabilities,
 	root_dir = util.root_pattern(".git"),
-	filetypes = { "graphql", "typescriptreact" },
 })
 lspconfig.lua_ls.setup({ capabilities = capabilities })
 lspconfig.nil_ls.setup({ capabilities = capabilities })
@@ -243,9 +212,7 @@ require("tailwind-tools").setup({
 		min_length = 10,
 	},
 })
-require("tsc").setup({
-	use_trouble_qflist = true,
-})
+require("tsc").setup()
 
 require("CopilotChat").setup({})
 
@@ -379,63 +346,98 @@ local map = vim.keymap.set
 
 map("n", "<Esc>", ":noh<CR><Esc>", { noremap = true, silent = true }) -- escape to cancel search
 
-map("n", "<leader><leader>", "<Cmd>lua require('fzf-lua').buffers()<cr>", { desc = "Buffers" })
-map("n", "<leader>/", "<Cmd>lua require('fzf-lua').blines()<cr>", { desc = "Buffer Lines" })
-map("n", "<leader>:", "<Cmd>lua require('fzf-lua').command_history()<cr>", { desc = "Command History" })
-map("n", "<Leader>e", "<Cmd>Yazi<cr>", { desc = "Explorer" })
-map("n", "<Leader>x", "<Cmd>Trouble<cr>", { desc = "Trouble" })
+map("n", "<leader><leader>", "<Cmd>Telescope frecency<cr>", { desc = "Smart find files" })
+map(
+	"n",
+	"<leader>/",
+	"<Cmd>lua require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_ivy({ border = false }))<cr>",
+	{ desc = "Buffer Lines" }
+)
+map("n", "<leader>:", "<Cmd>Telescope command_history<cr>", { desc = "Command History" })
+map(
+	"n",
+	"<Leader>e",
+	"<Cmd>lua Snacks.explorer({ layout = { layout = { position = 'right' } } })<cr>",
+	{ desc = "Explorer" }
+)
+map("n", "<Leader>E", "<Cmd>lua Snacks.explorer.reveal()<cr>", { desc = "Explorer file" })
 
 -- LSP mappings
-map("n", "gd", "<Cmd>lua require('fzf-lua').lsp_definitions()<cr>", { desc = "Goto Definition" })
-map("n", "gD", "<Cmd>lua require('fzf-lua').lsp_declarations()<cr>", { desc = "Goto Declaration" })
-map("n", "gr", "<Cmd>lua require('fzf-lua').lsp_references()<cr>", { desc = "References", nowait = true })
-map("n", "gI", "<Cmd>lua require('fzf-lua').lsp_implementations()<cr>", { desc = "Goto Implementation" })
-map("n", "<leader>ss", "<Cmd>lua require('fzf-lua').lsp_document_symbols()<cr>", { desc = "LSP Symbols" })
-map("n", "<leader>sS", "<Cmd>lua require('fzf-lua').lsp_workspace_symbols()<cr>", { desc = "LSP Workspace Symbols" })
-map("n", "<leader>z", "<Cmd>lua require('fzf-lua').zoxide()<cr>", { desc = "Zoxide projects" })
+map(
+	"n",
+	"gd",
+	"<Cmd>lua require('telescope.builtin').lsp_definitions(require('telescope.themes').get_dropdown({ border = false }))<cr>",
+	{ desc = "Goto Definition" }
+)
+map(
+	"n",
+	"gD",
+	"<Cmd>lua require('telescope.builtin').lsp_declarations(require('telescope.themes').get_dropdown({ border = false }))<cr>",
+	{ desc = "Goto Declaration" }
+)
+map(
+	"n",
+	"gr",
+	"<Cmd>lua require('telescope.builtin').lsp_references(require('telescope.themes').get_dropdown({ border = false }))<cr>",
+	{ desc = "References", nowait = true }
+)
+map(
+	"n",
+	"gI",
+	"<Cmd>lua require('telescope.builtin').lsp_implementations(require('telescope.themes').get_dropdown({ border = false }))<cr>",
+	{ desc = "Goto Implementation" }
+)
+map(
+	"n",
+	"<leader>ss",
+	"<Cmd>lua require('telescope.builtin').lsp_document_symbols(require('telescope.themes').get_dropdown({ border = false }))<cr>",
+	{ desc = "LSP Symbols" }
+)
+map(
+	"n",
+	"<leader>sS",
+	"<Cmd>lua require('telescope.builtin').lsp_workspace_symbols(require('telescope.themes').get_dropdown({ border = false }))<cr>",
+	{ desc = "LSP Workspace Symbols" }
+)
 
 -- file
-map("n", "<leader>ff", "<Cmd>lua require('fzf-lua').files()<cr>", { desc = "Find Files" })
-map("n", "<leader>fr", "<Cmd>lua require('fzf-lua').oldfiles()<cr>", { desc = "Recent" })
+map("n", "<leader>ff", "<Cmd>Telescope find_files<cr>", { desc = "Find Files" })
+map("n", "<leader>fr", "<Cmd>Telescope oldfiles<cr>", { desc = "Recent" })
 
 -- Buffer mappings
-map("n", "<Leader>bd", "<Cmd>lua MiniBufremove.delete()<cr>", { desc = "Delete" })
+map("n", "<Leader>bd", "<Cmd>lua Snacks.bufdelete()<cr>", { desc = "Delete" })
+map("n", "<leader>bb", "<Cmd>Telescope buffers<cr>", { desc = "Switch Buffers" })
 
 -- code
 map("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
 map("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
-map("n", "<Leader>ca", "<Cmd>lua vim.lsp.buf.code_action()<cr>", { desc = "Code actions" })
+map("n", "<Leader>ca", "<Cmd>lua require('actions-preview').code_actions()<cr>", { desc = "Code actions" })
 map("n", "<Leader>cc", "<Cmd>CopilotChat<cr>", { desc = "Copilot chat" })
 
 -- git
 map("n", "<leader>gb", "<Cmd>Git blame<cr>", { desc = "Git Blame" })
-map("n", "<leader>gB", "<Cmd>lua require('fzf-lua').git_branches()<cr>", { desc = "Git Branches" })
-map("n", "<leader>gs", "<Cmd>lua require('fzf-lua').git_status()<cr>", { desc = "Git Status" })
-map("n", "<leader>gS", "<Cmd>lua require('fzf-lua').git_stash()<cr>", { desc = "Git Stash" })
-map("n", "<leader>gp", "<Cmd>lua require('fzf-lua').git_commits()<cr>", { desc = "Project Commits" })
-map("n", "<leader>gc", "<Cmd>lua require('fzf-lua').git_bcommits()<cr>", { desc = "Buffer Commits" })
-map("n", "<leader>gB", "<Cmd>lua require('fzf-lua').git_blame()<cr>", { desc = "Git Blame" })
+map("n", "<leader>gB", "<Cmd>Telescope git_branches<cr>", { desc = "Git Branches" })
+map("n", "<leader>gs", "<Cmd>Telescope git_status<cr>", { desc = "Git Status" })
+map("n", "<leader>gS", "<Cmd>Telescope git_stash<cr>", { desc = "Git Stash" })
 
 -- search
-map("n", "<leader>sg", "<Cmd>lua require('fzf-lua').live_grep_native()<cr>", { desc = "Grep project" })
-map("n", '<leader>s"', "<Cmd>lua require('fzf-lua').registers()<cr>", { desc = "Registers" })
-map("n", "<leader>s/", "<Cmd>lua require('fzf-lua').search_history()<cr>", { desc = "Search History" })
-map("n", "<leader>sa", "<Cmd>lua require('fzf-lua').autocmds()<cr>", { desc = "Autocmds" })
-map("n", "<leader>sc", "<Cmd>lua require('fzf-lua').command_history()<cr>", { desc = "Command History" })
-map("n", "<leader>sC", "<Cmd>lua require('fzf-lua').commands()<cr>", { desc = "Commands" })
-map("n", "<leader>sd", "<Cmd>lua require('fzf-lua').diagnostics_workspace()<cr>", { desc = "Diagnostics" })
-map("n", "<leader>sD", "<Cmd>lua require('fzf-lua').diagnostics_document()<cr>", { desc = "Buffer Diagnostics" })
-map("n", "<leader>sH", "<Cmd>lua require('fzf-lua').highlights()<cr>", { desc = "Highlights" })
-map("n", "<leader>sj", "<Cmd>lua require('fzf-lua').jumps()<cr>", { desc = "Jumps" })
-map("n", "<leader>sk", "<Cmd>lua require('fzf-lua').keymaps()<cr>", { desc = "Keymaps" })
-map("n", "<leader>sl", "<Cmd>lua require('fzf-lua').grep_loclist()<cr>", { desc = "Location List" })
-map("n", "<leader>sm", "<Cmd>lua require('fzf-lua').marks()<cr>", { desc = "Marks" })
-map("n", "<leader>sM", "<Cmd>lua require('fzf-lua').manpages()<cr>", { desc = "Man Pages" })
-map("n", "<leader>sq", "<Cmd>lua require('fzf-lua').grep_quickfix()<cr>", { desc = "Quickfix List" })
-map("n", "<leader>so", "<Cmd>FzfLua<cr>", { desc = "Search options" })
+map("n", "<leader>sw", "<Cmd>Telescope grep_string<cr>", { desc = "Current word" })
+map("n", "<leader>sg", "<Cmd>Telescope live_grep<cr>", { desc = "Grep project" })
+map("n", '<leader>s"', "<Cmd>Telescope registers<cr>", { desc = "Registers" })
+map("n", "<leader>s/", "<Cmd>Telescope search_history<cr>", { desc = "Search History" })
+map("n", "<leader>sa", "<Cmd>Telescope autocommands<cr>", { desc = "Autocmds" })
+map("n", "<leader>sc", "<Cmd>Telescope command_history<cr>", { desc = "Command History" })
+map("n", "<leader>sC", "<Cmd>Telescope commands<cr>", { desc = "Commands" })
+map("n", "<leader>sD", "<Cmd>Telescope diagnostics<cr>", { desc = "Buffer Diagnostics" })
+map("n", "<leader>sH", "<Cmd>Telescope highlights<cr>", { desc = "Highlights" })
+map("n", "<leader>sj", "<Cmd>Telescope jumplist<cr>", { desc = "Jumplist" })
+map("n", "<leader>sk", "<Cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
+map("n", "<leader>sl", "<Cmd>Telescope loclist<cr>", { desc = "Location List" })
+map("n", "<leader>sm", "<Cmd>Telescope marks<cr>", { desc = "Marks" })
+map("n", "<leader>sq", "<Cmd>Telescope quickfix<cr>", { desc = "Quickfix List" })
 
 -- ui
-map("n", "<leader>uC", "<Cmd>lua require('fzf-lua').colorschemes()<cr>", { desc = "Colorschemes" })
+map("n", "<leader>uC", "<Cmd>Telescope colorscheme<cr>", { desc = "Color schemes" })
 
 -- typescript
 map("n", "<Leader>tn", "<Cmd>lua require('neotest').run.run()<CR>", { desc = "Run nearest test" })

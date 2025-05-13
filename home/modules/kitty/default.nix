@@ -1,4 +1,4 @@
-{ config, lib, ... }: 
+{ config, lib, ... }:
 
 with lib;
 
@@ -8,10 +8,11 @@ with lib;
   config = mkIf config.modules.kitty.enable {
     programs.kitty = {
       enable = true;
-      themeFile = "rose-pine-moon";
+      themeFile = "Catppuccin-Mocha";
 
       font = {
-        name = "CommitMono Regular";
+        name =
+          "family='CommitMono Nerd Font' features='+ss01 +ss02 +ss03 +ss04 +ss05 +cv01 +cv06'";
         size = 14;
       };
 
@@ -29,9 +30,15 @@ with lib;
         wayland_titlebar_color = "#2a273f";
         macos_titlebar_color = "#2a273f";
 
-        bold_font = "auto";
-        italic_font = "auto";
-        bold_italic_font = "auto";
+        regular_font =
+          "family='CommitMono Nerd Font Regular' features='+ss01 +ss02 +ss03 +ss04 +ss05 +cv01 +cv06'";
+
+        bold_font =
+          "family='CommitMono Nerd Font Bold' features='+ss01 +ss02 +ss03 +ss04 +ss05 +cv01 +cv06'";
+        italic_font =
+          "family='CommitMono Nerd Font Italic' features='+ss01 +ss02 +ss03 +ss04 +ss05 +cv01 +cv06'";
+        bold_italic_font =
+          "family='CommitMono Nerd Font Bold Italic' features='+ss01 +ss02 +ss03 +ss04 +ss05 +cv01 +cv06'";
       };
     };
     xdg.configFile = {

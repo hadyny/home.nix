@@ -8,6 +8,7 @@
       extensions = [
         "bodil.file-browser"
         "bradlc.vscode-tailwindcss"
+        "catppuccin.catppuccin-vsc"
         "christian-kohler.npm-intellisense"
         "dbaeumer.vscode-eslint"
         "docker.docker"
@@ -26,14 +27,12 @@
         "jock.svg"
         "kahole.magit"
         "mechatroner.rainbow-csv"
-        "ms-azuretools.vscode-docker"
         "ms-dotnettools.csdevkit"
         "ms-dotnettools.csharp"
         "ms-dotnettools.vscode-dotnet-runtime"
         "ms-dotnettools.vscodeintellicode-csharp"
         "ms-vscode-remote.remote-containers"
         "ms-vscode.live-server"
-        "mvllow.rose-pine"
         "redhat.vscode-yaml"
         "sumneko.lua"
         "vscodevim.vim"
@@ -56,6 +55,7 @@
       "obsidian"
       "postman"
       "slack"
+      "ghostty"
     ];
 
     global.brewfile = true;
