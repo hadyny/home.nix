@@ -5,9 +5,7 @@
 # Also enables Home Manager.
 # Home Manager is used for the rest of user-level configuration.
 # Home Manager configuratio is located in ./home folder.
-{ config, pkgs, lib, ... }:
-let modules = import ./lib/modules.nix { inherit lib; };
-in {
+{ config, pkgs, lib, ... }: {
   documentation.enable = false;
 
   nixpkgs.overlays = [
@@ -16,8 +14,18 @@ in {
     (import ./overlays/pinned.nix)
   ];
 
-  imports = [ ./certificates.nix ./users.nix <home-manager/nix-darwin> ]
-    ++ (modules.importAllModules ./darwin);
+  imports = [
+    ./certificates.nix
+    ./users.nix
+    ./darwin/modules/apps/vscode.nix
+    ./darwin/modules/apps/raycast.nix
+    ./darwin/modules/options/dock-apps.nix
+    ./darwin/modules/options/plists.nix
+    ./darwin/apps.nix
+    ./darwin/dock.nix
+    ./darwin/preferences.nix
+    <home-manager/nix-darwin>
+  ];
 
   programs.zsh.enable = true;
 
@@ -51,11 +59,9 @@ in {
     };
   };
 
-  # nixpkgs.config.allowBroken = true;
   nixpkgs.config.allowUnfree = true;
 
   nix = {
-    # package = pkgs.nix;
     package = pkgs.nixVersions.latest;
 
     settings = {

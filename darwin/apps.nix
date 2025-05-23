@@ -1,7 +1,6 @@
 {
   darwin.apps = {
     raycast.enable = true;
-    iterm2.enable = true;
 
     vscode = {
       enable = true;

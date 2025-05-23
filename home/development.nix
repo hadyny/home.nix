@@ -51,7 +51,6 @@ in {
     csharpier
     csharprepl
 
-    typescript-language-server
     tailwindcss-language-server
     rustywind
     graphql-language-service-cli

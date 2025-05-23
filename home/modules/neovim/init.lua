@@ -1,10 +1,16 @@
 local vim = vim
 local options = vim.o
+local globals = vim.g
+local diagnostics = vim.diagnostic
+
+globals.mapleader = " "
+globals.maplocalleader = " "
 
 options.termguicolors = true
 options.cursorline = true
 options.tabstop = 4
 options.expandtab = true
+options.breakindent = true
 options.softtabstop = 4
 options.smartindent = true
 options.shiftwidth = 4
@@ -16,24 +22,48 @@ options.number = true
 options.relativenumber = true
 options.scrolloff = 4
 options.sidescrolloff = 8
-options.completeopt = "menu,menuone,noselect"
+options.completeopt = "menu,preview,noselect"
 options.confirm = true
 options.showmode = false
 options.mouse = "a"
 options.winborder = "single"
+options.inccommand = "split"
 
 vim.schedule(function()
-	vim.o.clipboard = "unnamedplus"
+	options.clipboard = "unnamedplus"
 end)
+options.foldlevel = 99
+options.foldmethod = "expr"
+options.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
-vim.diagnostic.config({
+vim.api.nvim_create_autocmd("LspAttach", {
+	desc = "User: Set LSP folding if client supports it",
+	callback = function(ctx)
+		local client = assert(vim.lsp.get_client_by_id(ctx.data.client_id))
+		if client:supports_method("textDocument/foldingRange") then
+			local win = vim.api.nvim_get_current_win()
+			vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
+		end
+	end,
+})
+
+local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
+vim.api.nvim_create_autocmd("TextYankPost", {
+	callback = function()
+		vim.highlight.on_yank()
+	end,
+	group = highlight_group,
+	pattern = "*",
+})
+
+diagnostics.config({
 	virtual_text = false,
 	signs = {
 		text = {
-			[vim.diagnostic.severity.ERROR] = "󰅙",
-			[vim.diagnostic.severity.WARN] = "",
-			[vim.diagnostic.severity.INFO] = "󰋼",
-			[vim.diagnostic.severity.HINT] = "󰌵",
+			[diagnostics.severity.ERROR] = "󰅙",
+			[diagnostics.severity.WARN] = "",
+			[diagnostics.severity.INFO] = "󰋼",
+			[diagnostics.severity.HINT] = "󰌵",
 		},
 	},
 	underline = true,
@@ -43,6 +73,9 @@ local MiniIcons = require("mini.icons")
 MiniIcons.setup()
 MiniIcons.mock_nvim_web_devicons()
 MiniIcons.tweak_lsp_kind()
+
+require("mini.pick").setup()
+require("mini.extra").setup()
 
 require("catppuccin").setup({
 	flavour = "auto",
@@ -54,13 +87,9 @@ require("catppuccin").setup({
 	integrations = {
 		diffview = true,
 		gitgraph = true,
-		which_key = true,
 		mini = {
 			enabled = true,
 			indentscope_color = "lavender",
-		},
-		telescope = {
-			enabled = true,
 		},
 	},
 })
@@ -71,49 +100,75 @@ require("nvim-highlight-colors").setup({
 	render = "background",
 })
 
-require("blink.cmp").setup({
-	cmdline = {
-		keymap = {
-			preset = "cmdline",
-			["<CR>"] = { "select_and_accept", "fallback" },
-		},
+local MiniCompletion = require("mini.completion")
+
+local process_items = function(items, base)
+	-- Don't show 'Text' suggestions
+	items = vim.tbl_filter(function(x)
+		return x.kind ~= 1
+	end, items)
+	return MiniCompletion.default_process_items(items, base)
+end
+local on_attach = function(args)
+	vim.bo[args.buf].omnifunc = "v:lua.MiniCompletion.completefunc_lsp"
+end
+vim.api.nvim_create_autocmd("LspAttach", { callback = on_attach })
+
+MiniCompletion.setup({
+	mappings = {
+		go_in = "<RET>",
 	},
-	completion = {
-		list = { selection = { preselect = false, auto_insert = true } },
-		menu = {
-			border = "single",
-			winhighlight = "Normal:BlinkCmpDoc,FloatBorder:BlinkCmpDocBorder,CursorLine:BlinkCmpDocCursorLine,Search:None",
-			scrolloff = 2,
-			scrollbar = false,
-		},
-		documentation = { auto_show = true, auto_show_delay_ms = 200, window = { border = "single" } },
-		ghost_text = { enabled = true },
-	},
-	keymap = {
-		preset = "default",
-		["<CR>"] = { "select_and_accept", "fallback" },
-	},
-	signature = { enabled = true },
+	lsp_completion = { source_func = "omnifunc", auto_setup = false, process_items = process_items },
 })
 
-local wk = require("which-key")
-wk.setup({ preset = "classic" })
-wk.add({
-	{ "<leader>f", group = "file" },
-	{ "<leader>c", group = "code" },
-	{ "<leader>g", group = "git" },
-	{ "<leader>s", group = "search" },
-	{ "<leader>u", group = "ui" },
-	{ "g", group = "goto" },
-	{ "<leader>t", group = "typescript" },
-	{ "<leader>d", group = "dotnet" },
-	{ "<leader>w", proxy = "<c-w>", group = "windows" },
-	{
-		"<leader>b",
-		group = "buffers",
-		expand = function()
-			return require("which-key.extras").expand.buf()
-		end,
+local miniclue = require("mini.clue")
+miniclue.setup({
+	triggers = {
+		-- Leader triggers
+		{ mode = "n", keys = "<Leader>" },
+		{ mode = "x", keys = "<Leader>" },
+
+		-- Built-in completion
+		{ mode = "i", keys = "<C-x>" },
+
+		-- `g` key
+		{ mode = "n", keys = "g" },
+		{ mode = "x", keys = "g" },
+
+		-- Marks
+		{ mode = "n", keys = "'" },
+		{ mode = "n", keys = "`" },
+		{ mode = "x", keys = "'" },
+		{ mode = "x", keys = "`" },
+
+		-- Registers
+		{ mode = "n", keys = '"' },
+		{ mode = "x", keys = '"' },
+		{ mode = "i", keys = "<C-r>" },
+		{ mode = "c", keys = "<C-r>" },
+
+		-- Window commands
+		{ mode = "n", keys = "<C-w>" },
+
+		-- `z` key
+		{ mode = "n", keys = "z" },
+		{ mode = "x", keys = "z" },
+	},
+
+	clues = {
+		{ mode = "n", keys = "<Leader>f", desc = "files" },
+		{ mode = "n", keys = "<Leader>c", desc = "code" },
+		{ mode = "n", keys = "<Leader>g", desc = "git" },
+		{ mode = "n", keys = "<Leader>s", desc = "search" },
+		{ mode = "n", keys = "g", desc = "goto" },
+		{ mode = "n", keys = "<Leader>t", desc = "typescript" },
+		{ mode = "n", keys = "<Leader>d", desc = "dotnet" },
+		miniclue.gen_clues.builtin_completion(),
+		miniclue.gen_clues.g(),
+		miniclue.gen_clues.marks(),
+		miniclue.gen_clues.registers(),
+		miniclue.gen_clues.windows(),
+		miniclue.gen_clues.z(),
 	},
 })
 
@@ -134,7 +189,7 @@ require("conform").setup({
 	},
 	format_on_save = { timeout_ms = 500 },
 })
-vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+options.formatexpr = "v:lua.require'conform'.formatexpr()"
 
 require("gitsigns").setup()
 
@@ -151,58 +206,33 @@ require("Snacks").setup({
 	words = { enabled = true },
 })
 
-require("actions-preview").setup({
-	telescope = vim.tbl_extend("force", require("telescope.themes").get_dropdown({ border = false }), {
-		make_value = nil,
-		make_make_display = nil,
-	}),
-})
-
-require("telescope").setup({
-	defaults = {
-		border = false,
-		windblend = 10,
-		layout_strategy = "horizontal",
-		layout_config = {
-			horizontal = {
-				prompt_position = "top",
-			},
-		},
-		sorting_strategy = "ascending",
-	},
-})
-pcall(require("telescope").load_extension, "fzf")
-pcall(require("telescope").load_extension, "frecency")
-
-local capabilities = require("blink.cmp").get_lsp_capabilities()
-local lspconfig = require("lspconfig")
+local capabilities = MiniCompletion.get_lsp_capabilities()
 local util = require("lspconfig.util")
 
-lspconfig.eslint.setup({
-	capabilities = capabilities,
-	filetypes = {
-		"javascript",
-		"javascriptreact",
-		"javascript.jsx",
-		"typescript",
-		"typescriptreact",
-		"typescript.tsx",
-		"graphql",
-	},
-	on_attach = function(client, bufnr)
-		vim.api.nvim_create_autocmd("BufWritePre", {
-			buffer = bufnr,
-			command = "EslintFixAll",
-		})
-	end,
-})
-lspconfig.tailwindcss.setup({ capabilities = capabilities })
-lspconfig.graphql.setup({
-	capabilities = capabilities,
-	root_dir = util.root_pattern(".git"),
-})
-lspconfig.lua_ls.setup({ capabilities = capabilities })
-lspconfig.nil_ls.setup({ capabilities = capabilities })
+local front_end_ft = {
+	"javascript",
+	"javascriptreact",
+	"javascript.jsx",
+	"typescript",
+	"typescriptreact",
+	"typescript.tsx",
+	"graphql",
+}
+
+vim.lsp.config("eslint", { capabilities = capabilities, filetypes = front_end_ft })
+vim.lsp.enable("eslint")
+
+vim.lsp.config("tailwindcss", { capabilities = capabilities })
+vim.lsp.enable("tailwindcss")
+
+vim.lsp.config("graphql", { capabilities = capabilities, root_dir = util.root_pattern(".git") })
+vim.lsp.enable("graphql")
+
+vim.lsp.config("lua_ls", { capabilities = capabilities })
+vim.lsp.enable("lua_ls")
+
+vim.lsp.config("nil_ls", { capabilities = capabilities })
+vim.lsp.enable("nil_ls")
 
 require("typescript-tools").setup({})
 require("tailwind-tools").setup({
@@ -212,7 +242,6 @@ require("tailwind-tools").setup({
 		min_length = 10,
 	},
 })
-require("tsc").setup()
 
 require("CopilotChat").setup({})
 
@@ -229,10 +258,40 @@ require("neotest").setup({
 	},
 })
 
-require("tiny-inline-diagnostic").setup({
-	multilines = true,
-	break_line = { enabled = true },
-	enable_on_insert = false,
+local timer = vim.uv.new_timer()
+local delay = 500
+vim.api.nvim_create_autocmd({ "CursorMoved", "DiagnosticChanged" }, {
+	callback = function()
+		if vim.fn.mode() == "n" then
+			-- debounce
+			timer:start(delay, 0, function()
+				timer:stop()
+				vim.schedule(function()
+					vim.diagnostic.open_float(nil, { focusable = false, source = "if_many" })
+					local _, win = vim.diagnostic.open_float(nil, { focusable = false, source = "if_many" })
+
+					if not win then
+						return
+					end
+
+					local cfg = vim.api.nvim_win_get_config(win)
+
+					cfg.anchor = "NE"
+					cfg.row = 0
+					cfg.col = vim.o.columns - 1
+					cfg.width = math.min(cfg.width or 999, math.floor(vim.o.columns * 0.6))
+					cfg.height = math.min(cfg.height or 999, math.floor(vim.o.lines * 0.4))
+
+					vim.api.nvim_win_set_config(win, cfg)
+				end)
+			end)
+		end
+	end,
+})
+
+require("tiny-code-action").setup({
+	backend = "delta",
+	picker = "snacks",
 })
 
 require("roslyn").setup({
@@ -325,6 +384,7 @@ dap.configurations.cs = {
 		end,
 	},
 }
+
 -- TypeScript configuration
 dap.configurations.typescript = {
 	{
@@ -341,19 +401,15 @@ dap.configurations.typescript = {
 dap.configurations.javascript = dap.configurations.typescript
 
 -- Mappings
-vim.g.mapleader = " "
 local map = vim.keymap.set
+
+map("n", "gb", ":ls<cr>:b<space>", { noremap = true, desc = "Goto buffer" })
 
 map("n", "<Esc>", ":noh<CR><Esc>", { noremap = true, silent = true }) -- escape to cancel search
 
-map("n", "<leader><leader>", "<Cmd>Telescope frecency<cr>", { desc = "Smart find files" })
-map(
-	"n",
-	"<leader>/",
-	"<Cmd>lua require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_ivy({ border = false }))<cr>",
-	{ desc = "Buffer Lines" }
-)
-map("n", "<leader>:", "<Cmd>Telescope command_history<cr>", { desc = "Command History" })
+map("n", "<leader><leader>", "<Cmd>Resume search<cr>", { desc = "Resume search" })
+map("n", "<leader>/", "<Cmd>Pick buf_lines<cr>", { desc = "Buffer Lines" })
+map("n", "<leader>:", "<Cmd>Pick history<cr>", { desc = "Command History" })
 map(
 	"n",
 	"<Leader>e",
@@ -363,81 +419,51 @@ map(
 map("n", "<Leader>E", "<Cmd>lua Snacks.explorer.reveal()<cr>", { desc = "Explorer file" })
 
 -- LSP mappings
-map(
-	"n",
-	"gd",
-	"<Cmd>lua require('telescope.builtin').lsp_definitions(require('telescope.themes').get_dropdown({ border = false }))<cr>",
-	{ desc = "Goto Definition" }
-)
-map(
-	"n",
-	"gD",
-	"<Cmd>lua require('telescope.builtin').lsp_declarations(require('telescope.themes').get_dropdown({ border = false }))<cr>",
-	{ desc = "Goto Declaration" }
-)
-map(
-	"n",
-	"gr",
-	"<Cmd>lua require('telescope.builtin').lsp_references(require('telescope.themes').get_dropdown({ border = false }))<cr>",
-	{ desc = "References", nowait = true }
-)
-map(
-	"n",
-	"gI",
-	"<Cmd>lua require('telescope.builtin').lsp_implementations(require('telescope.themes').get_dropdown({ border = false }))<cr>",
-	{ desc = "Goto Implementation" }
-)
-map(
-	"n",
-	"<leader>ss",
-	"<Cmd>lua require('telescope.builtin').lsp_document_symbols(require('telescope.themes').get_dropdown({ border = false }))<cr>",
-	{ desc = "LSP Symbols" }
-)
+map("n", "<leader>sd", "<Cmd>Pick lsp scope='definition'<cr>", { desc = "Search definitions" })
+map("n", "<leader>sr", "<Cmd>Pick lsp scope='references'<cr>", { desc = "Search References" })
+map("n", "<leader>si", "<Cmd>Pick lsp scope='implementation'<cr>", { desc = "Search Implementations" })
+map("n", "<leader>ss", "<Cmd>Pick lsp scope='document_symbol'<cr>", { desc = "LSP Symbols" })
 map(
 	"n",
 	"<leader>sS",
-	"<Cmd>lua require('telescope.builtin').lsp_workspace_symbols(require('telescope.themes').get_dropdown({ border = false }))<cr>",
+	"<Cmd>Pick lsp scope='workspace_symbol' symbol_query=vim.fn.input('Symbol:\\ ')<cr>",
 	{ desc = "LSP Workspace Symbols" }
 )
 
 -- file
-map("n", "<leader>ff", "<Cmd>Telescope find_files<cr>", { desc = "Find Files" })
-map("n", "<leader>fr", "<Cmd>Telescope oldfiles<cr>", { desc = "Recent" })
+map("n", "<leader>ff", "<Cmd>Pick files<cr>", { desc = "Find Files" })
+map("n", "<leader>fr", "<Cmd>Pick oldfiles<cr>", { desc = "Recent" })
+map("n", "<leader>f+", "<Cmd>set foldlevel=99<cr>", { desc = "Expand all folds" })
+map("n", "<leader>f-", "<Cmd>set foldlevel=0<cr>", { desc = "Collapse all folds" })
+
+map("n", "<leader>-", "<Cmd>foldclose<cr>", { desc = "Collapse current fold" })
+map("n", "<leader>+", "<Cmd>foldopen<cr>", { desc = "Expand current fold" })
 
 -- Buffer mappings
-map("n", "<Leader>bd", "<Cmd>lua Snacks.bufdelete()<cr>", { desc = "Delete" })
-map("n", "<leader>bb", "<Cmd>Telescope buffers<cr>", { desc = "Switch Buffers" })
+map("n", "<Leader>bd", "<Cmd>bdelete<cr>", { desc = "Delete" })
+map("n", "<leader>bb", "<Cmd>Pick buffers<cr>", { desc = "Switch Buffers" })
 
 -- code
 map("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
 map("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
-map("n", "<Leader>ca", "<Cmd>lua require('actions-preview').code_actions()<cr>", { desc = "Code actions" })
+map("n", "<Leader>ca", "<Cmd>lua require('tiny-code-action').code_action()<cr>", { desc = "Code actions" })
 map("n", "<Leader>cc", "<Cmd>CopilotChat<cr>", { desc = "Copilot chat" })
 
 -- git
 map("n", "<leader>gb", "<Cmd>Git blame<cr>", { desc = "Git Blame" })
-map("n", "<leader>gB", "<Cmd>Telescope git_branches<cr>", { desc = "Git Branches" })
-map("n", "<leader>gs", "<Cmd>Telescope git_status<cr>", { desc = "Git Status" })
-map("n", "<leader>gS", "<Cmd>Telescope git_stash<cr>", { desc = "Git Stash" })
+map("n", "<leader>gB", "<Cmd>Pick git_branches<cr>", { desc = "Git Branches" })
+map("n", "<leader>gs", "<Cmd>Pick git_commits<cr>", { desc = "Git Commits" })
+map("n", "<leader>gS", "<Cmd>Pick git_files<cr>", { desc = "Git Files" })
 
 -- search
-map("n", "<leader>sw", "<Cmd>Telescope grep_string<cr>", { desc = "Current word" })
-map("n", "<leader>sg", "<Cmd>Telescope live_grep<cr>", { desc = "Grep project" })
-map("n", '<leader>s"', "<Cmd>Telescope registers<cr>", { desc = "Registers" })
-map("n", "<leader>s/", "<Cmd>Telescope search_history<cr>", { desc = "Search History" })
-map("n", "<leader>sa", "<Cmd>Telescope autocommands<cr>", { desc = "Autocmds" })
-map("n", "<leader>sc", "<Cmd>Telescope command_history<cr>", { desc = "Command History" })
-map("n", "<leader>sC", "<Cmd>Telescope commands<cr>", { desc = "Commands" })
-map("n", "<leader>sD", "<Cmd>Telescope diagnostics<cr>", { desc = "Buffer Diagnostics" })
-map("n", "<leader>sH", "<Cmd>Telescope highlights<cr>", { desc = "Highlights" })
-map("n", "<leader>sj", "<Cmd>Telescope jumplist<cr>", { desc = "Jumplist" })
-map("n", "<leader>sk", "<Cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
-map("n", "<leader>sl", "<Cmd>Telescope loclist<cr>", { desc = "Location List" })
-map("n", "<leader>sm", "<Cmd>Telescope marks<cr>", { desc = "Marks" })
-map("n", "<leader>sq", "<Cmd>Telescope quickfix<cr>", { desc = "Quickfix List" })
-
--- ui
-map("n", "<leader>uC", "<Cmd>Telescope colorscheme<cr>", { desc = "Color schemes" })
+map("n", "<leader>sg", "<Cmd>Pick grep_live<cr>", { desc = "Grep project" })
+map("n", '<leader>s"', "<Cmd>Pick registers<cr>", { desc = "Registers" })
+map("n", "<leader>sC", "<Cmd>Pick commands<cr>", { desc = "Commands" })
+map("n", "<leader>sD", "<Cmd>Pick diagnostic<cr>", { desc = "Buffer Diagnostics" })
+map("n", "<leader>sj", "<Cmd>Pick list scope='jump'<cr>", { desc = "Jumplist" })
+map("n", "<leader>sk", "<Cmd>Pick keymaps<cr>", { desc = "Keymaps" })
+map("n", "<leader>sm", "<Cmd>Pick marks<cr>", { desc = "Marks" })
+map("n", "<leader>sq", "<Cmd>Pick list scope='quickfix'<cr>", { desc = "Quickfix List" })
 
 -- typescript
 map("n", "<Leader>tn", "<Cmd>lua require('neotest').run.run()<CR>", { desc = "Run nearest test" })
@@ -448,7 +474,6 @@ map("n", "<Leader>ts", "<Cmd>lua require('neotest').summary.toggle()<CR>", { des
 map("n", "<Leader>to", "<Cmd>lua require('neotest').output.open()<CR>", { desc = "Show test output" })
 map("n", "<Leader>tp", "<Cmd>lua require('neotest').output_panel.toggle()<CR>", { desc = "Toggle output panel" })
 map("n", "<Leader>tt", "<Cmd>TailwindConcealToggle<cr>", { desc = "Toggle Tailwind concealing" })
-map("n", "<Leader>tt", "<Cmd>TSC<cr>", { desc = "Solution type checking" })
 
 map(
 	"n",

@@ -1,9 +1,7 @@
 # Main user-level configuration
-{ config, lib, pkgs, ... }:
+{ config, pkgs, ... }:
 
-let
-  secrets = import ./secrets;
-  modules = import ../lib/modules.nix { inherit lib; };
+let secrets = import ./secrets;
 in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
@@ -27,7 +25,17 @@ in {
 
     # everything for work
     ./work
-  ] ++ (modules.importAllModules ./modules);
+
+    ./modules/kitty
+    ./modules/neovim
+    ./modules/secureEnv/onePassword.nix
+    ./modules/services/colima.nix
+    ./modules/settings/wallpaper.nix
+    ./modules/tools/aws.nix
+    ./modules/tools/dotnet.nix
+    ./modules/tools/git.nix
+  ];
+  # ] ++ (modules.importAllModules ./modules);
 
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
@@ -100,16 +108,6 @@ in {
     fzf = {
       enable = true;
       enableZshIntegration = true;
-    };
-
-    tmux = {
-      enable = true;
-      tmuxinator.enable = true;
-      keyMode = "vi";
-      terminal = "screen-256color";
-      focusEvents = true;
-      baseIndex = 1;
-      mouse = true;
     };
 
     yazi.enable = true;
