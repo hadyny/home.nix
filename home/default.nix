@@ -1,7 +1,9 @@
 # Main user-level configuration
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
-let secrets = import ./secrets;
+let
+  modules = import ../lib/modules.nix { inherit lib; };
+  secrets = import ./secrets;
 in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
@@ -26,6 +28,8 @@ in {
     # everything for work
     ./work
 
+    # ./neovimBeta
+
     ./modules/kitty
     ./modules/neovim
     ./modules/secureEnv/onePassword.nix
@@ -44,7 +48,10 @@ in {
     homeDirectory = config.user.home;
     wallpaper.file = ./config/wallpaper/wallpaper.jpg;
 
-    sessionVariables = { EDITOR = "nvim"; };
+    sessionVariables = {
+      EDITOR = "nvim";
+      TERM = "xterm-256color";
+    };
 
     sessionPath = [ "/opt/homebrew/bin" ];
 
@@ -68,8 +75,6 @@ in {
     jetbrains.datagrip
     jetbrains.rider
     jetbrains.goland
-
-    brave
   ];
 
   programs = {
@@ -109,6 +114,8 @@ in {
       enable = true;
       enableZshIntegration = true;
     };
+
+    lazydocker.enable = true;
 
     yazi.enable = true;
 

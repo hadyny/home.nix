@@ -27,8 +27,6 @@ in {
     spicedb-zed
     mitmproxy
 
-    netcoredbg
-
     # kafka
     redpanda-client
     kafkactl
@@ -36,7 +34,6 @@ in {
 
     # docker
     docker-credential-helpers
-    lazydocker # docker UI
     dockfmt
 
     # language servers

@@ -2,10 +2,8 @@
 
 with lib;
 
-let
-  cfg = config.tools.git;
-in
-{
+let cfg = config.tools.git;
+in {
   options.tools.git = {
     enable = mkEnableOption "Enable GIT";
 
@@ -20,15 +18,20 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.file = lib.mapAttrs' (k: v: lib.nameValuePair "${k}/.gitconfig" { text = lib.generators.toINI { } v; }) cfg.workspaces;
+    home.file = lib.mapAttrs' (k: v:
+      lib.nameValuePair "${k}/.gitconfig" {
+        text = lib.generators.toINI { } v;
+      }) cfg.workspaces;
 
     programs = {
       git = {
         enable = true;
         aliases = {
-          aliases = "config --get-regexp ^alias\.";
-          branches = "branch -a --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:blue)(%(committerdate:short)) [%(authorname)]' --sort=-committerdate";
-          logs = "log --pretty=format:'%C(auto)%h%C(reset) %C(cyan)%ad%C(auto)%d%C(reset) %s %C(blue)[%cn]%C(reset)' --date=short-local --graph --all";
+          aliases = "config --get-regexp ^alias.";
+          branches =
+            "branch -a --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:blue)(%(committerdate:short)) [%(authorname)]' --sort=-committerdate";
+          logs =
+            "log --pretty=format:'%C(auto)%h%C(reset) %C(cyan)%ad%C(auto)%d%C(reset) %s %C(blue)[%cn]%C(reset)' --date=short-local --graph --all";
           uncommit = "reset --mixed HEAD~1";
         };
         lfs.enable = true;
@@ -58,8 +61,10 @@ in
           diff.colorMoved = "default";
         };
 
-        includes = map (x: { condition = "gitdir:~/${x}/"; path = "~/${x}/.gitconfig"; })
-          (lib.attrNames cfg.workspaces);
+        includes = map (x: {
+          condition = "gitdir:~/${x}/";
+          path = "~/${x}/.gitconfig";
+        }) (lib.attrNames cfg.workspaces);
       };
 
       lazygit = {
@@ -82,27 +87,28 @@ in
               description = "commit with commitizen";
               context = "files";
               loadingText = "opening commitizen commit tool";
-              subprocess = true;
+              output = "terminal";
             }
             {
               key = "t";
-              command = "tig {{.SelectedSubCommit.Sha}} -- {{.SelectedCommitFile.Name}}";
+              command =
+                "tig {{.SelectedSubCommit.Sha}} -- {{.SelectedCommitFile.Name}}";
               context = "commitFiles";
               description = "tig file (history of commits affecting file)";
-              subprocess = true;
+              output = "terminal";
             }
             {
               key = "t";
               command = "tig -- {{.SelectedFile.Name}}";
               context = "files";
               description = "tig file (history of commits affecting file)";
-              subprocess = true;
+              output = "terminal";
             }
             {
               key = "E";
               description = "Add empty commit";
               context = "commits";
-              command = "git commit --allow-empty -m \"empty commit\"";
+              command = ''git commit --allow-empty -m "empty commit"'';
               loadingText = "Committing empty commit...";
             }
             {
@@ -155,8 +161,6 @@ in
       tig
     ];
 
-    home.sessionVariables = {
-      GH_PAGER = "delta";
-    };
+    home.sessionVariables = { GH_PAGER = "delta"; };
   };
 }
