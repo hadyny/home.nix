@@ -27,24 +27,14 @@ with lib;
         neotest-dotnet
         roslyn-nvim
         nvim-dap
+        nvim-dap-ui
+        nvim-dap-virtual-text
         tailwind-tools-nvim
         CopilotChat-nvim
-        easy-dotnet-nvim
         conform-nvim
-        vim-fugitive
         render-markdown-nvim
         snacks-nvim
-        (pkgs.vimUtils.buildVimPlugin {
-          pname = "tiny-code-action.nvim";
-          version = "0.0.0";
-          doCheck = false;
-          src = pkgs.fetchFromGitHub {
-            owner = "rachartier";
-            repo = "tiny-code-action.nvim";
-            rev = "main"; # or a specific commit hash
-            sha256 = "sha256-I/UMOckl3raSw3wQFeklGRm3KTmds6cAUZjjhioBrDw=";
-          };
-        })
+        vim-sleuth
       ];
     };
   };

@@ -161,8 +161,8 @@ miniclue.setup({
 		{ mode = "n", keys = "<Leader>g", desc = "git" },
 		{ mode = "n", keys = "<Leader>s", desc = "search" },
 		{ mode = "n", keys = "g", desc = "goto" },
-		{ mode = "n", keys = "<Leader>t", desc = "typescript" },
-		{ mode = "n", keys = "<Leader>d", desc = "dotnet" },
+		{ mode = "n", keys = "<Leader>t", desc = "testing" },
+		{ mode = "n", keys = "<Leader>d", desc = "debug" },
 		miniclue.gen_clues.builtin_completion(),
 		miniclue.gen_clues.g(),
 		miniclue.gen_clues.marks(),
@@ -289,73 +289,68 @@ vim.api.nvim_create_autocmd({ "CursorMoved", "DiagnosticChanged" }, {
 	end,
 })
 
-require("tiny-code-action").setup({
-	backend = "delta",
-	picker = "snacks",
-})
-
 require("roslyn").setup({
 	exe = "Microsoft.CodeAnalysis.LanguageServer",
 })
 
-require("easy-dotnet").setup({
-	test_runner = {
-		viewmode = "float",
-		mappings = {
-			run_test_from_buffer = { lhs = "<leader>r", desc = "run test from buffer" },
-			filter_failed_tests = { lhs = "<leader>fe", desc = "filter failed tests" },
-			debug_test = { lhs = "<leader>dd", desc = "debug test" },
-			go_to_file = { lhs = "g", desc = "got to file" },
-			run_all = { lhs = "<leader>R", desc = "run all tests" },
-			run = { lhs = "<leader>rt", desc = "run test" },
-			peek_stacktrace = { lhs = "<leader>p", desc = "peek stacktrace of failed test" },
-			expand = { lhs = "o", desc = "expand" },
-			expand_node = { lhs = "E", desc = "expand node" },
-			expand_all = { lhs = "-", desc = "expand all" },
-			collapse_all = { lhs = "W", desc = "collapse all" },
-			close = { lhs = "q", desc = "close testrunner" },
-			refresh_testrunner = { lhs = "<C-r>", desc = "refresh testrunner" },
+-- configure dap
+local dap = require("dap")
+local dapui = require("dapui")
+
+dap.listeners.after.event_initialized["dapui_config"] = dapui.open
+dap.listeners.before.event_terminated["dapui_config"] = dapui.close
+dap.listeners.before.event_exited["dapui_config"] = dapui.close
+
+dapui.setup({
+	icons = { expanded = "▾", collapsed = "▸", current_frame = "*" },
+	controls = {
+		icons = {
+			pause = "⏸",
+			play = "▶",
+			step_into = "⏎",
+			step_over = "⏭",
+			step_out = "⏮",
+			step_back = "b",
+			run_last = "▶▶",
+			terminate = "⏹",
+			disconnect = "⏏",
 		},
 	},
 })
 
--- configure dap
-local dap = require("dap")
+require("nvim-dap-virtual-text").setup({
+	enabled = true, -- enable this plugin (the default)
+	enabled_commands = true, -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
+	highlight_changed_variables = true, -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
+	highlight_new_as_changed = false, -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
+	show_stop_reason = true, -- show stop reason when stopped for exceptions
+	commented = false, -- prefix virtual text with comment string
+	only_first_definition = true, -- only show virtual text at first definition (if there are multiple)
+	all_references = false, -- show virtual text on all all references of the variable (not only definitions)
+	clear_on_continue = false, -- clear virtual text on "continue" (might cause flickering when stepping)
+	--- A callback that determines how a variable is displayed or whether it should be omitted
+	--- variable Variable https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable
+	--- buf number
+	--- stackframe dap.StackFrame https://microsoft.github.io/debug-adapter-protocol/specification#Types_StackFrame
+	--- node userdata tree-sitter node identified as variable definition of reference (see `:h tsnode`)
+	--- options nvim_dap_virtual_text_options Current options for nvim-dap-virtual-text
+	--- string|nil A text how the virtual text should be displayed or nil, if this variable shouldn't be displayed
+	display_callback = function(variable, buf, stackframe, node, options)
+		if options.virt_text_pos == "inline" then
+			return " = " .. variable.value
+		else
+			return variable.name .. " = " .. variable.value
+		end
+	end,
+	-- position of virtual text, see `:h nvim_buf_set_extmark()`, default tries to inline the virtual text. Use 'eol' to set to end of line
+	virt_text_pos = vim.fn.has("nvim-0.10") == 1 and "inline" or "eol",
 
--- .NET (C#) configuration
--- easy-dotnet setup
-local dotnet = require("easy-dotnet")
-local debug_dll = nil
-
-local function ensure_dll()
-	if debug_dll ~= nil then
-		return debug_dll
-	end
-	local dll = dotnet.get_debug_dll()
-	debug_dll = dll
-	return dll
-end
-local function rebuild_project(co, path)
-	local spinner = require("easy-dotnet.ui-modules.spinner").new()
-	spinner:start_spinner("Building")
-	vim.fn.jobstart(string.format("dotnet build %s", path), {
-		on_exit = function(_, return_code)
-			if return_code == 0 then
-				spinner:stop_spinner("Built successfully")
-			else
-				spinner:stop_spinner("Build failed with exit code " .. return_code, vim.log.levels.ERROR)
-				error("Build failed")
-			end
-			coroutine.resume(co)
-		end,
-	})
-	coroutine.yield()
-end
-
-dap.listeners.before["event_terminated"]["easy-dotnet"] = function()
-	debug_dll = nil
-end
--- end easy-dotnet setup
+	-- experimental features:
+	all_frames = false, -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
+	virt_lines = false, -- show virtual lines instead of virtual text (will flicker!)
+	virt_text_win_col = nil, -- position the virtual text at a fixed window column (starting from the first text column) ,
+	-- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
+})
 
 dap.adapters.coreclr = {
 	type = "executable",
@@ -365,22 +360,10 @@ dap.adapters.coreclr = {
 dap.configurations.cs = {
 	{
 		type = "coreclr",
-		name = "Launch .NET",
+		name = "launch - netcoredbg",
 		request = "launch",
-		env = function()
-			local dll = ensure_dll()
-			local vars = dotnet.get_environment_variables(dll.project_name, dll.relative_project_path)
-			return vars or nil
-		end,
 		program = function()
-			local dll = ensure_dll()
-			local co = coroutine.running()
-			rebuild_project(co, dll.project_path)
-			return dll.relative_dll_path
-		end,
-		cwd = function()
-			local dll = ensure_dll()
-			return dll.relative_project_path
+			return vim.fn.input("Path to dll", vim.fn.getcwd() .. "/bin/Debug/", "file")
 		end,
 	},
 }
@@ -410,6 +393,7 @@ map("n", "<Esc>", ":noh<CR><Esc>", { noremap = true, silent = true }) -- escape 
 map("n", "<leader><leader>", "<Cmd>Resume search<cr>", { desc = "Resume search" })
 map("n", "<leader>/", "<Cmd>Pick buf_lines<cr>", { desc = "Buffer Lines" })
 map("n", "<leader>:", "<Cmd>Pick history<cr>", { desc = "Command History" })
+map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 map(
 	"n",
 	"<Leader>e",
@@ -446,11 +430,10 @@ map("n", "<leader>bb", "<Cmd>Pick buffers<cr>", { desc = "Switch Buffers" })
 -- code
 map("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
 map("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
-map("n", "<Leader>ca", "<Cmd>lua require('tiny-code-action').code_action()<cr>", { desc = "Code actions" })
 map("n", "<Leader>cc", "<Cmd>CopilotChat<cr>", { desc = "Copilot chat" })
 
 -- git
-map("n", "<leader>gb", "<Cmd>Git blame<cr>", { desc = "Git Blame" })
+map("n", "<leader>gb", "<Cmd>Gitsigns blame_line<cr>", { desc = "Git Blame" })
 map("n", "<leader>gB", "<Cmd>Pick git_branches<cr>", { desc = "Git Branches" })
 map("n", "<leader>gs", "<Cmd>Pick git_commits<cr>", { desc = "Git Commits" })
 map("n", "<leader>gS", "<Cmd>Pick git_files<cr>", { desc = "Git Files" })
@@ -465,7 +448,7 @@ map("n", "<leader>sk", "<Cmd>Pick keymaps<cr>", { desc = "Keymaps" })
 map("n", "<leader>sm", "<Cmd>Pick marks<cr>", { desc = "Marks" })
 map("n", "<leader>sq", "<Cmd>Pick list scope='quickfix'<cr>", { desc = "Quickfix List" })
 
--- typescript
+-- test
 map("n", "<Leader>tn", "<Cmd>lua require('neotest').run.run()<CR>", { desc = "Run nearest test" })
 map("n", "<Leader>tf", "<Cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>", { desc = "Run test file" })
 map("n", "<Leader>tl", "<Cmd>lua require('neotest').run.run_last()<CR>", { desc = "Run last test" })
@@ -473,7 +456,6 @@ map("n", "<Leader>td", "<Cmd>lua require('neotest').run.run({strategy = 'dap'})<
 map("n", "<Leader>ts", "<Cmd>lua require('neotest').summary.toggle()<CR>", { desc = "Toggle test summary" })
 map("n", "<Leader>to", "<Cmd>lua require('neotest').output.open()<CR>", { desc = "Show test output" })
 map("n", "<Leader>tp", "<Cmd>lua require('neotest').output_panel.toggle()<CR>", { desc = "Toggle output panel" })
-map("n", "<Leader>tt", "<Cmd>TailwindConcealToggle<cr>", { desc = "Toggle Tailwind concealing" })
 
 map(
 	"n",
@@ -488,20 +470,15 @@ map(
 	{ desc = "Jump to next failed test" }
 )
 
--- dotnet
-map("n", "<Leader>db", "<Cmd>lua require('easy-dotnet').build_solution()<cr>", { desc = "Build .NET solution" })
-map("n", "<Leader>dr", "<Cmd>lua require('easy-dotnet').run()<cr>", { desc = "Run .NET project" })
-map("n", "<Leader>dt", "<Cmd>lua require('easy-dotnet').test()<cr>", { desc = "Run tests" })
-map("n", "<Leader>dp", "<Cmd>lua require('easy-dotnet').testrunner()<cr>", { desc = "Test runner" })
-map("n", "<Leader>da", "<Cmd>lua require('easy-dotnet').project_view()<cr>", { desc = "Manage Projects" })
-
--- DAP mappings
-map("n", "<F5>", "<Cmd>lua require'dap'.continue()<CR>", { desc = "Start/Continue Debugging" })
-map("n", "<F10>", "<Cmd>lua require'dap'.step_over()<CR>", { desc = "Step Over" })
-map("n", "<F11>", "<Cmd>lua require'dap'.step_into()<CR>", { desc = "Step Into" })
-map("n", "<F12>", "<Cmd>lua require'dap'.step_out()<CR>", { desc = "Step Out" })
-map("n", "<Leader>db", "<Cmd>lua require'dap'.toggle_breakpoint()<CR>", { desc = "Toggle Breakpoint" })
-map("n", "<Leader>dr", "<Cmd>lua require'dap'.repl.open()<CR>", { desc = "Open REPL" })
+-- debug
+map("n", "<F5>", dap.continue, { desc = "Debug: Start/Continue" })
+map("n", "<F1>", dap.step_into, { desc = "Debug: Step Into" })
+map("n", "<F2>", dap.step_over, { desc = "Debug: Step Over" })
+map("n", "<F3>", dap.step_out, { desc = "Debug: Step Out" })
+map("n", "<leader>b", dap.toggle_breakpoint, { desc = "Debug: Toggle Breakpoint" })
+map("n", "<leader>B", function()
+	dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
+end, { desc = "Debug: Set Breakpoint" })
 
 -- DAP UI widgets
 map("n", "<Leader>dk", "<Cmd>lua require'dap.ui.widgets'.hover()<CR>", { desc = "DAP Hover Widget" })
