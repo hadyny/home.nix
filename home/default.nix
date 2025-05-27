@@ -28,8 +28,6 @@ in {
     # everything for work
     ./work
 
-    # ./neovimBeta
-
     ./modules/kitty
     ./modules/neovim
     ./modules/secureEnv/onePassword.nix
