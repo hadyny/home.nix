@@ -18,18 +18,8 @@ in {
     (import ./overlays/pinned.nix)
   ];
 
-  imports = [
-    ./certificates.nix
-    ./users.nix
-    ./darwin/modules/apps/raycast.nix
-    ./darwin/modules/options/dock-apps.nix
-    ./darwin/modules/options/plists.nix
-    ./darwin/apps.nix
-    ./darwin/dock.nix
-    ./darwin/preferences.nix
-    <home-manager/nix-darwin>
-  ];
-  # ] ++ (modules.importAllModules ./darwin);
+  imports = [ ./certificates.nix ./users.nix ]
+    ++ (modules.importAllModules ./darwin);
 
   programs.zsh.enable = true;
 
@@ -51,16 +41,6 @@ in {
   users.users.${config.user.name} = {
     name = config.user.name;
     home = config.user.home;
-  };
-
-  # and enable home manager for the current user
-  home-manager = {
-    useUserPackages = true;
-    users.${config.user.name} = import ./home {
-      inherit config;
-      inherit pkgs;
-      inherit lib;
-    };
   };
 
   nixpkgs.config.allowUnfree = true;

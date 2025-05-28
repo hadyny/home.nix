@@ -6,11 +6,8 @@ let
     password = secrets.github.token;
   };
 
-in
-{
-  imports = [
-    ./aws.nix
-  ];
+in {
+  imports = [ ./aws.nix ];
 
   home = {
     sessionVariables = {
@@ -21,11 +18,7 @@ in
     };
   };
 
-  tools.dotnet = {
-    nugetSources = {
-      "ep-github" = epNugetSource;
-    };
-  };
+  tools.dotnet = { nugetSources = { "ep-github" = epNugetSource; }; };
 
   tools.git = {
     workspaces."src/ep" = {

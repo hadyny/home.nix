@@ -21,23 +21,8 @@ in {
     experimental-features = nix-command flakes
   '';
 
-  imports = [
-    # Development packages
-    ./development.nix
-
-    # everything for work
-    ./work
-
-    ./modules/kitty
-    ./modules/neovim
-    ./modules/secureEnv/onePassword.nix
-    ./modules/services/colima.nix
-    ./modules/settings/wallpaper.nix
-    ./modules/tools/aws.nix
-    ./modules/tools/dotnet.nix
-    ./modules/tools/git.nix
-  ];
-  # ] ++ (modules.importAllModules ./modules);
+  imports = [ ./development.nix ./work ]
+    ++ (modules.importAllModules ./modules);
 
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
@@ -62,7 +47,6 @@ in {
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
     _1password-cli
-    # _1password-gui
 
     # fonts
     nerd-fonts.geist-mono

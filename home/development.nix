@@ -52,7 +52,6 @@ in {
     rustywind
     graphql-language-service-cli
     vscode-langservers-extracted
-
   ];
 
   home.file.".nvm" = {

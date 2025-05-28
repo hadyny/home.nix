@@ -58,6 +58,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 diagnostics.config({
 	virtual_text = false,
+	virtual_lines = { current_line = true },
 	signs = {
 		text = {
 			[diagnostics.severity.ERROR] = "󰅙",
@@ -123,6 +124,12 @@ MiniCompletion.setup({
 
 local miniclue = require("mini.clue")
 miniclue.setup({
+	window = {
+		delay = 0,
+		config = {
+			width = "auto",
+		},
+	},
 	triggers = {
 		-- Leader triggers
 		{ mode = "n", keys = "<Leader>" },
@@ -156,6 +163,7 @@ miniclue.setup({
 	},
 
 	clues = {
+		{ mode = "n", keys = "<Leader>b", desc = "buffers" },
 		{ mode = "n", keys = "<Leader>f", desc = "files" },
 		{ mode = "n", keys = "<Leader>c", desc = "code" },
 		{ mode = "n", keys = "<Leader>g", desc = "git" },
@@ -234,6 +242,9 @@ vim.lsp.enable("lua_ls")
 vim.lsp.config("nil_ls", { capabilities = capabilities })
 vim.lsp.enable("nil_ls")
 
+vim.lsp.config("jsonls", { capabilities = capabilities })
+vim.lsp.enable("jsonls")
+
 require("typescript-tools").setup({})
 require("tailwind-tools").setup({
 	document_color = { enabled = false },
@@ -256,37 +267,6 @@ require("neotest").setup({
 			dap = { justMyCode = false },
 		}),
 	},
-})
-
-local timer = vim.uv.new_timer()
-local delay = 500
-vim.api.nvim_create_autocmd({ "CursorMoved", "DiagnosticChanged" }, {
-	callback = function()
-		if vim.fn.mode() == "n" then
-			-- debounce
-			timer:start(delay, 0, function()
-				timer:stop()
-				vim.schedule(function()
-					vim.diagnostic.open_float(nil, { focusable = false, source = "if_many" })
-					local _, win = vim.diagnostic.open_float(nil, { focusable = false, source = "if_many" })
-
-					if not win then
-						return
-					end
-
-					local cfg = vim.api.nvim_win_get_config(win)
-
-					cfg.anchor = "NE"
-					cfg.row = 0
-					cfg.col = vim.o.columns - 1
-					cfg.width = math.min(cfg.width or 999, math.floor(vim.o.columns * 0.6))
-					cfg.height = math.min(cfg.height or 999, math.floor(vim.o.lines * 0.4))
-
-					vim.api.nvim_win_set_config(win, cfg)
-				end)
-			end)
-		end
-	end,
 })
 
 require("roslyn").setup({
@@ -394,6 +374,7 @@ map("n", "<leader><leader>", "<Cmd>Resume search<cr>", { desc = "Resume search" 
 map("n", "<leader>/", "<Cmd>Pick buf_lines<cr>", { desc = "Buffer Lines" })
 map("n", "<leader>:", "<Cmd>Pick history<cr>", { desc = "Command History" })
 map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
+map("n", "<leader>k", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 map(
 	"n",
 	"<Leader>e",
@@ -475,8 +456,8 @@ map("n", "<F5>", dap.continue, { desc = "Debug: Start/Continue" })
 map("n", "<F1>", dap.step_into, { desc = "Debug: Step Into" })
 map("n", "<F2>", dap.step_over, { desc = "Debug: Step Over" })
 map("n", "<F3>", dap.step_out, { desc = "Debug: Step Out" })
-map("n", "<leader>b", dap.toggle_breakpoint, { desc = "Debug: Toggle Breakpoint" })
-map("n", "<leader>B", function()
+map("n", "<leader>db", dap.toggle_breakpoint, { desc = "Debug: Toggle Breakpoint" })
+map("n", "<leader>dB", function()
 	dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
 end, { desc = "Debug: Set Breakpoint" })
 

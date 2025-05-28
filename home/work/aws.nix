@@ -1,7 +1,3 @@
-{ pkgs, config, lib, ... }:
-
-with lib;
-
 {
   tools.aws = {
     ssoProfiles = {
