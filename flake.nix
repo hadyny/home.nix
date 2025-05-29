@@ -17,7 +17,7 @@
         home-manager.darwinModules.home-manager
         {
           home-manager.useUserPackages = true;
-          home-manager.users.hadyn = ./home.nix;
+          home-manager.users.hadyn = ./home;
         }
       ];
     };

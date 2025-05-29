@@ -12,11 +12,7 @@ in {
   nixpkgs.hostPlatform = "aarch64-darwin";
   system.primaryUser = config.user.name;
 
-  nixpkgs.overlays = [
-    # sometimes it is useful to pin a version of some tool or program.
-    # this can be done in "overlays/pinned.nix"
-    (import ./overlays/pinned.nix)
-  ];
+  nixpkgs.overlays = [ (import ./overlays/pinned.nix) ];
 
   imports = [ ./certificates.nix ./users.nix ]
     ++ (modules.importAllModules ./darwin);
@@ -25,14 +21,9 @@ in {
 
   environment = {
     shells = [ pkgs.zsh ];
-    systemPackages = [
-      pkgs.nixpkgs-fmt
-      # (import (fetchTarball https://github.com/cachix/devenv/archive/v0.5.tar.gz)).default
-    ];
+    systemPackages = [ pkgs.nixpkgs-fmt ];
   };
 
-  # Used for backwards compatibility, please read the changelog before changing.
-  # $ darwin-rebuild changelog
   system.stateVersion = 4;
 
   ids.gids.nixbld = 350;
@@ -51,7 +42,6 @@ in {
     settings = {
       max-jobs = 12;
 
-      # $ sysctl -n hw.ncpu
       cores = 12;
       substituters = [
         "https://cache.nixos.org/"

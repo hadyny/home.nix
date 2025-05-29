@@ -21,7 +21,7 @@ in {
     experimental-features = nix-command flakes
   '';
 
-  imports = [ ./development.nix ./work ]
+  imports = [ ../users.nix ./development.nix ./work ]
     ++ (modules.importAllModules ./modules);
 
   # Home Manager needs a bit of information about you and the

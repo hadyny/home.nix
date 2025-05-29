@@ -370,7 +370,7 @@ map("n", "gb", ":ls<cr>:b<space>", { noremap = true, desc = "Goto buffer" })
 
 map("n", "<Esc>", ":noh<CR><Esc>", { noremap = true, silent = true }) -- escape to cancel search
 
-map("n", "<leader><leader>", "<Cmd>Resume search<cr>", { desc = "Resume search" })
+map("n", "<leader><leader>", "<Cmd>Pick resume<cr>", { desc = "Resume search" })
 map("n", "<leader>/", "<Cmd>Pick buf_lines<cr>", { desc = "Buffer Lines" })
 map("n", "<leader>:", "<Cmd>Pick history<cr>", { desc = "Command History" })
 map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
@@ -381,7 +381,6 @@ map(
 	"<Cmd>lua Snacks.explorer({ layout = { layout = { position = 'right' } } })<cr>",
 	{ desc = "Explorer" }
 )
-map("n", "<Leader>E", "<Cmd>lua Snacks.explorer.reveal()<cr>", { desc = "Explorer file" })
 
 -- LSP mappings
 map("n", "<leader>sd", "<Cmd>Pick lsp scope='definition'<cr>", { desc = "Search definitions" })
