@@ -144,10 +144,7 @@ in {
     };
   };
 
-  modules = {
-    kitty.enable = true;
-    neovim.enable = true;
-  };
+  modules = { neovim.enable = true; };
 
   tools = {
     aws.enable = true;
