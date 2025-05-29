@@ -1,10 +1,3 @@
-# Global MacOS configuration using nix-darwin (https://github.com/LnL7/nix-darwin).
-# Sets up minimal required system-level configuration, such as
-# Darwin-specific modules, certificates, etc.
-#
-# Also enables Home Manager.
-# Home Manager is used for the rest of user-level configuration.
-# Home Manager configuratio is located in ./home folder.
 { config, pkgs, lib, ... }:
 let modules = import ./lib/modules.nix { inherit lib; };
 in {
