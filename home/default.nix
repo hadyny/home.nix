@@ -10,13 +10,8 @@ in {
 
   nixpkgs.config.allowUnfree = true;
 
-  nixpkgs.overlays = [
-    # sometimes it is useful to pin a version of some tool or program.
-    # this can be done in "overlays/pinned.nix"
-    (import ../overlays/pinned.nix)
-  ];
+  nixpkgs.overlays = [ (import ../overlays/pinned.nix) ];
 
-  # Flakes are not standard yet, but widely used, enable them.
   xdg.configFile."nix/nix.conf".text = ''
     experimental-features = nix-command flakes
   '';
@@ -24,8 +19,6 @@ in {
   imports = [ ../users.nix ./development.nix ./work ]
     ++ (modules.importAllModules ./modules);
 
-  # Home Manager needs a bit of information about you and the
-  # paths it should manage.
   home = {
     username = config.user.name;
     homeDirectory = config.user.home;

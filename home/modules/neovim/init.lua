@@ -77,6 +77,9 @@ MiniIcons.tweak_lsp_kind()
 
 require("mini.pick").setup()
 require("mini.extra").setup()
+require("mini.git").setup()
+require("mini.diff").setup()
+require("mini.statusline").setup()
 
 require("catppuccin").setup({
 	flavour = "auto",

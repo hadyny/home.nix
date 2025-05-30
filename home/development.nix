@@ -35,23 +35,6 @@ in {
     # docker
     docker-credential-helpers
     dockfmt
-
-    # language servers
-    lua-language-server
-    stylua
-
-    nixfmt-classic
-    nil
-
-    roslyn-ls
-    netcoredbg
-    csharpier
-    csharprepl
-
-    tailwindcss-language-server
-    rustywind
-    graphql-language-service-cli
-    vscode-langservers-extracted
   ];
 
   home.file.".nvm" = {

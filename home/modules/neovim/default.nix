@@ -11,12 +11,7 @@ with lib;
       vimAlias = true;
       extraLuaConfig = builtins.readFile ./init.lua;
       plugins = with pkgs.vimPlugins; [
-        mini-icons
-        mini-pick
-        mini-extra
-        mini-clue
-        mini-completion
-        mini-files
+        mini-nvim
         catppuccin-nvim
         nvim-highlight-colors
         nvim-treesitter.withAllGrammars
@@ -37,5 +32,23 @@ with lib;
         vim-sleuth
       ];
     };
+
+    home.packages = with pkgs; [
+      lua-language-server
+      stylua
+
+      nixfmt-classic
+      nil
+
+      roslyn-ls
+      netcoredbg
+      csharpier
+      csharprepl
+
+      tailwindcss-language-server
+      rustywind
+      graphql-language-service-cli
+      vscode-langservers-extracted
+    ];
   };
 }
