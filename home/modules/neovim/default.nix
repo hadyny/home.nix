@@ -37,5 +37,23 @@ with lib;
         vim-sleuth
       ];
     };
+
+    home.packages = with pkgs; [
+      lua-language-server
+      stylua
+
+      nixfmt-classic
+      nil
+
+      roslyn-ls
+      netcoredbg
+      csharpier
+      csharprepl
+
+      tailwindcss-language-server
+      rustywind
+      graphql-language-service-cli
+      vscode-langservers-extracted
+    ];
   };
 }
