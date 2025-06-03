@@ -1,5 +1,5 @@
 # Main user-level configuration
-{ config, pkgs, lib, userConfig, ... }:
+{ pkgs, lib, userConfig, ... }:
 
 let
   modules = import ../lib/modules.nix { inherit lib; };
@@ -20,7 +20,7 @@ in {
   '';
 
   imports = [ ../modules/shared/ghostty ../modules/shared/neovim ./work ]
-    ++ (modules.importAllModules ./modules);
+    ++ (modules.importAllModules ./helpers);
 
   home = {
     username = userConfig.name;

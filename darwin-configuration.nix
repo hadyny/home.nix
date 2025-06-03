@@ -1,10 +1,13 @@
-{ config, pkgs, lib, userConfig, ... }:
+{ pkgs, lib, userConfig, ... }:
 let modules = import ./lib/modules.nix { inherit lib; };
 in {
   documentation.enable = false;
-  nixpkgs.hostPlatform = "aarch64-darwin";
 
-  nixpkgs.overlays = [ (import ./overlays/pinned.nix) ];
+  nixpkgs = {
+    hostPlatform = "aarch64-darwin";
+    config.allowUnfree = true;
+    overlays = [ (import ./overlays/pinned.nix) ];
+  };
 
   imports = [ ./certificates.nix ]
     ++ (modules.importAllModules ./modules/darwin);
@@ -22,8 +25,6 @@ in {
     name = userConfig.name;
     home = userConfig.home;
   };
-
-  nixpkgs.config.allowUnfree = true;
 
   nix = {
     package = pkgs.nixVersions.latest;
