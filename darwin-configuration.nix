@@ -6,7 +6,8 @@ in {
 
   nixpkgs.overlays = [ (import ./overlays/pinned.nix) ];
 
-  imports = [ ./certificates.nix ] ++ (modules.importAllModules ./darwin);
+  imports = [ ./certificates.nix ]
+    ++ (modules.importAllModules ./modules/darwin);
 
   programs.zsh.enable = true;
 

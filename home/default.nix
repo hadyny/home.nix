@@ -1,20 +1,25 @@
 # Main user-level configuration
 { config, pkgs, lib, userConfig, ... }:
 
-let modules = import ../lib/modules.nix { inherit lib; };
+let
+  modules = import ../lib/modules.nix { inherit lib; };
+  nvm = builtins.fetchGit {
+    url = "https://github.com/nvm-sh/nvm";
+    rev = "977563e97ddc66facf3a8e31c6cff01d236f09bd";
+  };
+
 in {
   # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
-
-  nixpkgs.config.allowUnfree = true;
-
-  nixpkgs.overlays = [ (import ../overlays/pinned.nix) ];
+  nixpkgs = {
+    config.allowUnfree = true;
+    overlays = [ (import ../overlays/pinned.nix) ];
+  };
 
   xdg.configFile."nix/nix.conf".text = ''
     experimental-features = nix-command flakes
   '';
 
-  imports = [ ./development.nix ./work ]
+  imports = [ ../modules/shared/ghostty ../modules/shared/neovim ./work ]
     ++ (modules.importAllModules ./modules);
 
   home = {
@@ -28,6 +33,14 @@ in {
       AWS_PROFILE = "dev";
     };
 
+    file.".nvm" = {
+      source = nvm;
+      recursive = true;
+    };
+
+    packages =
+      pkgs.callPackage ../modules/shared/packages.nix { inherit pkgs; };
+
     sessionPath = [ "/opt/homebrew/bin" ];
 
     keyboard = {
@@ -37,93 +50,8 @@ in {
   };
 
   fonts.fontconfig.enable = true;
-  home.packages = with pkgs; [
-    _1password-cli
 
-    # fonts
-    nerd-fonts.geist-mono
-    nerd-fonts.fira-code
-    nerd-fonts.victor-mono
-    nerd-fonts.commit-mono
-
-    jetbrains.datagrip
-    jetbrains.rider
-    jetbrains.goland
-  ];
-
-  programs = {
-    atuin = {
-      enable = true;
-      flags = [ "--disable-up-arrow" ];
-    };
-
-    bat = {
-      enable = true;
-      config = { theme = "ansi"; };
-    };
-
-    btop = {
-      enable = true;
-      settings = { theme_background = false; };
-    };
-
-    jq.enable = true;
-    htop.enable = true;
-    ssh.enable = true;
-
-    eza = {
-      enable = true;
-      enableZshIntegration = true;
-      git = true;
-      icons = "auto";
-      extraOptions = [ "--group-directories-first" "--header" "--long" ];
-    };
-
-    direnv = {
-      enable = true;
-      nix-direnv.enable = true;
-    };
-
-    fzf = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-
-    lazydocker.enable = true;
-
-    yazi.enable = true;
-
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-      autocd = true;
-      autosuggestion.enable = true;
-      shellAliases = {
-        nu = "nvm use";
-        dcu = "docker compose up";
-        dcd = "docker compose down";
-      };
-      syntaxHighlighting = {
-        enable = true;
-        highlighters = [ "main" "brackets" ];
-      };
-      plugins = [{
-        name = "pure";
-        src = "${pkgs.pure-prompt}/share/zsh/site-functions";
-      }];
-      initContent = ''
-        autoload -U promptinit; promptinit
-        prompt pure
-        zstyle :prompt:pure:git:stash show yes
-      '';
-    };
-
-    zoxide = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-
-  };
+  programs = { } // import ../modules/shared/home-manager.nix { inherit pkgs; };
 
   services = {
     colima = {
