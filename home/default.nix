@@ -19,8 +19,14 @@ in {
     experimental-features = nix-command flakes
   '';
 
-  imports = [ ../modules/shared/ghostty ../modules/shared/neovim ./work ]
-    ++ (modules.importAllModules ./helpers);
+  imports = [
+    ../modules/shared/ghostty
+    ../modules/shared/neovim
+    ../modules/shared/services/colima.nix
+    ../modules/shared/secureEnv/onePassword.nix
+    ../modules/shared/settings/wallpaper.nix
+    ./work
+  ] ++ (modules.importAllModules ../modules/shared/tools);
 
   home = {
     username = userConfig.name;
