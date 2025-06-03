@@ -1,9 +1,7 @@
 # Main user-level configuration
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, userConfig, ... }:
 
-let
-  modules = import ../lib/modules.nix { inherit lib; };
-  secrets = import ./secrets;
+let modules = import ../lib/modules.nix { inherit lib; };
 in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
@@ -16,17 +14,18 @@ in {
     experimental-features = nix-command flakes
   '';
 
-  imports = [ ../users.nix ./development.nix ./work ]
+  imports = [ ./development.nix ./work ]
     ++ (modules.importAllModules ./modules);
 
   home = {
-    username = config.user.name;
-    homeDirectory = config.user.home;
+    username = userConfig.name;
+    homeDirectory = userConfig.home;
     wallpaper.file = ./config/wallpaper/wallpaper.jpg;
 
     sessionVariables = {
       EDITOR = "nvim";
       TERM = "xterm-256color";
+      AWS_PROFILE = "dev";
     };
 
     sessionPath = [ "/opt/homebrew/bin" ];
@@ -144,9 +143,10 @@ in {
     dotnet.enable = true;
     git = {
       enable = true;
-      userName = secrets.github.fullName;
-      userEmail = secrets.github.userEmail;
-      githubUser = secrets.github.userName;
+      userName = userConfig.fullName;
+      userEmail = userConfig.email;
+      githubUser = userConfig.githubUser;
+      workspaces = userConfig.gitWorkspaces;
     };
   };
 
