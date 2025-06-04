@@ -1,5 +1,5 @@
 { pkgs, lib, userConfig, ... }:
-let modules = import ./lib/modules.nix { inherit lib; };
+let modules = import ./modules/shared/modules.nix { inherit lib; };
 in {
   documentation.enable = false;
 
@@ -41,6 +41,7 @@ in {
 
     settings = {
       max-jobs = 12;
+      experimental-features = "nix-command flakes";
 
       cores = 12;
       substituters = [

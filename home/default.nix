@@ -2,7 +2,7 @@
 { pkgs, lib, userConfig, ... }:
 
 let
-  modules = import ../lib/modules.nix { inherit lib; };
+  modules = import ../modules/shared/modules.nix { inherit lib; };
   nvm = builtins.fetchGit {
     url = "https://github.com/nvm-sh/nvm";
     rev = "977563e97ddc66facf3a8e31c6cff01d236f09bd";
@@ -15,15 +15,10 @@ in {
     overlays = [ (import ../overlays/pinned.nix) ];
   };
 
-  xdg.configFile."nix/nix.conf".text = ''
-    experimental-features = nix-command flakes
-  '';
-
   imports = [
     ../modules/shared/ghostty
     ../modules/shared/neovim
     ../modules/shared/services/colima.nix
-    ../modules/shared/secureEnv/onePassword.nix
     ../modules/shared/settings/wallpaper.nix
     ./work
   ] ++ (modules.importAllModules ../modules/shared/tools);
