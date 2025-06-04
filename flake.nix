@@ -7,9 +7,10 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nixCats.url = "github:BirdeeHub/nixCats-nvim";
   };
 
-  outputs = inputs@{ self, nix-darwin, home-manager, nixpkgs }:
+  outputs = inputs@{ self, nix-darwin, home-manager, nixpkgs, nixCats }:
     let
       # User configuration - define your user details here
       userConfig = {

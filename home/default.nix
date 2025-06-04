@@ -18,6 +18,7 @@ in {
   imports = [
     ../modules/shared/ghostty
     ../modules/shared/neovim
+    ../modules/shared/neovimBeta
     ../modules/shared/services/colima.nix
     ../modules/shared/settings/wallpaper.nix
     ./work
