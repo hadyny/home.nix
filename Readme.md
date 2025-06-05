@@ -2,9 +2,6 @@
 
 It uses [nix-darwin](https://github.com/LnL7/nix-darwin) and [home-manager](https://github.com/nix-community/home-manager) to set up and manage the user's home environment.
 
-This Readme is currently MacOS-centric.
-However, the configuration itself has been tried on Ubuntu and NixOS and it turns out to be working (not using `darwin-configuration.nix`, obviously, but using the whole `Home Manager` config.).
-
 ## Installation
 
 ### Automated installation
@@ -13,22 +10,6 @@ Currently MacOS-specific
 
 ```bash
 $ bash -i <(curl -fsSL https://raw.githubusercontent.com/ephadyn/home.nix/main/install.sh)
-```
-
-At the end of the successful installation the installer will ask to tune the configuration
-in your `~/.nixpkgs`, re-enter the shell and switch into the new configuration.
-
-Before switching, consider populating your secrets:
-
-```bash
-~/.nixpkgs/home/secrets/default.nix
-~/.nixpkgs/home/work/secrets/default.nix
-```
-Edit both files. The first one represents "global" secrets, and the second one is for work-related secrets.
-
-Now issuing the `switch` command should have your system set up:
-
-```bash
 $ darwin-rebuild switch
 ```
 
@@ -38,43 +19,25 @@ $ darwin-rebuild switch
    ```bash
     $ sh <(curl -L https://nixos.org/nix/install) --daemon
    ```
-
-1. Install [nix-darwin](https://github.com/LnL7/nix-darwin)
-   ```
-    $ nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
-    $ ./result/bin/darwin-installer
-   ```
-   Keep `darwin-configuration.nix` default (we are going to replace it later),
-   but `darwin-rebuild switch` command should be now working (reload your shell).
-
-3. Add `home-manager` channel:
+1. Clone this repository as your local `/etc/nix-darwin` after creating the folder with correct permissions </br>
+  ```bash
+  $ sudo mkdir -p /etc/nix-darwin
+  $ sudo chown $(id -nu):$(id -ng) /etc/nix-darwin
+  ```
+2. Install [nix-darwin](https://github.com/LnL7/nix-darwin)
    ```bash
-    $ nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-    $ nix-channel --update
+    $ sudo nix run nix-darwin/master#darwin-rebuild -- switch
    ```
 
-4. (Optionaly, MacOS only) Install [Homebrew](https://brew.sh/)
-   ```
+3. (Optionaly, MacOS only) Install [Homebrew](https://brew.sh/)
+   ```bash
    $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
 
-4. Clone this repository as your local `~/.nixpkgs` </br>
-    You should have `~/.nixpkgs/darwin-configuration.nix` from this repository, replacing the default one.
-
-5. Set up your secrets:
-   ```bash
-    $ cp ~/.nixpkgs/home/secrets/default.nix.template ~/.nixpkgs/home/secrets/default.nix
-    $ cp ~/.nixpkgs/home/work/secrets/default.nix.template ~/.nixpkgs/home/work/secrets/default.nix
-   ```
-   Edit both files. The first one represents "global" secrets, and the second one is for work-related secrets.
-
-6. Switch the profile:
+4. Switch the profile:
    ```bash
     $ darwin-rebuild switch
    ```
-
-At this point everything should be installed and the environment should be ready to rock.
-Restart the shell if you haven't paid attention to the prompt :)
 
 ## Updating the configuration
 
@@ -82,21 +45,9 @@ Make changes to the configuration files and run `darwin-rebuild switch` to updat
 
 ## Note on integration with Homebrew
 
-If `Homebrew` is installed, this configuration will manage `Homebrew` packages via [darwin/apps.nix](./darwin/apps.nix) file.
-Use [darwin/apps.nix](./darwin/apps.nix) to specify which packages should be installed via `brew` and Nix will handle the rest.
+If `Homebrew` is installed, this configuration will manage `Homebrew` packages via [modules/darwin/apps.nix](./modules/darwin/apps.nix) file.
+Use [modules/darwin/apps.nix](./modules/darwin/apps.nix) to specify which packages should be installed via `brew` and Nix will handle the rest.
 
-## Your system configuration
-
-A couple of entry points to tune your config:
-
-- [home/packages.nix](./home/packages.nix) - Packages to install
-- [home/default.nix](./home/default.nix) - Your main home "configuration": what programs and services are enabled, how shell is set up, etc.
-
-MacOS specific:
-
-- [darwin/preferences.nix](./darwin/preferences.nix) - Global MacOS preferences and settings
-- [darwin/apps.nix](./darwin/apps.nix) - Applications to install via Homebrew
-- [darwin/dock.nix](./darwin/dock.nix) - Configure your dock
 
 ## Modules overview
 
