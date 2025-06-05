@@ -26,7 +26,6 @@ error() {
   printf "${RED}%s${NOCOLOR}\n" "$@"
 }
 
-# Lifted from https://github.com/kalbasit/shabka/blob/8f6ba74a9670cc3aad384abb53698f9d4cea9233/os-specific/darwin/setup.sh#L22
 sudo_prompt() {
   echo
   header "We are going to check if you have 'sudo' permissions."
@@ -57,32 +56,12 @@ install_nix_darwin() {
   header "Installing Nix on macOS..."
   command -v darwin-rebuild >/dev/null || {
     warn "'nix-darwin' is not installed. Installing..."
-    nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer --out-link /tmp/nix-darwin
-
+    sudo nix run nix-darwin/master#darwin-rebuild -- switch
+ 
     # nix-darwin controls nix.conf
     sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.backup-before-nix-darwin
-
-    # printf based on:
-    #   - Would you like to edit the configuration.nix before starting? n
-    #   - Would you like to manage <darwin> with nix-channel? y
-    #   - Would you like to load Darwin configuration in /etc/bashrc? y
-    #   - Would you like to load Darwin configuration in /etc/zshrc? y
-    #   - Would you like to create /run? y
-    printf "n\ny\ny\ny\ny" | /tmp/nix-darwin/bin/darwin-installer
   }
   info "'nix-darwin' is installed!"
-}
-
-install_home_manager() {
-  echo
-  header "Installing Home Manager"
-  if [[ ! $( nix-channel --list | grep home-manager ) ]]; then
-    warn "Adding 'home-manager' Nix channel..."
-    nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-    nix-channel --update
-  fi
-  info "Home Manager channel is installed. Here are available channels:"
-  nix-channel --list
 }
 
 install_homebrew() {
@@ -97,8 +76,6 @@ install_homebrew() {
   
   info "'Homebrew' is installed! Here is what we have:"
   brew --version
-  # echo "Making sure that 'Homebrew' is healthy..."
-  # brew doctor
 }
 
 install_rosetta() {
@@ -114,7 +91,9 @@ install_rosetta() {
 
 clone_repository() {
   echo
-  local repository="ephadyn/home.nix"
+  sudo mkdir -p /etc/nix-darwin
+  sudo chown $(id -nu):$(id -ng) /etc/nix-darwin
+  local repository="hadyny/home.nix"
   local clone_target="${HOME}/.nixpkgs"
   header "Setting up the configuration from github.com:${repository}..."
 
@@ -133,32 +112,6 @@ clone_repository() {
   cd - >/dev/null
 }
 
-set_up_secrets() {
-  echo
-  header "Setting up secrets"
-  local full_name=$(id -F)
-  local user_name=$(id -F | cut -f1 -d" ")
-  local email_name=$(id -F | tr -s ' ' | tr "[:upper:]" "[:lower:]" | tr ' ' '.')
-  un_template() {
-    local src="$1"
-    local dst="${1%.*}"
-
-    if [ ! -f "$dst" ]; then
-      warn "Creating '${dst}'..."
-      sed -e "s/{full-name}/${full_name}/g" \
-          -e "s/{user-name}/${user_name}/g" \
-          -e "s/{email-name}/${email_name}/g" \
-          "${src}" > "${dst}"
-      warn "Auto-created '${dst}'. Don't forget to check it out as some default values may need to be changed."
-    else
-      info "Skipping '${dst}' since it already exists."
-    fi
-  }
-
-  un_template "${HOME}/.nixpkgs/home/secrets/default.nix.template"
-  un_template "${HOME}/.nixpkgs/home/work/secrets/default.nix.template"
-}
-
 darwin_build() {
   echo
   header "Setting up 'darwin' configuration..."
@@ -174,29 +127,17 @@ darwin_build() {
   info "==========================================================="
   info "All done and ready"
   echo
-  echo "Now you can edit the configuration in '$HOME/.nixpkgs'".
+  echo "Now you can edit the configuration in '/etc/nix-darwin'".
   echo
-  echo "You may want to fill in the secrets that are required for this configuration:"
-  echo
-  warn "  ~/.nixpkgs/home/secrets/default.nix"
-  warn "  ~/.nixpkgs/home/work/secrets/default.nix"
-  echo
-  echo "Review and edit both secrets files."
-  echo
-  echo "When you finish tuning the configuration, please **RE-ENTER YOUR SHELL** and call:"
-  echo
-  echo "> darwin-rebuild switch"
   echo
 }
 
 sudo_prompt
 install_homebrew
 install_nix
-install_home_manager
+clone_repository
 install_nix_darwin
 install_rosetta
-clone_repository
-set_up_secrets
 darwin_build
 
 } # Prevent script running if partially downloaded
