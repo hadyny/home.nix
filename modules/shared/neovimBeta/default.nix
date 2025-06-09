@@ -15,7 +15,7 @@ in {
         [ (utils.standardPluginOverlay inputs) ];
       # see the packageDefinitions below.
       # This says which of those to install.
-      packageNames = [ "myHomeModuleNvim" ];
+      packageNames = [ "neovimBetaModule" ];
 
       luaPath = ./.;
 
@@ -34,9 +34,16 @@ in {
           # at RUN TIME for plugins. Will be available to PATH within neovim terminal
           # this includes LSPs
           lspsAndRuntimeDeps = {
-            general = with pkgs; [ lazygit ];
+            general = with pkgs; [ ];
             lua = with pkgs; [ lua-language-server stylua ];
             nix = with pkgs; [ nixd alejandra ];
+            reactjs = with pkgs; [
+              tailwindcss-language-server
+              rustywind
+              graphql-language-service-cli
+              vscode-langservers-extracted
+            ];
+            csharp = with pkgs; [ roslyn-ls netcoredbg csharpier csharprepl ];
             go = with pkgs; [
               gopls
               delve
@@ -56,7 +63,7 @@ in {
               lze
               lzextras
               snacks-nvim
-              onedark-nvim
+              catppuccin-nvim
               vim-sleuth
             ];
           };
@@ -66,21 +73,29 @@ in {
           optionalPlugins = {
             go = with pkgs.vimPlugins; [ nvim-dap-go ];
             lua = with pkgs.vimPlugins; [ lazydev-nvim ];
+            reactjs = with pkgs.vimPlugins; [
+              nvim-highlight-colors
+              tailwind-tools-nvim
+              typescript-tools-nvim
+              neotest-vitest
+            ];
+            csharp = with pkgs.vimPlugins; [ neotest-dotnet roslyn-nvim ];
             general = with pkgs.vimPlugins; [
               mini-nvim
               nvim-lspconfig
               vim-startuptime
+              render-markdown-nvim
               blink-cmp
               nvim-treesitter.withAllGrammars
-              lualine-nvim
-              lualine-lsp-progress
               gitsigns-nvim
-              which-key-nvim
               nvim-lint
               conform-nvim
+              neotest
               nvim-dap
               nvim-dap-ui
               nvim-dap-virtual-text
+              nvim-highlight-colors
+              CopilotChat-nvim
             ];
           };
 
@@ -116,7 +131,7 @@ in {
       packageDefinitions.replace = {
         # These are the names of your packages
         # you can include as many as you wish.
-        myHomeModuleNvim = { pkgs, name, ... }: {
+        neovimBetaModule = { pkgs, name, ... }: {
           # they contain a settings set defined above
           # see :help nixCats.flake.outputs.settings
           settings = {
@@ -127,7 +142,8 @@ in {
             # IMPORTANT:
             # your alias may not conflict with your other packages.
             aliases = [ "nvimBeta" ];
-            # neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+            neovim-unwrapped =
+              inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
             hosts.python3.enable = true;
             hosts.node.enable = true;
           };
@@ -139,6 +155,8 @@ in {
             lua = true;
             nix = true;
             go = false;
+            csharp = true;
+            reactjs = true;
           };
           # anything else to pass and grab in lua with `nixCats.extra`
           extra = { nixdExtras.nixpkgs = "import ${pkgs.path} {}"; };

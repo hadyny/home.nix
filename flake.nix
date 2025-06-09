@@ -8,9 +8,11 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
 
-  outputs = inputs@{ self, nix-darwin, home-manager, nixpkgs, nixCats }:
+  outputs = inputs@{ self, nix-darwin, home-manager, nixpkgs, nixCats
+    , neovim-nightly-overlay }:
     let
       # User configuration - define your user details here
       userConfig = {
@@ -25,7 +27,7 @@
           "src/ep" = {
             user = {
               email = "hadyn.youens@educationperfect.com";
-              name = "hadyny";
+              name = userConfig.fullName;
             };
             core = { autocrlf = "input"; };
           };
