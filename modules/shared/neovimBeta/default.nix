@@ -42,8 +42,10 @@ in {
               rustywind
               graphql-language-service-cli
               vscode-langservers-extracted
+              vtsls
             ];
             csharp = with pkgs; [ roslyn-ls netcoredbg csharpier csharprepl ];
+            fsharp = with pkgs; [ fsautocomplete ];
             go = with pkgs; [
               gopls
               delve
@@ -62,7 +64,6 @@ in {
               # but as a demo, we do it anyway.
               lze
               lzextras
-              snacks-nvim
               catppuccin-nvim
               vim-sleuth
             ];
@@ -76,10 +77,9 @@ in {
             reactjs = with pkgs.vimPlugins; [
               nvim-highlight-colors
               tailwind-tools-nvim
-              typescript-tools-nvim
               neotest-vitest
             ];
-            csharp = with pkgs.vimPlugins; [ neotest-dotnet roslyn-nvim ];
+            csharp = with pkgs.vimPlugins; [ neotest-dotnet ];
             general = with pkgs.vimPlugins; [
               mini-nvim
               nvim-lspconfig
@@ -96,6 +96,10 @@ in {
               nvim-dap-virtual-text
               nvim-highlight-colors
               CopilotChat-nvim
+              lualine-nvim
+              lualine-lsp-progress
+              fzf-lua
+              neo-tree-nvim
             ];
           };
 
@@ -142,8 +146,8 @@ in {
             # IMPORTANT:
             # your alias may not conflict with your other packages.
             aliases = [ "nvimBeta" ];
-            neovim-unwrapped =
-              inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+            # neovim-unwrapped =
+            #   inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
             hosts.python3.enable = true;
             hosts.node.enable = true;
           };
@@ -156,6 +160,7 @@ in {
             nix = true;
             go = false;
             csharp = true;
+            fsharp = true;
             reactjs = true;
           };
           # anything else to pass and grab in lua with `nixCats.extra`

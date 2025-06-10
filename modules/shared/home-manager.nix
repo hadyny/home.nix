@@ -17,7 +17,7 @@
   };
 
   jq.enable = true;
-  htop.enable = true;
+
   ssh.enable = true;
 
   eza = {
