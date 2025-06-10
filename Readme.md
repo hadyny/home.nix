@@ -36,12 +36,20 @@ $ darwin-rebuild switch
 
 4. Switch the profile:
    ```bash
-    $ darwin-rebuild switch
+    $ sudo darwin-rebuild switch
    ```
 
 ## Updating the configuration
 
-Make changes to the configuration files and run `darwin-rebuild switch` to update the configuration.
+Make changes to the configuration files and run `sudo darwin-rebuild switch` to update the configuration.
+
+## Updating packages
+
+ ```bash
+    $ sudo nix flake update
+    $ sudo darwin-rebuild switch
+   ```
+
 
 ## Note on integration with Homebrew
 
