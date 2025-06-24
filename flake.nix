@@ -9,10 +9,11 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
   };
 
   outputs = inputs@{ self, nix-darwin, home-manager, nixpkgs, nixCats
-    , neovim-nightly-overlay }:
+    , neovim-nightly-overlay, emacs-overlay }:
     let
       # User configuration - define your user details here
       userConfig = {

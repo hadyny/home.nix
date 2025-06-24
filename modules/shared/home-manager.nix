@@ -33,6 +33,11 @@
     nix-direnv.enable = true;
   };
 
+  emacs = {
+    enable = true;
+    package = pkgs.emacs-unstable;
+  };
+
   fzf = {
     enable = true;
     enableZshIntegration = true;

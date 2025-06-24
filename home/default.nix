@@ -1,5 +1,5 @@
 # Main user-level configuration
-{ pkgs, lib, userConfig, ... }:
+{ pkgs, lib, userConfig, inputs, ... }:
 
 let
   modules = import ../modules/shared/modules.nix { inherit lib; };
@@ -12,7 +12,8 @@ in {
   # Let Home Manager install and manage itself.
   nixpkgs = {
     config.allowUnfree = true;
-    overlays = [ (import ../overlays/pinned.nix) ];
+    overlays =
+      [ inputs.emacs-overlay.overlays.default (import ../overlays/pinned.nix) ];
   };
 
   imports = [
@@ -56,6 +57,10 @@ in {
   programs = { } // import ../modules/shared/home-manager.nix { inherit pkgs; };
 
   services = {
+    emacs = {
+      enable = true;
+      package = pkgs.emacs-unstable;
+    };
     colima = {
       enable = true;
 
