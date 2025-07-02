@@ -2,7 +2,7 @@
   home.file = {
     ".config/ghostty/config".text = ''
       font-family = "CommitMono Nerd Font Mono"
-      font-size = 14
+      font-size = 13
       font-feature = 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'cv01', 'cv06'
       font-thicken = true
       font-thicken-strength = 192

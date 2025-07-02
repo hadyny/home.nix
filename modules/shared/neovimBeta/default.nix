@@ -1,4 +1,4 @@
-{ config, lib, inputs, ... }:
+{ inputs, ... }:
 let utils = inputs.nixCats.utils;
 in {
   imports = [ inputs.nixCats.homeModule ];
@@ -66,6 +66,19 @@ in {
               lzextras
               catppuccin-nvim
               vim-sleuth
+              which-key-nvim
+              (pkgs.vimUtils.buildVimPlugin {
+                pname = "tiny-code-action.nvim";
+                version = "0.0.0";
+                doCheck = false;
+                src = pkgs.fetchFromGitHub {
+                  owner = "rachartier";
+                  repo = "tiny-code-action.nvim";
+                  rev = "main"; # or a specific commit hash
+                  sha256 = "sha256-Zcp0Bj50Mw7ZfwpSZ0xI5TJxDTDwL2PPkj+D1ridYKA=";
+                };
+              })
+              tiny-inline-diagnostic-nvim
             ];
           };
 
@@ -84,7 +97,6 @@ in {
               mini-nvim
               nvim-lspconfig
               vim-startuptime
-              render-markdown-nvim
               blink-cmp
               nvim-treesitter.withAllGrammars
               gitsigns-nvim
@@ -97,10 +109,11 @@ in {
               nvim-highlight-colors
               CopilotChat-nvim
               lualine-nvim
-              lualine-lsp-progress
               fzf-lua
               neo-tree-nvim
+              fidget-nvim
             ];
+            docs = with pkgs.vimPlugins; [ render-markdown-nvim obsidian-nvim ];
           };
 
           # shared libraries to be added to LD_LIBRARY_PATH
@@ -162,6 +175,7 @@ in {
             csharp = true;
             fsharp = true;
             reactjs = true;
+            docs = true;
           };
           # anything else to pass and grab in lua with `nixCats.extra`
           extra = { nixdExtras.nixpkgs = "import ${pkgs.path} {}"; };

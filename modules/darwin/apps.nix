@@ -14,6 +14,8 @@
       "slack"
       "ghostty"
       "visual-studio-code"
+      "rider"
+      "datagrip"
     ];
 
     global.brewfile = true;
