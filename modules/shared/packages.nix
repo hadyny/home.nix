@@ -8,11 +8,12 @@ with pkgs; [
   nerd-fonts.victor-mono
   nerd-fonts.commit-mono
 
-  # general development & utils
-  jetbrains.datagrip
-  jetbrains.rider
-  jetbrains.goland
+  emacs-lsp-booster
+  vtsls
+  tailwindcss-language-server
+  rustywind
 
+  # general development & utils
   httpie
   moreutils
   ripgrep # better grep

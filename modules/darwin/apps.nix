@@ -1,5 +1,7 @@
 {
-  darwin.apps = { raycast.enable = true; };
+  darwin.apps = {
+    raycast.enable = true;
+  };
 
   homebrew = {
     enable = true;
@@ -14,6 +16,10 @@
       "slack"
       "ghostty"
       "visual-studio-code"
+      "rider"
+      "datagrip"
+      "spotify"
+      "zed"
     ];
 
     global.brewfile = true;

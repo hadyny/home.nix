@@ -29,6 +29,7 @@ options.showmode = false
 options.mouse = "a"
 options.winborder = "single"
 options.inccommand = "split"
+options.conceallevel = 2
 
 vim.wo.signcolumn = "yes"
 vim.wo.relativenumber = true
@@ -55,7 +56,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 diagnostics.config({
 	virtual_text = false,
-	virtual_lines = { current_line = true },
 	signs = {
 		text = {
 			[diagnostics.severity.ERROR] = "󰅙",
@@ -142,8 +142,6 @@ map("n", "<leader>/", "<Cmd>FzfLua blines<cr>", { desc = "Buffer Lines" })
 map("n", "<leader>:", "<Cmd>FzfLua command_history<cr>", { desc = "Command History" })
 map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 map("n", "<leader>k", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
-
-
 
 -- file
 map("n", "<leader>ff", "<Cmd>FzfLua files<cr>", { desc = "Find Files" })
@@ -514,7 +512,7 @@ require("lze").load({
 				},
 			})
 
-			map("n", "<leader>e", "<Cmd>Neotree toggle<CR>")
+			map("n", "<leader>e", "<Cmd>Neotree toggle<CR>", { desc = "Explorer" })
 		end,
 	},
 	{
@@ -525,10 +523,6 @@ require("lze").load({
 		-- ft = "",
 		-- keys = "",
 		-- colorscheme = "",
-		load = function(name)
-			vim.cmd.packadd(name)
-			vim.cmd.packadd("lualine-lsp-progress")
-		end,
 		after = function(plugin)
 			require("lualine").setup({
 				options = {
@@ -544,7 +538,6 @@ require("lze").load({
 							path = 1,
 							status = true,
 						},
-						"lsp_progress",
 					},
 				},
 				inactive_sections = {
@@ -557,11 +550,6 @@ require("lze").load({
 					},
 
 					lualine_x = { "filetype" },
-				},
-				tabline = {
-					lualine_a = { "buffers" },
-					lualine_b = { "lsp_progress" },
-					lualine_z = { "tabs" },
 				},
 			})
 		end,
@@ -651,63 +639,6 @@ require("lze").load({
 			MiniIcons.setup()
 			MiniIcons.mock_nvim_web_devicons()
 			MiniIcons.tweak_lsp_kind()
-			local miniclue = require("mini.clue")
-			miniclue.setup({
-				window = {
-					delay = 0,
-					config = {
-						width = "auto",
-					},
-				},
-				triggers = {
-					-- Leader triggers
-					{ mode = "n", keys = "<Leader>" },
-					{ mode = "x", keys = "<Leader>" },
-
-					-- Built-in completion
-					{ mode = "i", keys = "<C-x>" },
-
-					-- `g` key
-					{ mode = "n", keys = "g" },
-					{ mode = "x", keys = "g" },
-
-					-- Marks
-					{ mode = "n", keys = "'" },
-					{ mode = "n", keys = "`" },
-					{ mode = "x", keys = "'" },
-					{ mode = "x", keys = "`" },
-
-					-- Registers
-					{ mode = "n", keys = '"' },
-					{ mode = "x", keys = '"' },
-					{ mode = "i", keys = "<C-r>" },
-					{ mode = "c", keys = "<C-r>" },
-
-					-- Window commands
-					{ mode = "n", keys = "<C-w>" },
-
-					-- `z` key
-					{ mode = "n", keys = "z" },
-					{ mode = "x", keys = "z" },
-				},
-
-				clues = {
-					{ mode = "n", keys = "<Leader><Leader>", desc = "buffers" },
-					{ mode = "n", keys = "<Leader>f", desc = "files" },
-					{ mode = "n", keys = "<Leader>c", desc = "code" },
-					{ mode = "n", keys = "<Leader>g", desc = "git" },
-					{ mode = "n", keys = "<Leader>s", desc = "search" },
-					{ mode = "n", keys = "g", desc = "goto" },
-					{ mode = "n", keys = "<Leader>t", desc = "testing" },
-					{ mode = "n", keys = "<Leader>d", desc = "debug" },
-					miniclue.gen_clues.builtin_completion(),
-					miniclue.gen_clues.g(),
-					miniclue.gen_clues.marks(),
-					miniclue.gen_clues.registers(),
-					miniclue.gen_clues.windows(),
-					miniclue.gen_clues.z(),
-				},
-			})
 		end,
 	},
 	{
@@ -718,6 +649,65 @@ require("lze").load({
 			vim.g.startuptime_event_width = 0
 			vim.g.startuptime_tries = 10
 			vim.g.startuptime_exe_path = nixCats.packageBinPath
+		end,
+	},
+	{
+		"which-key.nvim",
+		enabled = nixCats("general") or false,
+		event = "DeferredUIEnter",
+		opts = {
+			delay = 0,
+		},
+		keys = {
+			{
+				"<leader>?",
+				function()
+					require("which-key").show({ global = false })
+				end,
+				desc = "Buffer Local Keymaps (which-key)",
+			},
+		},
+		after = function(plugin)
+			require("which-key").add({
+				{
+					"<Leader><Leader>",
+					group = "buffers",
+					expand = function()
+						return require("which-key.extras").expand.buf()
+					end,
+				},
+				{ "<Leader>f", group = "files" },
+				{ "<Leader>c", group = "code" },
+				{ "<Leader>g", group = "git" },
+				{ "<Leader>s", group = "search" },
+				{ "g", group = "goto" },
+				{ "<Leader>t", group = "testing" },
+				{ "<Leader>d", group = "debug" },
+			})
+		end,
+	},
+	{
+		"obsidian.nvim",
+		enabled = nixCats("docs") or false,
+		event = "DeferredUIEnter",
+		ft = "markdown",
+		after = function()
+			require("obsidian").setup({
+				workspaces = {
+					{
+						name = "personal",
+						path = "~/Documents/Vault",
+					},
+				},
+				completion = {
+					blink = true,
+					min_chars = 2,
+					create_new = true,
+				},
+				picker = {
+					name = "fzf-lua",
+				},
+			})
 		end,
 	},
 	{
@@ -1043,13 +1033,47 @@ require("lze").load({
 	},
 	{
 		"render-markdown.nvim",
-		enabled = nixCats("general") or false,
+		enabled = nixCats("docs") or false,
 		event = "DeferredUIEnter",
 		after = function(plugin)
 			require("render-markdown").setup({
 				completions = { lsp = { enabled = true } },
 			})
 		end,
+	},
+	{
+		"tiny-code-action.nvim",
+		enabled = nixCats("general") or false,
+		event = "DeferredUIEnter",
+		after = function()
+			require("tiny-code-action").setup({
+				backend = "delta",
+				picker = "buffer",
+			})
+			vim.keymap.set({ "n", "x" }, "<leader>ca", function()
+				require("tiny-code-action").code_action({})
+			end, { noremap = true, silent = true })
+		end,
+	},
+	{
+		"tiny-inline-diagnostic.nvim",
+		enabled = nixCats("general") or false,
+		event = "DeferredUIEnter",
+		after = function()
+			require("tiny-inline-diagnostic").setup({
+				multilines = true,
+				break_line = { enabled = true },
+				enable_on_insert = false,
+			})
+		end,
+	},
+	{
+		"fidget.nvim",
+		enabled = nixCats("general") or false,
+		event = "LspAttach",
+		after = function ()
+			require("fidget").setup({})
+		end
 	},
 	{
 		"CopilotChat.nvim",
@@ -1114,9 +1138,9 @@ local function lsp_on_attach(_, bufnr)
 	end
 
 	-- LSP mappings
-	nmap("<leader>sd", "<Cmd>FzfLua lsp_definitions<cr>", "Search definitions" )
-	nmap("<leader>sr", "<Cmd>FzfLua lsp_references<cr>", "Search References" )
-	nmap("<leader>si", "<Cmd>FzfLua lsp_implementations<cr>", "Search Implementations" )
+	nmap("<leader>sd", "<Cmd>FzfLua lsp_definitions<cr>", "Search definitions")
+	nmap("<leader>sr", "<Cmd>FzfLua lsp_references<cr>", "Search References")
+	nmap("<leader>si", "<Cmd>FzfLua lsp_implementations<cr>", "Search Implementations")
 
 	-- See `:help K` for why this keymap
 	nmap("K", vim.lsp.buf.hover, "Hover Documentation")

@@ -1,10 +1,13 @@
 {
-  imports = [ ./aws.nix ../../modules/shared/secureEnv/onePassword.nix ];
+  imports = [
+    ./aws.nix
+    ../../modules/shared/secureEnv/onePassword.nix
+  ];
 
   tools.dotnet = {
     nugetSources = {
       "ep-github" = {
-        url = "https://nuget.pkg.github.com/EducationPerfect/index.json";
+        url = "%EP_NUGET_SOURCE_URL%";
         userName = "%EP_NUGET_SOURCE_USER%";
         password = "%EP_NUGET_SOURCE_PASS%";
       };
@@ -14,6 +17,12 @@
   secureEnv.onePassword = {
     enable = true;
     sessionVariables = {
+      EP_NUGET_SOURCE_URL = {
+        account = "educationperfect.1password.com";
+        vault = "Employee";
+        item = "GitHub";
+        field = "nuget url";
+      };
       EP_NUGET_SOURCE_PASS = {
         account = "educationperfect.1password.com";
         vault = "Employee";

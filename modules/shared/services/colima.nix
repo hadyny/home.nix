@@ -68,13 +68,13 @@ let
 
       cpu = mkOption {
         type = types.ints.positive;
-        default = 2;
+        default = 4;
         description = "Number of CPUs to be allocated to the virtual machine";
       };
 
       memory = mkOption {
         type = types.ints.positive;
-        default = 2;
+        default = 8;
         description = "Size of the disk in GiB to be allocated to the virtual machine";
       };
 

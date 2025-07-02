@@ -1,4 +1,5 @@
-{ ... }: {
+{ ... }:
+{
   home.file = {
     ".config/ghostty/config".text = ''
       font-family = "CommitMono Nerd Font Mono"
