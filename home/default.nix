@@ -1,12 +1,7 @@
 # Main user-level configuration
-{ pkgs, lib, userConfig, inputs, ... }:
+{ pkgs, lib, userConfig, inputs, config, ... }:
 
-let
-  modules = import ../modules/shared/modules.nix { inherit lib; };
-  nvm = builtins.fetchGit {
-    url = "https://github.com/nvm-sh/nvm";
-    rev = "977563e97ddc66facf3a8e31c6cff01d236f09bd";
-  };
+let modules = import ../modules/shared/modules.nix { inherit lib; };
 
 in {
   # Let Home Manager install and manage itself.
@@ -19,7 +14,6 @@ in {
   imports = [
     ../modules/shared/ghostty
     ../modules/shared/neovim
-    ../modules/shared/neovimBeta
     ../modules/shared/services/colima.nix
     ../modules/shared/settings/wallpaper.nix
     ./work
@@ -36,11 +30,6 @@ in {
       AWS_PROFILE = "dev";
     };
 
-    file.".nvm" = {
-      source = nvm;
-      recursive = true;
-    };
-
     packages =
       pkgs.callPackage ../modules/shared/packages.nix { inherit pkgs; };
 
@@ -54,7 +43,8 @@ in {
 
   fonts.fontconfig.enable = true;
 
-  programs = { } // import ../modules/shared/home-manager.nix { inherit pkgs; };
+  programs = { }
+    // import ../modules/shared/home-manager.nix { inherit pkgs lib config; };
 
   services = {
     emacs = {
@@ -70,8 +60,6 @@ in {
       };
     };
   };
-
-  modules = { neovim.enable = true; };
 
   tools = {
     aws.enable = true;

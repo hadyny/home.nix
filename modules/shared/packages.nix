@@ -8,10 +8,28 @@ with pkgs; [
   nerd-fonts.victor-mono
   nerd-fonts.commit-mono
 
+  # dev
   emacs-lsp-booster
   vtsls
   tailwindcss-language-server
   rustywind
+  nixd
+  nil
+  nixfmt
+  prettierd
+  scooter
+  fsautocomplete
+  omnisharp-roslyn
+  emmet-language-server
+  (vscode-langservers-extracted.overrideAttrs (oldAttrs: {
+    version = "4.8.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "hrsh7th";
+      repo = "vscode-langservers-extracted";
+      rev = "v4.8.0";
+      sha256 = "sha256-sGnxmEQ0J74zNbhRpsgF/cYoXwn4jh9yBVjk6UiUdK0=";
+    };
+  }))
 
   # general development & utils
   httpie
