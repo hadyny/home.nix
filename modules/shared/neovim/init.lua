@@ -144,6 +144,7 @@ map("n", "<leader>/", "<Cmd>FzfLua blines<cr>", { desc = "Buffer Lines" })
 map("n", "<leader>:", "<Cmd>FzfLua command_history<cr>", { desc = "Command History" })
 map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 map("n", "<leader>k", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
+map("n", "<leader>q", "<Cmd>lua require('quicker').toggle()<cr>", { desc = "Toggle quickfix" })
 
 -- file
 map("n", "<leader>ff", "<Cmd>FzfLua files<cr>", { desc = "Find Files" })
@@ -165,7 +166,7 @@ map("n", "gb", ":ls<cr>:b<space>", { noremap = true, desc = "Goto buffer" })
 -- code
 map("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
 map("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
-map("n", "<Leader>cc", "<Cmd>CopilotChat<cr>", { desc = "Copilot chat" })
+map("n", "<Leader>cc", "<Cmd>CopilotChatToggle<cr>", { desc = "Copilot chat" })
 
 -- search
 map("n", "<leader>sg", "<Cmd>FzfLua live_grep<cr>", { desc = "Grep project" })
@@ -1078,6 +1079,14 @@ require("lze").load({
 		end,
 	},
 	{
+		"quicker.nvim",
+		enabled = nixCats("general") or false,
+		event = "LspAttach",
+		after = function()
+			require("quicker").setup()
+		end,
+	},
+	{
 		"CopilotChat.nvim",
 		enabled = nixCats("general") or false,
 		event = "DeferredUIEnter",
@@ -1241,7 +1250,9 @@ require("lze").load({
 	},
 	{
 		"graphql",
-		lsp = {},
+		lsp = { filetypes = {
+			"graphql",
+		} },
 		enabled = nixCats("reactjs") or false,
 	},
 	{

@@ -71,7 +71,7 @@ let
     '';
   in pkgs.writeTextFile {
     name = "Dock.plist";
-    text = generators.toPlist { } {
+    text = generators.toPlist { escape = true; } {
       persistent-apps = map toItem cfg.apps;
       persistent-others = map toItem cfg.others;
     };

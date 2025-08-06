@@ -15,11 +15,12 @@ with pkgs; [
   rustywind
   nixd
   nil
-  nixfmt
+  nixfmt-classic
   prettierd
   scooter
   fsautocomplete
   omnisharp-roslyn
+  roslyn-ls
   emmet-language-server
   (vscode-langservers-extracted.overrideAttrs (oldAttrs: {
     version = "4.8.0";
