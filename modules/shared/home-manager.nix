@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   home-manager.enable = true;
 
   atuin = {
@@ -8,12 +9,16 @@
 
   bat = {
     enable = true;
-    config = { theme = "ansi"; };
+    config = {
+      theme = "Dracula";
+    };
   };
 
   btop = {
     enable = true;
-    settings = { theme_background = false; };
+    settings = {
+      theme_background = false;
+    };
   };
 
   jq.enable = true;
@@ -24,7 +29,11 @@
     enable = true;
     git = true;
     icons = "auto";
-    extraOptions = [ "--group-directories-first" "--header" "--long" ];
+    extraOptions = [
+      "--group-directories-first"
+      "--header"
+      "--long"
+    ];
   };
 
   direnv = {
@@ -70,6 +79,18 @@
   starship.enable = true;
 
   yazi.enable = true;
+
+  zellij = {
+    enable = true;
+    settings = {
+      theme = "dracula";
+      ui = {
+        pane_frames = {
+          rounded_corners = true;
+        };
+      };
+    };
+  };
 
   zsh.enable = true;
 

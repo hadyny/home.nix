@@ -87,6 +87,7 @@ in
               lze
               lzextras
               catppuccin-nvim
+              dracula-nvim
               vim-sleuth
               which-key-nvim
               (pkgs.vimUtils.buildVimPlugin {

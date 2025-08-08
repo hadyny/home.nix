@@ -1,10 +1,16 @@
-{ pkgs, config, lib, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 let
   inherit (lib) mkIf getExe;
   fishPath = getExe config.programs.fish.package;
   zshPath = getExe config.programs.zsh.package;
   isDarwin = pkgs.stdenv.isDarwin;
-in {
+in
+{
   programs.ghostty = mkIf (!isDarwin) {
     enable = true;
     settings = {
@@ -19,7 +25,7 @@ in {
       font-thicken = true;
       font-thicken-strength = 192;
       adjust-cell-height = "20%";
-      theme = "light:catppuccin-latte,dark:catppuccin-mocha";
+      theme = "light:catppuccin-latte,dark:Dracula";
       window-padding-x = 20;
       window-padding-y = 20;
     };
@@ -37,7 +43,7 @@ in {
       font-thicken = true
       font-thicken-strength = 192
       adjust-cell-height = 20%
-      theme = light:catppuccin-latte,dark:catppuccin-mocha
+      theme = light:catppuccin-latte,dark:Dracula
       window-padding-x = 20
       window-padding-y = 20
     '';

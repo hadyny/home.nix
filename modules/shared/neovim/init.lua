@@ -120,23 +120,7 @@ map(
 	{ noremap = true, silent = true, desc = "Paste over selection without erasing unnamed register" }
 )
 if not vscode then
-	require("catppuccin").setup({
-		flavour = "auto",
-		background = {
-			light = "latte",
-			dark = "mocha",
-		},
-		dim_inactive = { enabled = true },
-		integrations = {
-			diffview = true,
-			gitgraph = true,
-			mini = {
-				enabled = true,
-				indentscope_color = "lavender",
-			},
-		},
-	})
-	vim.cmd.colorscheme("catppuccin-mocha")
+		vim.cmd.colorscheme("dracula")
 end
 map("n", "<Esc>", ":noh<CR><Esc>", { noremap = true, silent = true }) -- escape to cancel search
 
