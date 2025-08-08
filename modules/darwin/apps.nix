@@ -1,7 +1,5 @@
 {
-  darwin.apps = {
-    raycast.enable = true;
-  };
+  darwin.apps = { raycast.enable = true; };
 
   homebrew = {
     enable = true;
