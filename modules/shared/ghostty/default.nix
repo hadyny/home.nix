@@ -19,7 +19,7 @@ in {
       font-thicken = true
       font-thicken-strength = 192
       adjust-cell-height = 20%
-      theme = light:catppuccin-latte,dark:Dracula
+      theme = light:catppuccin-latte,dark:tokyonight_night
       window-padding-x = 20
       window-padding-y = 20
     '';

@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
   home-manager.enable = true;
 
   atuin = {
@@ -7,18 +6,11 @@
     flags = [ "--disable-up-arrow" ];
   };
 
-  bat = {
-    enable = true;
-    config = {
-      theme = "Dracula";
-    };
-  };
+  bat.enable = true;
 
   btop = {
     enable = true;
-    settings = {
-      theme_background = false;
-    };
+    settings = { theme_background = false; };
   };
 
   jq.enable = true;
@@ -29,11 +21,7 @@
     enable = true;
     git = true;
     icons = "auto";
-    extraOptions = [
-      "--group-directories-first"
-      "--header"
-      "--long"
-    ];
+    extraOptions = [ "--group-directories-first" "--header" "--long" ];
   };
 
   direnv = {
@@ -53,21 +41,10 @@
     shellInit = ''
       set -U fish_greeting "🐟"
     '';
-    plugins = with pkgs.fishPlugins; [
-      {
-        name = "sponge";
-        src = sponge.src;
-      }
-      {
-        name = "nvm";
-        src = pkgs.fetchFromGitHub {
-          owner = "jorgebucaran";
-          repo = "nvm.fish";
-          rev = "a0892d0bb2304162d5faff561f030bb418cac34d";
-          sha256 = "sha256-GTEkCm+OtxMS3zJI5gnFvvObkrpepq1349/LcEPQRDo=";
-        };
-      }
-    ];
+    plugins = with pkgs.fishPlugins; [{
+      name = "sponge";
+      src = sponge.src;
+    }];
   };
 
   fzf.enable = true;
@@ -84,11 +61,7 @@
     enable = true;
     settings = {
       theme = "dracula";
-      ui = {
-        pane_frames = {
-          rounded_corners = true;
-        };
-      };
+      ui = { pane_frames = { rounded_corners = true; }; };
     };
   };
 

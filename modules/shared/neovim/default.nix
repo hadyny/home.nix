@@ -65,7 +65,7 @@ in {
               lze
               lzextras
               catppuccin-nvim
-              dracula-nvim
+              tokyonight-nvim
               vim-sleuth
               which-key-nvim
               (pkgs.vimUtils.buildVimPlugin {
@@ -161,8 +161,8 @@ in {
             # IMPORTANT:
             # your alias may not conflict with your other packages.
             aliases = [ "nvim" ];
-            # neovim-unwrapped =
-            #   inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+            neovim-unwrapped =
+              inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
             hosts.python3.enable = true;
             hosts.node.enable = true;
           };

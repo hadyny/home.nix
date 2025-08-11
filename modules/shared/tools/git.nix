@@ -83,7 +83,7 @@ in {
           customCommands = [
             {
               key = "C";
-              command = "git cz c";
+              command = "npx git-cz";
               description = "commit with commitizen";
               context = "files";
               loadingText = "opening commitizen commit tool";
@@ -152,14 +152,7 @@ in {
       };
     };
 
-    home.packages = with pkgs; [
-      git-crypt
-      commitizen
-      delta
-      gh
-      git-standup
-      tig
-    ];
+    home.packages = with pkgs; [ git-crypt delta gh tig ];
 
     home.sessionVariables = { GH_PAGER = "delta"; };
   };

@@ -120,7 +120,7 @@ map(
 	{ noremap = true, silent = true, desc = "Paste over selection without erasing unnamed register" }
 )
 if not vscode then
-		vim.cmd.colorscheme("dracula")
+		vim.cmd.colorscheme("tokyonight-night")
 end
 map("n", "<Esc>", ":noh<CR><Esc>", { noremap = true, silent = true }) -- escape to cancel search
 
@@ -513,7 +513,7 @@ require("lze").load({
 			require("lualine").setup({
 				options = {
 					icons_enabled = true,
-					theme = "catppuccin",
+					theme = "tokyonight",
 					section_separators = { left = "", right = "" },
 					component_separators = { left = "", right = "" },
 				},

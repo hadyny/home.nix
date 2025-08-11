@@ -9,6 +9,7 @@ with pkgs; [
   nerd-fonts.commit-mono
 
   # dev
+  devenv
   emacs-lsp-booster
   vtsls
   tailwindcss-language-server
