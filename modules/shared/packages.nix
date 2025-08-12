@@ -2,12 +2,6 @@
 with pkgs; [
   _1password-cli
 
-  # fonts
-  nerd-fonts.geist-mono
-  nerd-fonts.fira-code
-  nerd-fonts.victor-mono
-  nerd-fonts.commit-mono
-
   # dev
   devenv
   emacs-lsp-booster

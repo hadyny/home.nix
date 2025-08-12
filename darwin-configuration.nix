@@ -20,6 +20,12 @@ in {
   };
   ids.gids.nixbld = 350;
 
+  fonts.packages = with pkgs; [
+    maple-mono.NF-unhinted
+    nerd-fonts.fira-code
+    nerd-fonts.commit-mono
+  ];
+
   # set up current user
   users.users.${userConfig.name} = {
     name = userConfig.name;
