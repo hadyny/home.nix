@@ -24,13 +24,14 @@ options.number = true
 options.relativenumber = true
 options.scrolloff = 4
 options.sidescrolloff = 8
-options.completeopt = "menu,preview,noselect"
+options.completeopt = "menu,preview,noselect,popup"
 options.confirm = true
 options.showmode = false
 options.mouse = "a"
 options.winborder = "single"
 options.inccommand = "split"
 options.conceallevel = 2
+options.wrap = false
 
 vim.wo.signcolumn = "yes"
 vim.wo.relativenumber = true
@@ -119,20 +120,15 @@ map(
 	'"_dP',
 	{ noremap = true, silent = true, desc = "Paste over selection without erasing unnamed register" }
 )
-if not vscode then
-		vim.cmd.colorscheme("tokyonight-night")
+if nixCats("general") and not vscode then
+	vim.cmd.colorscheme("tokyonight-night")
 end
 map("n", "<Esc>", ":noh<CR><Esc>", { noremap = true, silent = true }) -- escape to cancel search
 
-map("n", "<leader>/", "<Cmd>FzfLua blines<cr>", { desc = "Buffer Lines" })
-map("n", "<leader>:", "<Cmd>FzfLua command_history<cr>", { desc = "Command History" })
 map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 map("n", "<leader>k", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
-map("n", "<leader>q", "<Cmd>lua require('quicker').toggle()<cr>", { desc = "Toggle quickfix" })
 
 -- file
-map("n", "<leader>ff", "<Cmd>FzfLua files<cr>", { desc = "Find Files" })
-map("n", "<leader>fr", "<Cmd>FzfLua oldfiles<cr>", { desc = "Recent" })
 map("n", "<leader>f+", "<Cmd>set foldlevel=99<cr>", { desc = "Expand all folds" })
 map("n", "<leader>f-", "<Cmd>set foldlevel=0<cr>", { desc = "Collapse all folds" })
 
@@ -140,46 +136,19 @@ map("n", "<leader>-", "<Cmd>foldclose<cr>", { desc = "Collapse current fold" })
 map("n", "<leader>+", "<Cmd>foldopen<cr>", { desc = "Expand current fold" })
 
 -- Buffer mappings
-map("n", "<leader><leader>b", "<Cmd>FzfLua buffers<cr>", { desc = "Switch Buffers" })
-map("n", "<leader><leader>[", "<cmd>bprev<CR>", { desc = "Previous buffer" })
-map("n", "<leader><leader>]", "<cmd>bnext<CR>", { desc = "Next buffer" })
-map("n", "<leader><leader>l", "<cmd>b#<CR>", { desc = "Last buffer" })
-map("n", "<leader><leader>d", "<cmd>bdelete<CR>", { desc = "delete buffer" })
+map("n", "<leader>b[", "<cmd>bprev<CR>", { desc = "Previous buffer" })
+map("n", "<leader><b]", "<cmd>bnext<CR>", { desc = "Next buffer" })
+map("n", "<leader>bl", "<cmd>b#<CR>", { desc = "Last buffer" })
+map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "delete buffer" })
 map("n", "gb", ":ls<cr>:b<space>", { noremap = true, desc = "Goto buffer" })
 
 -- code
 map("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
 map("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
-map("n", "<Leader>cc", "<Cmd>CopilotChatToggle<cr>", { desc = "Copilot chat" })
 
--- search
-map("n", "<leader>sg", "<Cmd>FzfLua live_grep<cr>", { desc = "Grep project" })
-map("n", "<leader>sC", "<Cmd>FzfLua commands<cr>", { desc = "Commands" })
-map("n", "<leader>sk", "<Cmd>FzfLua keymaps<cr>", { desc = "Keymaps" })
-map("n", "<leader>sm", "<Cmd>FzfLua marks<cr>", { desc = "Marks" })
-map("n", "<leader>sp", "<Cmd>FzfLua<cr>", { desc = "Pickers" })
-
--- test
-map("n", "<Leader>tn", "<Cmd>lua require('neotest').run.run()<CR>", { desc = "Run nearest test" })
-map("n", "<Leader>tf", "<Cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>", { desc = "Run test file" })
-map("n", "<Leader>tl", "<Cmd>lua require('neotest').run.run_last()<CR>", { desc = "Run last test" })
-map("n", "<Leader>td", "<Cmd>lua require('neotest').run.run({strategy = 'dap'})<CR>", { desc = "Debug nearest test" })
-map("n", "<Leader>ts", "<Cmd>lua require('neotest').summary.toggle()<CR>", { desc = "Toggle test summary" })
-map("n", "<Leader>to", "<Cmd>lua require('neotest').output.open()<CR>", { desc = "Show test output" })
-map("n", "<Leader>tp", "<Cmd>lua require('neotest').output_panel.toggle()<CR>", { desc = "Toggle output panel" })
-
-map(
-	"n",
-	"[t",
-	"<Cmd>lua require('neotest').jump.prev({ status = 'failed' })<CR>",
-	{ desc = "Jump to previous failed test" }
-)
-map(
-	"n",
-	"]t",
-	"<Cmd>lua require('neotest').jump.next({ status = 'failed' })<CR>",
-	{ desc = "Jump to next failed test" }
-)
+if not nixCats("general") then
+	return
+end
 
 require("lze").load({
 	{
@@ -187,6 +156,11 @@ require("lze").load({
 		enabled = (nixCats("general") and not vscode) or false,
 		event = "DeferredUIEnter",
 		on_require = "blink",
+		load = function(name)
+			vim.cmd.packadd(name)
+			vim.cmd.packadd("blink-cmp-avante")
+		end,
+
 		after = function(plugin)
 			require("blink.cmp").setup({
 				-- See :h blink-cmp-config-keymap for configuring keymaps
@@ -196,309 +170,85 @@ require("lze").load({
 				},
 				signature = { enabled = true },
 				sources = {
-					default = { "lsp", "path", "snippets", "buffer" },
+					default = { "avante", "lsp", "path", "snippets", "buffer" },
+					providers = {
+						avante = {
+							module = "blink-cmp-avante",
+							name = "Avante",
+							opts = {},
+						},
+					},
 				},
-
 				cmdline = { keymap = { preset = "default", ["<CR>"] = { "select_accept_and_enter", "fallback" } } },
 			})
 		end,
 	},
 	{
-		"fzf-lua",
+		"snacks.nvim",
 		enabled = (nixCats("general") and not vscode) or false,
 		after = function(plugin)
-			local fzfLua = require("fzf-lua")
-			fzfLua.setup({
-				{ "default-prompt", "fzf-native" },
-				files = {
-					code_actions = { previewer = "codeaction_native" },
+			local snacks = require("snacks")
+			snacks.setup({
+				animate = { enabled = true },
+				bigfile = { enabled = true },
+				explorer = { enabled = true },
+				input = { enabled = true },
+				lazygit = { enabled = true },
+				picker = {
+					enabled = true,
+					sources = { explorer = { layout = { layout = { position = "right" } } } },
 				},
-				previewers = {
-					codeaction_native = {
-						diff_opts = { ctxlen = 3 },
-						pager = [[delta --width=$COLUMNS --hunk-header-style="omit" --file-style="omit"]],
-					},
-				},
+				quickfile = { enabled = true },
+				rename = { enabled = true },
+				scope = { enabled = true },
+				scroll = { enabled = true },
+				-- statuscolumn = { enabled = true },
 			})
-			fzfLua.register_ui_select()
-		end,
-	},
-	{
-		"neo-tree.nvim",
-		enabled = (nixCats("general") and not vscode) or false,
-		event = "DeferredUIEnter",
-		after = function(plugin)
-			require("neo-tree").setup({
-				close_if_last_window = false,
-				popup_border_style = "",
-				enable_git_status = true,
-				enable_diagnostics = true,
-				open_files_do_not_replace_types = { "terminal", "trouble", "qf" }, -- when opening files, do not use windows containing these filetypes or buftypes
-				open_files_using_relative_paths = false,
-				sort_case_insensitive = false, -- used when sorting files and directories in the tree
-
-				default_component_configs = {
-					container = {
-						enable_character_fade = true,
-					},
-					indent = {
-						indent_size = 2,
-						padding = 1,
-						with_markers = true,
-						indent_marker = "│",
-						last_indent_marker = "└",
-						highlight = "NeoTreeIndentMarker",
-						with_expanders = nil,
-						expander_collapsed = "",
-						expander_expanded = "",
-						expander_highlight = "NeoTreeExpander",
-					},
-					icon = {
-						folder_closed = "",
-						folder_open = "",
-						folder_empty = "󰜌",
-						provider = function(icon, node, state) -- default icon provider utilizes nvim-web-devicons if available
-							if node.type == "file" or node.type == "terminal" then
-								local success, web_devicons = pcall(require, "nvim-web-devicons")
-								local name = node.type == "terminal" and "terminal" or node.name
-								if success then
-									local devicon, hl = web_devicons.get_icon(name)
-									icon.text = devicon or icon.text
-									icon.highlight = hl or icon.highlight
-								end
-							end
-						end,
-						-- The next two settings are only a fallback, if you use nvim-web-devicons and configure default icons there
-						-- then these will never be used.
-						default = "*",
-						highlight = "NeoTreeFileIcon",
-					},
-					modified = {
-						symbol = "[+]",
-						highlight = "NeoTreeModified",
-					},
-					name = {
-						trailing_slash = false,
-						use_git_status_colors = true,
-						highlight = "NeoTreeFileName",
-					},
-					git_status = {
-						symbols = {
-							-- Change type
-							added = "", -- or "✚", but this is redundant info if you use git_status_colors on the name
-							modified = "", -- or "", but this is redundant info if you use git_status_colors on the name
-							deleted = "✖", -- this can only be used in the git_status source
-							renamed = "󰁕", -- this can only be used in the git_status source
-							-- Status type
-							untracked = "",
-							ignored = "",
-							unstaged = "󰄱",
-							staged = "",
-							conflict = "",
-						},
-					},
-					file_size = {
-						enabled = true,
-						width = 12,
-						required_width = 64,
-					},
-					type = {
-						enabled = true,
-						width = 10,
-						required_width = 122,
-					},
-					last_modified = {
-						enabled = true,
-						width = 20,
-						required_width = 88,
-					},
-					created = {
-						enabled = true,
-						width = 20,
-						required_width = 110,
-					},
-					symlink_target = {
-						enabled = false,
-					},
-				},
-				-- A list of functions, each representing a global custom command
-				-- that will be available in all sources (if not overridden in `opts[source_name].commands`)
-				-- see `:h neo-tree-custom-commands-global`
-				commands = {},
-				window = {
-					position = "right",
-					width = 50,
-					mapping_options = {
-						noremap = true,
-						nowait = true,
-					},
-					mappings = {
-						["<space>"] = {
-							"toggle_node",
-							nowait = false, -- disable `nowait` if you have existing combos starting with this char that you want to use
-						},
-						["<2-LeftMouse>"] = "open",
-						["<cr>"] = "open",
-						["<esc>"] = "cancel", -- close preview or floating neo-tree window
-						["P"] = { "toggle_preview", config = { use_float = true, use_image_nvim = true } },
-						-- Read `# Preview Mode` for more information
-						["l"] = "focus_preview",
-						["S"] = "open_split",
-						["s"] = "open_vsplit",
-						-- ["S"] = "split_with_window_picker",
-						-- ["s"] = "vsplit_with_window_picker",
-						["t"] = "open_tabnew",
-						-- ["<cr>"] = "open_drop",
-						-- ["t"] = "open_tab_drop",
-						["w"] = "open_with_window_picker",
-						--["P"] = "toggle_preview", -- enter preview mode, which shows the current node without focusing
-						["C"] = "close_node",
-						-- ['C'] = 'close_all_subnodes',
-						["z"] = "close_all_nodes",
-						--["Z"] = "expand_all_nodes",
-						--["Z"] = "expand_all_subnodes",
-						["a"] = {
-							"add",
-							-- this command supports BASH style brace expansion ("x{a,b,c}" -> xa,xb,xc). see `:h neo-tree-file-actions` for details
-							-- some commands may take optional config options, see `:h neo-tree-mappings` for details
-							config = {
-								show_path = "none", -- "none", "relative", "absolute"
-							},
-						},
-						["A"] = "add_directory", -- also accepts the optional config.show_path option like "add". this also supports BASH style brace expansion.
-						["d"] = "delete",
-						["r"] = "rename",
-						["b"] = "rename_basename",
-						["y"] = "copy_to_clipboard",
-						["x"] = "cut_to_clipboard",
-						["p"] = "paste_from_clipboard",
-						["c"] = "copy", -- takes text input for destination, also accepts the optional config.show_path option like "add":
-						-- ["c"] = {
-						--  "copy",
-						--  config = {
-						--    show_path = "none" -- "none", "relative", "absolute"
-						--  }
-						--}
-						["m"] = "move", -- takes text input for destination, also accepts the optional config.show_path option like "add".
-						["q"] = "close_window",
-						["R"] = "refresh",
-						["?"] = "show_help",
-						["<"] = "prev_source",
-						[">"] = "next_source",
-						["i"] = "show_file_details",
-					},
-				},
-				nesting_rules = {},
-				filesystem = {
-					filtered_items = {
-						visible = false, -- when true, they will just be displayed differently than normal items
-						hide_dotfiles = true,
-						hide_gitignored = true,
-						hide_hidden = true, -- only works on Windows for hidden files/directories
-						hide_by_name = {
-							"node_modules",
-						},
-						hide_by_pattern = { -- uses glob style patterns
-							--"*.meta",
-							--"*/src/*/tsconfig.json",
-						},
-						always_show = { -- remains visible even if other settings would normally hide it
-							--".gitignored",
-						},
-						always_show_by_pattern = { -- uses glob style patterns
-							--".env*",
-						},
-						never_show = { -- remains hidden even if visible is toggled to true, this overrides always_show
-							--".DS_Store",
-							--"thumbs.db"
-						},
-						never_show_by_pattern = { -- uses glob style patterns
-							--".null-ls_*",
-						},
-					},
-					follow_current_file = {
-						enabled = false, -- This will find and focus the file in the active buffer every time
-						--               -- the current file is changed while the tree is open.
-						leave_dirs_open = false, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
-					},
-					group_empty_dirs = false, -- when true, empty folders will be grouped together
-					hijack_netrw_behavior = "open_default", -- netrw disabled, opening a directory opens neo-tree
-					-- in whatever position is specified in window.position
-					-- "open_current",  -- netrw disabled, opening a directory opens within the
-					-- window like netrw would, regardless of window.position
-					-- "disabled",    -- netrw left alone, neo-tree does not handle opening dirs
-					use_libuv_file_watcher = false, -- This will use the OS level file watchers to detect changes
-					-- instead of relying on nvim autocmd events.
-					window = {
-						mappings = {
-							["<bs>"] = "navigate_up",
-							["."] = "set_root",
-							["H"] = "toggle_hidden",
-							["/"] = "fuzzy_finder",
-							["D"] = "fuzzy_finder_directory",
-							["#"] = "fuzzy_sorter", -- fuzzy sorting using the fzy algorithm
-							-- ["D"] = "fuzzy_sorter_directory",
-							["f"] = "filter_on_submit",
-							["<c-x>"] = "clear_filter",
-							["[g"] = "prev_git_modified",
-							["]g"] = "next_git_modified",
-							["o"] = {
-								"show_help",
-								nowait = false,
-								config = { title = "Order by", prefix_key = "o" },
-							},
-							["oc"] = { "order_by_created", nowait = false },
-							["od"] = { "order_by_diagnostics", nowait = false },
-							["og"] = { "order_by_git_status", nowait = false },
-							["om"] = { "order_by_modified", nowait = false },
-							["on"] = { "order_by_name", nowait = false },
-							["os"] = { "order_by_size", nowait = false },
-							["ot"] = { "order_by_type", nowait = false },
-							-- ['<key>'] = function(state) ... end,
-						},
-						fuzzy_finder_mappings = { -- define keymaps for filter popup window in fuzzy_finder_mode
-							["<down>"] = "move_cursor_down",
-							["<C-n>"] = "move_cursor_down",
-							["<up>"] = "move_cursor_up",
-							["<C-p>"] = "move_cursor_up",
-							["<esc>"] = "close",
-							-- ['<key>'] = function(state, scroll_padding) ... end,
-						},
-					},
-
-					commands = {}, -- Add a custom command or override a global one using the same function name
-				},
-				buffers = {
-					follow_current_file = {
-						enabled = true, -- This will find and focus the file in the active buffer every time
-						--              -- the current file is changed while the tree is open.
-						leave_dirs_open = false, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
-					},
-					group_empty_dirs = true, -- when true, empty folders will be grouped together
-					show_unloaded = true,
-					window = {
-						mappings = {
-							["d"] = "buffer_delete",
-							["bd"] = "buffer_delete",
-							["<bs>"] = "navigate_up",
-							["."] = "set_root",
-							["o"] = {
-								"show_help",
-								nowait = false,
-								config = { title = "Order by", prefix_key = "o" },
-							},
-							["oc"] = { "order_by_created", nowait = false },
-							["od"] = { "order_by_diagnostics", nowait = false },
-							["om"] = { "order_by_modified", nowait = false },
-							["on"] = { "order_by_name", nowait = false },
-							["os"] = { "order_by_size", nowait = false },
-							["ot"] = { "order_by_type", nowait = false },
-						},
-					},
-				},
-			})
-
-			map("n", "<leader>e", "<Cmd>Neotree toggle<CR>", { desc = "Explorer" })
+			map("n", "<leader>e", function()
+				snacks.picker.explorer()
+			end, { desc = "Explorer" })
+			map("n", "<leader><leader>", function()
+				snacks.picker.smart()
+			end, { desc = "Smart Fuzzy Find" })
+			map("n", "<leader>ff", function()
+				snacks.picker.files({ hidden = true })
+			end, { desc = "Fuzzy find files" })
+			map("n", "<leader>fr", function()
+				snacks.picker.recent()
+			end, { desc = "Fuzzy find recent files" })
+			map("n", "<leader>sg", function()
+				snacks.picker.grep()
+			end, { desc = "Find string in CWD" })
+			map("n", "<leader>sc", function()
+				snacks.picker.grep_word()
+			end, { desc = "Find word under cursor in CWD" })
+			map("n", "<leader>bs", function()
+				snacks.picker.buffers({ layout = { preset = "select" } })
+			end, { desc = "Fuzzy find buffers" })
+			map("n", "<leader>ft", function()
+				snacks.picker()
+			end, { desc = "Other pickers..." })
+			map("n", "<leader>h", function()
+				snacks.picker.help()
+			end, { desc = "Find help tags" })
+			map("n", "<leader>go", function()
+				snacks.gitbrowse()
+			end, { desc = "Open file online" })
+			map("n", "<leader>sh", function()
+				snacks.picker.search_history()
+			end, { desc = "Search History" })
+			map("n", "<leader>/", function()
+				snacks.picker.lines()
+			end, { desc = "Buffer Lines" })
+			map("n", "<leader>gg", function()
+				snacks.lazygit.open()
+			end, { desc = "Lazygit" })
+			map("n", "<leader>gl", function()
+				snacks.lazygit.log_file()
+			end, { desc = "Git log for current file" })
+			map("n", "<leader>gL", function()
+				snacks.lazygit.log()
+			end, { desc = "Git log" })
 		end,
 	},
 	{
@@ -513,7 +263,7 @@ require("lze").load({
 			require("lualine").setup({
 				options = {
 					icons_enabled = true,
-					theme = "tokyonight",
+					-- theme = "tokyonight",
 					section_separators = { left = "", right = "" },
 					component_separators = { left = "", right = "" },
 				},
@@ -656,12 +406,13 @@ require("lze").load({
 		after = function(plugin)
 			require("which-key").add({
 				{
-					"<Leader><Leader>",
+					"<Leader>b",
 					group = "buffers",
 					expand = function()
 						return require("which-key.extras").expand.buf()
 					end,
 				},
+				{ "<Leader>a", group = "ai" },
 				{ "<Leader>f", group = "files" },
 				{ "<Leader>c", group = "code" },
 				{ "<Leader>g", group = "git" },
@@ -692,7 +443,7 @@ require("lze").load({
 					create_new = true,
 				},
 				picker = {
-					name = "fzf-lua",
+					name = "snacks.pick",
 				},
 			})
 		end,
@@ -795,7 +546,7 @@ require("lze").load({
 		"conform.nvim",
 		enabled = nixCats("general") or false,
 		keys = {
-			{ "<leader>cf", desc = "[c]ode [f]ormat" },
+			{ "<leader>cf", desc = "Code format" },
 		},
 		after = function(plugin)
 			local conform = require("conform")
@@ -818,7 +569,7 @@ require("lze").load({
 					async = false,
 					timeout_ms = 1000,
 				})
-			end, { desc = " [c]ode [f]ormat" })
+			end, { desc = " Code format" })
 		end,
 	},
 	{
@@ -1005,20 +756,6 @@ require("lze").load({
 		end,
 	},
 	{
-		"tailwind-tools.nvim",
-		enabled = (nixCats("reactjs") and not vscode) or false,
-		event = "LspAttach",
-		after = function(plugin)
-			require("tailwind-tools").setup({
-				document_color = { enabled = false },
-				conceal = {
-					enabled = true,
-					min_length = 10,
-				},
-			})
-		end,
-	},
-	{
 		"render-markdown.nvim",
 		enabled = nixCats("docs") or false,
 		event = "DeferredUIEnter",
@@ -1037,9 +774,9 @@ require("lze").load({
 				backend = "delta",
 				picker = "buffer",
 			})
-			vim.keymap.set({ "n", "x" }, "<leader>ca", function()
+			map({ "n", "x" }, "<leader>ca", function()
 				require("tiny-code-action").code_action({})
-			end, { noremap = true, silent = true })
+			end, { noremap = true, silent = true, desc = "Code action" })
 		end,
 	},
 	{
@@ -1068,6 +805,28 @@ require("lze").load({
 		event = "LspAttach",
 		after = function()
 			require("quicker").setup()
+			map("n", "<leader>q", "<Cmd>lua require('quicker').toggle()<cr>", { desc = "Toggle quickfix" })
+		end,
+	},
+	{
+		"avante.nvim",
+		enabled = nixCats("ai") or false,
+		event = "LspAttach",
+		after = function()
+			require("avante").setup({
+				input = {
+					provider = "snacks",
+					provider_opts = {
+						title = "Avante Input",
+						icon = " ",
+						placeholder = "Enter your API key...",
+					},
+				},
+				windows = {
+					position = "left",
+					width = 40,
+				},
+			})
 		end,
 	},
 	{
@@ -1075,7 +834,27 @@ require("lze").load({
 		enabled = nixCats("general") or false,
 		event = "DeferredUIEnter",
 		after = function(plugin)
-			require("CopilotChat").setup({})
+			require("CopilotChat").setup({
+				window = {
+					layout = "float",
+					width = 120, -- Fixed width in columns
+					height = 30, -- Fixed height in rows
+					border = "rounded", -- 'single', 'double', 'rounded', 'solid'
+					title = "🤖 AI Assistant",
+					zindex = 100, -- Ensure window stays on top
+				},
+
+				headers = {
+					user = "👤 You: ",
+					assistant = "🤖 Copilot: ",
+					tool = "🔧 Tool: ",
+				},
+				separator = "━━",
+				show_folds = false,
+				selection = function(source)
+					return require("CopilotChat.select").visual(source) or require("CopilotChat.select").line(source)
+				end,
+			})
 		end,
 	},
 	{
@@ -1084,8 +863,18 @@ require("lze").load({
 		event = "DeferredUIEnter",
 		after = function(plugin)
 			require("nvim-highlight-colors").setup({
-				enable_tailwind = true,
 				render = "background",
+			})
+		end,
+	},
+	{
+		"hlchunk.nvim",
+		enabled = (nixCats("general") and not vscode) or false,
+		event = "DeferredUIEnter",
+		after = function(plugin)
+			require("hlchunk").setup({
+				chunk = { enable = true },
+				line_num = { enable = true },
 			})
 		end,
 	},
@@ -1107,6 +896,40 @@ require("lze").load({
 					}),
 				},
 			})
+			map("n", "<Leader>tn", "<Cmd>lua require('neotest').run.run()<CR>", { desc = "Run nearest test" })
+			map(
+				"n",
+				"<Leader>tf",
+				"<Cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>",
+				{ desc = "Run test file" }
+			)
+			map("n", "<Leader>tl", "<Cmd>lua require('neotest').run.run_last()<CR>", { desc = "Run last test" })
+			map(
+				"n",
+				"<Leader>td",
+				"<Cmd>lua require('neotest').run.run({strategy = 'dap'})<CR>",
+				{ desc = "Debug nearest test" }
+			)
+			map("n", "<Leader>ts", "<Cmd>lua require('neotest').summary.toggle()<CR>", { desc = "Toggle test summary" })
+			map("n", "<Leader>to", "<Cmd>lua require('neotest').output.open()<CR>", { desc = "Show test output" })
+			map(
+				"n",
+				"<Leader>tp",
+				"<Cmd>lua require('neotest').output_panel.toggle()<CR>",
+				{ desc = "Toggle output panel" }
+			)
+			map(
+				"n",
+				"[t",
+				"<Cmd>lua require('neotest').jump.prev({ status = 'failed' })<CR>",
+				{ desc = "Jump to previous failed test" }
+			)
+			map(
+				"n",
+				"]t",
+				"<Cmd>lua require('neotest').jump.next({ status = 'failed' })<CR>",
+				{ desc = "Jump to next failed test" }
+			)
 		end,
 	},
 	{
@@ -1132,14 +955,21 @@ local function lsp_on_attach(_, bufnr)
 		vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
 	end
 
-	-- LSP mappings
-	nmap("<leader>sd", "<Cmd>FzfLua lsp_definitions<cr>", "Search definitions")
-	nmap("<leader>sr", "<Cmd>FzfLua lsp_references<cr>", "Search References")
-	nmap("<leader>si", "<Cmd>FzfLua lsp_implementations<cr>", "Search Implementations")
-
 	-- See `:help K` for why this keymap
 	nmap("K", vim.lsp.buf.hover, "Hover Documentation")
 	nmap("<C-k>", vim.lsp.buf.signature_help, "Signature Documentation")
+	map("n", "gr", function()
+		Snacks.picker.lsp_references()
+	end, { desc = "Goto References" })
+	map("n", "gI", function()
+		Snacks.picker.lsp_implementations()
+	end, { desc = "Goto Implementations" })
+	map("n", "gd", function()
+		Snacks.picker.lsp_definitions()
+	end, { desc = "Goto Definitions" })
+	map("n", "gy", function()
+		Snacks.picker.lsp_type_definitions()
+	end, { desc = "Goto Type Definitions" })
 
 	if nixCats("csharp") then
 		vim.treesitter.language.register("c_sharp", "csharp")

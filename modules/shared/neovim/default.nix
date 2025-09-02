@@ -15,7 +15,7 @@ in {
         [ (utils.standardPluginOverlay inputs) ];
       # see the packageDefinitions below.
       # This says which of those to install.
-      packageNames = [ "neovimModule" ];
+      packageNames = [ "neovimIde" "neovimVanilla" ];
 
       luaPath = ./.;
 
@@ -91,9 +91,9 @@ in {
             lua = with pkgs.vimPlugins; [ lazydev-nvim ];
             reactjs = with pkgs.vimPlugins; [
               nvim-highlight-colors
-              tailwind-tools-nvim
               neotest-vitest
             ];
+            ai = with pkgs.vimPlugins; [ avante-nvim blink-cmp-avante ];
             csharp = with pkgs.vimPlugins; [ neotest-dotnet ];
             general = with pkgs.vimPlugins; [
               mini-nvim
@@ -110,10 +110,10 @@ in {
               nvim-dap-virtual-text
               CopilotChat-nvim
               lualine-nvim
-              fzf-lua
-              neo-tree-nvim
+              snacks-nvim
               fidget-nvim
               quicker-nvim
+              hlchunk-nvim
             ];
             docs = with pkgs.vimPlugins; [ render-markdown-nvim obsidian-nvim ];
           };
@@ -150,7 +150,7 @@ in {
       packageDefinitions.replace = {
         # These are the names of your packages
         # you can include as many as you wish.
-        neovimModule = { pkgs, name, ... }: {
+        neovimIde = { pkgs, name, ... }: {
           # they contain a settings set defined above
           # see :help nixCats.flake.outputs.settings
           settings = {
@@ -171,6 +171,7 @@ in {
           # and a set of categories that you want
           categories = {
             general = true;
+            ai = true;
             lua = true;
             nix = true;
             go = false;
@@ -182,6 +183,33 @@ in {
           # anything else to pass and grab in lua with `nixCats.extra`
           extra = { nixdExtras.nixpkgs = "import ${pkgs.path} {}"; };
         };
+        neovimVanilla = { pkgs, name, ... }: {
+          # they contain a settings set defined above
+          # see :help nixCats.flake.outputs.settings
+          settings = {
+            suffix-path = true;
+            suffix-LD = true;
+            wrapRc = true;
+            # unwrappedCfgPath = "/path/to/here";
+            # IMPORTANT:
+            # your alias may not conflict with your other packages.
+            aliases = [ "plainNvim" ];
+          };
+          categories = {
+            general = false;
+            ai = false;
+            lua = false;
+            nix = false;
+            go = false;
+            csharp = false;
+            fsharp = false;
+            reactjs = false;
+            docs = false;
+          };
+          # anything else to pass and grab in lua with `nixCats.extra`
+          extra = { nixdExtras.nixpkgs = "import ${pkgs.path} {}"; };
+        };
+
       };
     };
   };
