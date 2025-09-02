@@ -59,6 +59,19 @@ in {
         "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
       ];
     };
+    registry = {
+      ep = {
+        from = {
+          type = "indirect";
+          id = "ep";
+        };
+        to = {
+          type = "git";
+          url = "ssh://git@github.com/educationperfect/ep-nix";
+        };
+      };
+    };
+
   };
 
   system = {
