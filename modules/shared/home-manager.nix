@@ -6,7 +6,22 @@
     flags = [ "--disable-up-arrow" ];
   };
 
-  bat.enable = true;
+  bat = {
+    enable = true;
+    extraPackages = with pkgs.bat-extras; [ batdiff batman batgrep batwatch ];
+    config = { theme = "tokyo-night"; };
+    themes = {
+      tokyo-night = {
+        src = pkgs.fetchFromGitHub {
+          owner = "enkia";
+          repo = "enki-theme";
+          rev = "0b629142733a27ba3a6a7d4eac04f81744bc714f";
+          sha256 = "sha256-Q+sac7xBdLhjfCjmlvfQwGS6KUzt+2fu+crG4NdNr4w=";
+        };
+        file = "/scheme/Enki-Tokyo-Night.tmTheme";
+      };
+    };
+  };
 
   btop = {
     enable = true;
@@ -53,16 +68,37 @@
 
   lazydocker.enable = true;
 
-  starship.enable = true;
+  nushell = {
+    enable = true;
+    shellAliases = {
+      man = "batman";
+      lg = "lazygit";
+    };
+    settings = {
+      completions = {
+        case_sensitive = false;
+        quick = true;
+        partial = true;
+        algorithm = "fuzzy";
+        external = {
+          enable = true;
+          max_results = 100;
+        };
+      };
+    };
+    plugins = with pkgs.nushellPlugins; [ query polars highlight ];
+  };
+
+  starship = {
+    enable = true;
+    settings = { command_timeout = 2000; };
+  };
 
   yazi.enable = true;
 
   zellij = {
     enable = true;
-    settings = {
-      theme = "dracula";
-      ui = { pane_frames = { rounded_corners = true; }; };
-    };
+    settings = { ui = { pane_frames = { rounded_corners = true; }; }; };
   };
 
   zsh.enable = true;

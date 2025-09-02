@@ -1,14 +1,14 @@
 { pkgs, config, lib, ... }:
 let
   inherit (lib) mkIf getExe;
-  fishPath = getExe config.programs.fish.package;
+  nuPath = getExe config.programs.nushell.package;
   zshPath = getExe config.programs.zsh.package;
   isDarwin = pkgs.stdenv.isDarwin;
 in {
   programs.ghostty = mkIf (!isDarwin) { enable = true; };
   home.file = mkIf (!(config.programs.ghostty.enable or false)) {
     ".config/ghostty/config".text = ''
-      command = "${zshPath} -l -c ${fishPath}"
+      command = "${zshPath} -l -c ${nuPath}"
       font-family = "Maple Mono NF"
       font-size = 15
       font-thicken = true

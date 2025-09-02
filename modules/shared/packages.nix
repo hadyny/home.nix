@@ -11,6 +11,7 @@ with pkgs; [
   nixd
   nil
   nixfmt-classic
+  nufmt
   prettierd
   scooter
   fsautocomplete
