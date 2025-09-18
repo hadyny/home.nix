@@ -6,10 +6,11 @@
 
     casks = [
       "1password"
-      "brave-browser"
       "cloudflare-warp"
       "google-chrome"
+      "brave-browser"
       "firefox@developer-edition"
+      "microsoft-edge"
       "obsidian"
       "postman"
       "slack"
@@ -18,6 +19,7 @@
       "rider"
       "datagrip"
       "spotify"
+      "zed"
     ];
 
     global.brewfile = true;
