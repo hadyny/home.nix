@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   home-manager.enable = true;
 
   atuin = {
@@ -8,8 +9,15 @@
 
   bat = {
     enable = true;
-    extraPackages = with pkgs.bat-extras; [ batdiff batman batgrep batwatch ];
-    config = { theme = "tokyo-night"; };
+    extraPackages = with pkgs.bat-extras; [
+      batdiff
+      batman
+      batgrep
+      batwatch
+    ];
+    config = {
+      theme = "tokyo-night";
+    };
     themes = {
       tokyo-night = {
         src = pkgs.fetchFromGitHub {
@@ -25,7 +33,9 @@
 
   btop = {
     enable = true;
-    settings = { theme_background = false; };
+    settings = {
+      theme_background = false;
+    };
   };
 
   jq.enable = true;
@@ -36,7 +46,11 @@
     enable = true;
     git = true;
     icons = "auto";
-    extraOptions = [ "--group-directories-first" "--header" "--long" ];
+    extraOptions = [
+      "--group-directories-first"
+      "--header"
+      "--long"
+    ];
   };
 
   direnv = {
@@ -56,10 +70,12 @@
     shellInit = ''
       set -U fish_greeting "🐟"
     '';
-    plugins = with pkgs.fishPlugins; [{
-      name = "sponge";
-      src = sponge.src;
-    }];
+    plugins = with pkgs.fishPlugins; [
+      {
+        name = "sponge";
+        src = sponge.src;
+      }
+    ];
   };
 
   fzf.enable = true;
@@ -68,37 +84,26 @@
 
   lazydocker.enable = true;
 
-  nushell = {
-    enable = true;
-    shellAliases = {
-      man = "batman";
-      lg = "lazygit";
-    };
-    settings = {
-      completions = {
-        case_sensitive = false;
-        quick = true;
-        partial = true;
-        algorithm = "fuzzy";
-        external = {
-          enable = true;
-          max_results = 100;
-        };
-      };
-    };
-    plugins = with pkgs.nushellPlugins; [ query polars highlight ];
-  };
+  nushell.enable = true;
 
   starship = {
     enable = true;
-    settings = { command_timeout = 2000; };
+    settings = {
+      command_timeout = 2000;
+    };
   };
 
   yazi.enable = true;
 
   zellij = {
     enable = true;
-    settings = { ui = { pane_frames = { rounded_corners = true; }; }; };
+    settings = {
+      ui = {
+        pane_frames = {
+          rounded_corners = true;
+        };
+      };
+    };
   };
 
   zsh.enable = true;
