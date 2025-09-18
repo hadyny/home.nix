@@ -77,7 +77,7 @@ in {
                   repo = "tiny-code-action.nvim";
                   rev = "main"; # or a specific commit hash
                   sha256 =
-                    "sha256-+U1GUvfLPZ+4MPi7Q5LG8TJEWJHyS45qbg1dpBk7g98=";
+                    "sha256-6rkghKKJg4ZMZFe25xPJBWwjHGw7RTpe6DBbZDsnkmc=";
                 };
               })
               tiny-inline-diagnostic-nvim

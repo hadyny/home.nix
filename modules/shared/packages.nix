@@ -13,6 +13,7 @@ with pkgs; [
   nixfmt-classic
   nufmt
   prettierd
+  bun
   scooter
   fsautocomplete
   omnisharp-roslyn
