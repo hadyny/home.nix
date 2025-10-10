@@ -15,7 +15,7 @@ in {
         [ (utils.standardPluginOverlay inputs) ];
       # see the packageDefinitions below.
       # This says which of those to install.
-      packageNames = [ "neovimIde" "neovimVanilla" ];
+      packageNames = [ "neovimIde" "neovimVanilla" "miniNeovim" ];
 
       luaPath = ./.;
 
@@ -60,33 +60,30 @@ in {
           # This is for plugins that will load at startup without using packadd:
           startupPlugins = {
             general = with pkgs.vimPlugins; [
-              # lazy loading isnt required with a config this small
-              # but as a demo, we do it anyway.
               lze
               lzextras
               catppuccin-nvim
+              onenord-nvim
               tokyonight-nvim
               vim-sleuth
-              which-key-nvim
-              (pkgs.vimUtils.buildVimPlugin {
-                pname = "tiny-code-action.nvim";
-                version = "0.0.0";
-                doCheck = false;
-                src = pkgs.fetchFromGitHub {
-                  owner = "rachartier";
-                  repo = "tiny-code-action.nvim";
-                  rev = "main"; # or a specific commit hash
-                  sha256 =
-                    "sha256-6rkghKKJg4ZMZFe25xPJBWwjHGw7RTpe6DBbZDsnkmc=";
-                };
-              })
-              tiny-inline-diagnostic-nvim
+            ];
+            miniNvim = with pkgs.vimPlugins; [
+              lze
+              lzextras
+              catppuccin-nvim
+              onenord-nvim
+              tokyonight-nvim
             ];
           };
 
           # not loaded automatically at startup.
           # use with packadd and an autocommand in config to achieve lazy loading
           optionalPlugins = {
+            miniNvim = with pkgs.vimPlugins; [
+              mini-nvim
+              nvim-lspconfig
+              nvim-treesitter.withAllGrammars
+            ];
             go = with pkgs.vimPlugins; [ nvim-dap-go ];
             lua = with pkgs.vimPlugins; [ lazydev-nvim ];
             reactjs = with pkgs.vimPlugins; [
@@ -114,6 +111,21 @@ in {
               fidget-nvim
               quicker-nvim
               hlchunk-nvim
+              which-key-nvim
+              (pkgs.vimUtils.buildVimPlugin {
+                pname = "tiny-code-action.nvim";
+                version = "0.0.0";
+                doCheck = false;
+                src = pkgs.fetchFromGitHub {
+                  owner = "rachartier";
+                  repo = "tiny-code-action.nvim";
+                  rev = "main"; # or a specific commit hash
+                  sha256 =
+                    "sha256-6rkghKKJg4ZMZFe25xPJBWwjHGw7RTpe6DBbZDsnkmc=";
+                };
+              })
+              tiny-inline-diagnostic-nvim
+
             ];
             docs = with pkgs.vimPlugins; [ render-markdown-nvim obsidian-nvim ];
           };
@@ -157,14 +169,8 @@ in {
             suffix-path = true;
             suffix-LD = true;
             wrapRc = true;
-            # unwrappedCfgPath = "/path/to/here";
-            # IMPORTANT:
-            # your alias may not conflict with your other packages.
-            aliases = [ "nvim" ];
             neovim-unwrapped =
               inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
-            hosts.python3.enable = true;
-            hosts.node.enable = true;
           };
           # and a set of categories that you want
           # (and other information to pass to lua)
@@ -179,6 +185,7 @@ in {
             fsharp = true;
             reactjs = true;
             docs = true;
+            miniNvim = false;
           };
           # anything else to pass and grab in lua with `nixCats.extra`
           extra = { nixdExtras.nixpkgs = "import ${pkgs.path} {}"; };
@@ -190,10 +197,6 @@ in {
             suffix-path = true;
             suffix-LD = true;
             wrapRc = true;
-            # unwrappedCfgPath = "/path/to/here";
-            # IMPORTANT:
-            # your alias may not conflict with your other packages.
-            aliases = [ "plainNvim" ];
           };
           categories = {
             general = false;
@@ -205,6 +208,31 @@ in {
             fsharp = false;
             reactjs = false;
             docs = false;
+            miniNvim = false;
+          };
+          # anything else to pass and grab in lua with `nixCats.extra`
+          extra = { nixdExtras.nixpkgs = "import ${pkgs.path} {}"; };
+        };
+        miniNeovim = { pkgs, name, ... }: {
+          # they contain a settings set defined above
+          # see :help nixCats.flake.outputs.settings
+          settings = {
+            suffix-path = true;
+            suffix-LD = true;
+            wrapRc = true;
+            aliases = [ "nvim" ];
+          };
+          categories = {
+            general = false;
+            ai = false;
+            lua = true;
+            nix = true;
+            go = false;
+            csharp = true;
+            fsharp = false;
+            reactjs = true;
+            docs = false;
+            miniNvim = true;
           };
           # anything else to pass and grab in lua with `nixCats.extra`
           extra = { nixdExtras.nixpkgs = "import ${pkgs.path} {}"; };

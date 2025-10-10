@@ -16,7 +16,7 @@
       batwatch
     ];
     config = {
-      theme = "tokyo-night";
+      theme = "Nord";
     };
     themes = {
       tokyo-night = {
@@ -40,7 +40,24 @@
 
   jq.enable = true;
 
-  ssh.enable = true;
+  ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+    matchBlocks = {
+      "*" = {
+        forwardAgent = false;
+        serverAliveInterval = 0;
+        serverAliveCountMax = 3;
+        compression = false;
+        addKeysToAgent = "no";
+        hashKnownHosts = false;
+        userKnownHostsFile = "~/.ssh/known_hosts";
+        controlMaster = "no";
+        controlPath = "~/.ssh/master-%r@%n:%p";
+        controlPersist = "no";
+      };
+    };
+  };
 
   eza = {
     enable = true;
@@ -68,7 +85,9 @@
   fish = {
     enable = true;
     shellInit = ''
-      set -U fish_greeting "🐟"
+    string match -q "$TERM_PROGRAM" "vscode" 
+    and . (code --locate-shell-integration-path fish)
+    set -U fish_greeting "🐟"
     '';
     plugins = with pkgs.fishPlugins; [
       {

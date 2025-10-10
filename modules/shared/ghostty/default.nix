@@ -20,7 +20,7 @@ in
       font-thicken = true
       font-thicken-strength = 192
       adjust-cell-height = 40%
-      theme = light:"TokyoNight Day",dark:"TokyoNight Night"
+      theme = light:"Nord Light",dark:"Nord"
       window-padding-x = 20
       window-padding-y = 20
     '';

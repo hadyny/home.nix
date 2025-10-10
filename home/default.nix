@@ -22,7 +22,7 @@ in {
   home = {
     username = userConfig.name;
     homeDirectory = userConfig.home;
-    wallpaper.file = ./config/wallpaper/wallpaper.jpg;
+    wallpaper.file = ./config/wallpaper/nord.jpg;
 
     sessionVariables = {
       EDITOR = "nvim";

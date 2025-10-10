@@ -120,8 +120,8 @@ map(
 	'"_dP',
 	{ noremap = true, silent = true, desc = "Paste over selection without erasing unnamed register" }
 )
-if nixCats("general") and not vscode then
-	vim.cmd.colorscheme("tokyonight-night")
+if nixCats("general") or nixCats("miniNvim") and not vscode then
+    require('onenord').setup()
 end
 map("n", "<Esc>", ":noh<CR><Esc>", { noremap = true, silent = true }) -- escape to cancel search
 
@@ -146,11 +146,88 @@ map("n", "gb", ":ls<cr>:b<space>", { noremap = true, desc = "Goto buffer" })
 map("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
 map("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
 
-if not nixCats("general") then
+if not nixCats("general") and not nixCats("miniNvim") then
 	return
 end
 
 require("lze").load({
+	{
+		"mini.nvim",
+		enabled = (nixCats("miniNvim") and not vscode) or false,
+		event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd(name)
+			vim.cmd.packadd("mini.nvim")
+		end,
+		after = function(plugin)
+			require("mini.ai").setup()
+			require("mini.comment").setup()
+			require("mini.completion").setup()
+			require("mini.pairs").setup()
+			require("mini.basics").setup()
+			require("mini.bufremove").setup()
+			local miniclue = require("mini.clue")
+			miniclue.setup({
+				triggers = {
+					-- Leader triggers
+					{ mode = "n", keys = "<Leader>" },
+					{ mode = "x", keys = "<Leader>" },
+
+					-- Built-in completion
+					{ mode = "i", keys = "<C-x>" },
+
+					-- `g` key
+					{ mode = "n", keys = "g" },
+					{ mode = "x", keys = "g" },
+
+					-- Marks
+					{ mode = "n", keys = "'" },
+					{ mode = "n", keys = "`" },
+					{ mode = "x", keys = "'" },
+					{ mode = "x", keys = "`" },
+
+					-- Registers
+					{ mode = "n", keys = '"' },
+					{ mode = "x", keys = '"' },
+					{ mode = "i", keys = "<C-r>" },
+					{ mode = "c", keys = "<C-r>" },
+
+					-- Window commands
+					{ mode = "n", keys = "<C-w>" },
+
+					-- `z` key
+					{ mode = "n", keys = "z" },
+					{ mode = "x", keys = "z" },
+				},
+
+				clues = {
+					-- Enhance this by adding descriptions for <Leader> mapping groups
+					miniclue.gen_clues.builtin_completion(),
+					miniclue.gen_clues.g(),
+					miniclue.gen_clues.marks(),
+					miniclue.gen_clues.registers(),
+					miniclue.gen_clues.windows(),
+					miniclue.gen_clues.z(),
+				},
+			})
+			require("mini.diff").setup()
+			require("mini.git").setup()
+			require("mini.animate").setup({ cursor = { enable = false } })
+			require("mini.cursorword").setup({ delay = 1000 })
+			local MiniIcons = require("mini.icons")
+			MiniIcons.setup()
+			MiniIcons.mock_nvim_web_devicons()
+			MiniIcons.tweak_lsp_kind()
+			require("mini.notify").setup()
+			require("mini.statusline").setup()
+			require("mini.pick").setup()
+			require("mini.extra").setup()
+		end,
+	},
+	{
+		"blink.cmp",
+		enabled = (nixCats("general") and not vscode) or false,
+	},
 	{
 		"blink.cmp",
 		enabled = (nixCats("general") and not vscode) or false,
@@ -263,7 +340,6 @@ require("lze").load({
 			require("lualine").setup({
 				options = {
 					icons_enabled = true,
-					-- theme = "tokyonight",
 					section_separators = { left = "", right = "" },
 					component_separators = { left = "", right = "" },
 				},
@@ -292,7 +368,7 @@ require("lze").load({
 	},
 	{
 		"nvim-treesitter",
-		enabled = nixCats("general") or false,
+		enabled = nixCats("general") or nixCats("miniNvim") or false,
 		-- cmd = { "" },
 		event = "DeferredUIEnter",
 		-- ft = "",
@@ -995,7 +1071,7 @@ end)
 require("lze").load({
 	{
 		"nvim-lspconfig",
-		enabled = nixCats("general") or false,
+		enabled = nixCats("general") or nixCats("miniNvim") or false,
 		-- the on require handler will be needed here if you want to use the
 		-- fallback method of getting filetypes if you don't provide any
 		on_require = { "lspconfig" },
