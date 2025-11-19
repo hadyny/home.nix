@@ -4,7 +4,6 @@ with pkgs; [
 
   # dev
   devenv
-  emacs-lsp-booster
   vtsls
   tailwindcss-language-server
   rustywind

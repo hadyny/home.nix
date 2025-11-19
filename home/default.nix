@@ -3,21 +3,18 @@
   pkgs,
   lib,
   userConfig,
-  inputs,
   config,
   ...
 }:
 
 let
   modules = import ../modules/shared/modules.nix { inherit lib; };
-
 in
 {
   # Let Home Manager install and manage itself.
   nixpkgs = {
     config.allowUnfree = true;
     overlays = [
-      inputs.emacs-overlay.overlays.default
       (import ../overlays/pinned.nix)
     ];
   };
@@ -58,10 +55,6 @@ in
   programs = { } // import ../modules/shared/home-manager.nix { inherit pkgs lib config; };
 
   services = {
-    emacs = {
-      enable = true;
-      package = pkgs.emacs-unstable;
-    };
     colima = {
       enable = true;
 

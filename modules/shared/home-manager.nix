@@ -76,12 +76,6 @@
     config.global.log_filter = "^(loading|using nix|error|deny|allow).*$";
   };
 
-  emacs = {
-    enable = true;
-    package = pkgs.emacs-unstable;
-    extraPackages = epkgs: [ epkgs.vterm ];
-  };
-
   fish = {
     enable = true;
     shellInit = ''
