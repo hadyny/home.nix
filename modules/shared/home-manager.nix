@@ -16,7 +16,7 @@
       batwatch
     ];
     config = {
-      theme = "Nord";
+      theme = "tokyo-night";
     };
     themes = {
       tokyo-night = {
@@ -85,9 +85,9 @@
   fish = {
     enable = true;
     shellInit = ''
-    string match -q "$TERM_PROGRAM" "vscode" 
-    and . (code --locate-shell-integration-path fish)
-    set -U fish_greeting "🐟"
+      string match -q "$TERM_PROGRAM" "vscode"
+      and . (code --locate-shell-integration-path fish)
+      set -U fish_greeting "🐟"
     '';
     plugins = with pkgs.fishPlugins; [
       {

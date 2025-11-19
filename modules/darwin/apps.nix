@@ -1,5 +1,10 @@
 {
-  darwin.apps = { raycast.enable = true; };
+  environment.variables = {
+    HOMEBREW_NO_ENV_HINTS = "1";
+  };
+  darwin.apps = {
+    raycast.enable = true;
+  };
 
   homebrew = {
     enable = true;
@@ -9,7 +14,7 @@
       "cloudflare-warp"
       "google-chrome"
       "brave-browser"
-      "firefox@developer-edition"
+      "firefox"
       "microsoft-edge"
       "obsidian"
       "postman"
@@ -19,6 +24,7 @@
       "rider"
       "datagrip"
       "spotify"
+      "vivaldi"
       "zed"
     ];
 

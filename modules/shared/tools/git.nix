@@ -26,7 +26,7 @@ in {
     programs = {
       git = {
         enable = true;
-        aliases = {
+        settings.aliases = {
           aliases = "config --get-regexp ^alias.";
           branches =
             "branch -a --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:blue)(%(committerdate:short)) [%(authorname)]' --sort=-committerdate";
@@ -35,27 +35,10 @@ in {
           uncommit = "reset --mixed HEAD~1";
         };
         lfs.enable = true;
-        userName = cfg.userName;
-        userEmail = cfg.userEmail;
+        settings.user.name = cfg.userName;
+        settings.user.email = cfg.userEmail;
 
-        delta = {
-          enable = true;
-          options = {
-            lazygit = {
-              hyperlinks = false;
-              paging = "never";
-              side-by-side = false;
-            };
-            features = "decorations";
-            whitespace-error-style = "22 reverse";
-            true-color = "always";
-            line-numbers = true;
-            hyperlinks = true;
-            diff-so-fancy = true;
-          };
-        };
-
-        extraConfig = {
+        settings = {
           github.user = cfg.githubUser;
           init.defaultBranch = "main";
           diff.colorMoved = "default";
@@ -65,6 +48,23 @@ in {
           condition = "gitdir:~/${x}/";
           path = "~/${x}/.gitconfig";
         }) (lib.attrNames cfg.workspaces);
+      };
+
+      delta = {
+        enable = true;
+        options = {
+          lazygit = {
+            hyperlinks = false;
+            paging = "never";
+            side-by-side = false;
+          };
+          features = "decorations";
+          whitespace-error-style = "22 reverse";
+          true-color = "always";
+          line-numbers = true;
+          hyperlinks = true;
+          diff-so-fancy = true;
+        };
       };
 
       lazygit = {
@@ -77,7 +77,7 @@ in {
             showRandomTip = false;
           };
           git = {
-            paging.pager = "delta --features 'default lazygit'";
+            pagers = [{ pager = "delta --features 'default lazygit'"; }];
             parseEmoji = true;
           };
           customCommands = [
@@ -152,7 +152,7 @@ in {
       };
     };
 
-    home.packages = with pkgs; [ git-crypt delta gh tig ];
+    home.packages = with pkgs; [ git-crypt gh tig ];
 
     home.sessionVariables = { GH_PAGER = "delta"; };
   };

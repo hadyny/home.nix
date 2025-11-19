@@ -1,14 +1,25 @@
 # Main user-level configuration
-{ pkgs, lib, userConfig, inputs, config, ... }:
+{
+  pkgs,
+  lib,
+  userConfig,
+  inputs,
+  config,
+  ...
+}:
 
-let modules = import ../modules/shared/modules.nix { inherit lib; };
+let
+  modules = import ../modules/shared/modules.nix { inherit lib; };
 
-in {
+in
+{
   # Let Home Manager install and manage itself.
   nixpkgs = {
     config.allowUnfree = true;
-    overlays =
-      [ inputs.emacs-overlay.overlays.default (import ../overlays/pinned.nix) ];
+    overlays = [
+      inputs.emacs-overlay.overlays.default
+      (import ../overlays/pinned.nix)
+    ];
   };
 
   imports = [
@@ -17,7 +28,8 @@ in {
     ../modules/shared/services/colima.nix
     ../modules/shared/settings/wallpaper.nix
     ./work
-  ] ++ (modules.importAllModules ../modules/shared/tools);
+  ]
+  ++ (modules.importAllModules ../modules/shared/tools);
 
   home = {
     username = userConfig.name;
@@ -28,10 +40,10 @@ in {
       EDITOR = "nvim";
       TERM = "xterm-256color";
       AWS_PROFILE = "dev";
+      HOMEBREW_NO_ENV_HINTS = 1;
     };
 
-    packages =
-      pkgs.callPackage ../modules/shared/packages.nix { inherit pkgs; };
+    packages = pkgs.callPackage ../modules/shared/packages.nix { inherit pkgs; };
 
     sessionPath = [ "/opt/homebrew/bin" ];
 
@@ -43,8 +55,7 @@ in {
 
   fonts.fontconfig.enable = true;
 
-  programs = { }
-    // import ../modules/shared/home-manager.nix { inherit pkgs lib config; };
+  programs = { } // import ../modules/shared/home-manager.nix { inherit pkgs lib config; };
 
   services = {
     emacs = {
