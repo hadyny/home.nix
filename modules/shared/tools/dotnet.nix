@@ -8,7 +8,7 @@ let
   vscodeSdkPath = "/usr/local/share/dotnet";
 
   dotnet-env = with pkgs.dotnetCorePackages;
-    combinePackages [ sdk_8_0 sdk_9_0 ];
+    combinePackages [ sdk_8_0 sdk_9_0 sdk_10_0 ];
 
   buildNugetConfig = nugetSources:
     pkgs.stdenv.mkDerivation {
