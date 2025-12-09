@@ -153,7 +153,7 @@ in
                   owner = "rachartier";
                   repo = "tiny-code-action.nvim";
                   rev = "main"; # or a specific commit hash
-                  sha256 = "sha256-XBVE8FJVUljRdF5G5iug+V+fVp/uaB4B4kfo4yvI+9w=";
+                  sha256 = "sha256-SfqWLOYDeUhT31Ge7fVPi9vvAkLKAAxOgRCpaSeXoqo=";
                 };
               })
               tiny-inline-diagnostic-nvim
