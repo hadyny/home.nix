@@ -4,6 +4,7 @@
   lib,
   userConfig,
   config,
+  inputs,
   ...
 }:
 
@@ -40,7 +41,7 @@ in
       HOMEBREW_NO_ENV_HINTS = 1;
     };
 
-    packages = pkgs.callPackage ../modules/shared/packages.nix { inherit pkgs; };
+    packages = pkgs.callPackage ../modules/shared/packages.nix { inherit pkgs inputs; };
 
     sessionPath = [ "/opt/homebrew/bin" ];
 
