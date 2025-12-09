@@ -45,6 +45,15 @@ options.foldlevel = 99
 options.foldmethod = "expr"
 options.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
+-- Neovide options
+if globals.neovide then
+    globals.neovide_padding_top = 30
+    globals.neovide_padding_bottom = 30
+    globals.neovide_padding_right = 30
+    globals.neovide_padding_left = 30
+    options.linespace = 7
+end
+
 vim.api.nvim_create_autocmd("LspAttach", {
     desc = "User: Set LSP folding if client supports it",
     callback = function(ctx)
