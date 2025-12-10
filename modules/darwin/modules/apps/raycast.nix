@@ -1,13 +1,20 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
 let
-  enabled = cfg.enable && pkgs.hostPlatform.isDarwin;
+  enabled = cfg.enable && pkgs.stdenv.hostPlatform.isDarwin;
   cfg = config.darwin.apps.raycast;
 in
 {
-  options.darwin.apps.raycast = { enable = mkEnableOption "Enable Raycast instead of Spotlight"; };
+  options.darwin.apps.raycast = {
+    enable = mkEnableOption "Enable Raycast instead of Spotlight";
+  };
 
   config = mkIf enabled {
     homebrew = {

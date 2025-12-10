@@ -208,7 +208,7 @@ in
               suffix-path = true;
               suffix-LD = true;
               wrapRc = true;
-              neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+              neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.neovim;
             };
             # and a set of categories that you want
             # (and other information to pass to lua)

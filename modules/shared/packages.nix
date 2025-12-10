@@ -1,5 +1,6 @@
 { pkgs, inputs, ... }:
-with pkgs; [
+with pkgs;
+[
   _1password-cli
 
   # dev
@@ -17,7 +18,7 @@ with pkgs; [
   fsautocomplete
   omnisharp-roslyn
   roslyn-ls
-  inputs.csharp-language-server.packages.${system}.csharp-language-server
+  inputs.csharp-language-server.packages.${stdenv.hostPlatform.system}.csharp-language-server
   emmet-language-server
   (vscode-langservers-extracted.overrideAttrs (oldAttrs: {
     version = "4.8.0";

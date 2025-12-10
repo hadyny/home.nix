@@ -1,16 +1,23 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 with types;
 
 let
-  enabled = pkgs.hostPlatform.isDarwin;
-  mkEnum = default: values:
+  enabled = pkgs.stdenv.hostPlatform.isDarwin;
+  mkEnum =
+    default: values:
     mkOption {
       type = enum values;
       default = default;
     };
-  mkNullableEnum = values:
+  mkNullableEnum =
+    values:
     mkOption {
       type = nullOr (enum values);
       default = null;
@@ -19,10 +26,26 @@ let
   itemType = submodule {
     options = {
       path = mkOption { type = str; };
-      tileType = mkEnum "directory" [ "file" "directory" ];
-      view = mkEnum "auto" [ "auto" "grid" "list" "fan" ];
-      display = mkEnum "folder" [ "stack" "folder" ];
-      sort = mkEnum "name" [ "name" "kind" "dateadded" "datemodified" ];
+      tileType = mkEnum "directory" [
+        "file"
+        "directory"
+      ];
+      view = mkEnum "auto" [
+        "auto"
+        "grid"
+        "list"
+        "fan"
+      ];
+      display = mkEnum "folder" [
+        "stack"
+        "folder"
+      ];
+      sort = mkEnum "name" [
+        "name"
+        "kind"
+        "dateadded"
+        "datemodified"
+      ];
     };
   };
 
@@ -44,53 +67,65 @@ let
     folder = 1;
   };
 
-  toItem = { path, tileType, view, display, sort }: {
-    tile-data = {
-      file-data = {
-        _CFURLStringType = 0;
-        _CFURLString = path;
-      };
-      file-label = replaceStrings [ ".app" ] [ "" ] (baseNameOf path);
-      file-type = if hasSuffix ".app" path then 32 else 2;
-      showas = viewEnum.${view};
-      displayas = displayEnum.${display};
-      arrangement = sortEnum.${sort};
-    } // (optionalAttrs (tileType == "directory") { directory = 1; });
-    tile-type = "${tileType}-tile";
-  };
+  toItem =
+    {
+      path,
+      tileType,
+      view,
+      display,
+      sort,
+    }:
+    {
+      tile-data = {
+        file-data = {
+          _CFURLStringType = 0;
+          _CFURLString = path;
+        };
+        file-label = replaceStrings [ ".app" ] [ "" ] (baseNameOf path);
+        file-type = if hasSuffix ".app" path then 32 else 2;
+        showas = viewEnum.${view};
+        displayas = displayEnum.${display};
+        arrangement = sortEnum.${sort};
+      }
+      // (optionalAttrs (tileType == "directory") { directory = 1; });
+      tile-type = "${tileType}-tile";
+    };
 
   cfg = config.targets.darwin.dock;
 
-  plistFile = let
-    setGUID = type: index: ''
-      /usr/libexec/PlistBuddy \
-        -c "Add :persistent-${type}:${
-          toString index
-        }:GUID string $(/usr/bin/uuidgen)" \
-        $out
-    '';
-  in pkgs.writeTextFile {
-    name = "Dock.plist";
-    text = generators.toPlist { escape = true; } {
-      persistent-apps = map toItem cfg.apps;
-      persistent-others = map toItem cfg.others;
+  plistFile =
+    let
+      setGUID = type: index: ''
+        /usr/libexec/PlistBuddy \
+          -c "Add :persistent-${type}:${toString index}:GUID string $(/usr/bin/uuidgen)" \
+          $out
+      '';
+    in
+    pkgs.writeTextFile {
+      name = "Dock.plist";
+      text = generators.toPlist { escape = true; } {
+        persistent-apps = map toItem cfg.apps;
+        persistent-others = map toItem cfg.others;
+      };
+      checkPhase = ''
+        ${concatStrings (imap0 (index: _: setGUID "apps" index) cfg.apps)}
+        ${concatStrings (imap0 (index: _: setGUID "others" index) cfg.others)}
+      '';
     };
-    checkPhase = ''
-      ${concatStrings (imap0 (index: _: setGUID "apps" index) cfg.apps)}
-      ${concatStrings (imap0 (index: _: setGUID "others" index) cfg.others)}
-    '';
-  };
 
-in {
+in
+{
   options.targets.darwin.dock = mkOption {
     type = submodule {
       options = {
         apps = mkOption {
           description = "Applications to put in the Dock";
-          type = listOf (coercedTo str (name: {
-            path = "/Applications/${name}.app";
-            tileType = "file";
-          }) itemType);
+          type = listOf (
+            coercedTo str (name: {
+              path = "/Applications/${name}.app";
+              tileType = "file";
+            }) itemType
+          );
           default = [ ];
         };
 
