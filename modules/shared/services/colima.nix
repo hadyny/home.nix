@@ -119,8 +119,6 @@ let
 in
 {
   options.services.colima = {
-    enable = mkEnableOption "Enable Colima";
-
     config = mkOption {
       type = colimaOpts;
       default = {};

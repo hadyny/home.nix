@@ -152,8 +152,8 @@ in
                 src = pkgs.fetchFromGitHub {
                   owner = "rachartier";
                   repo = "tiny-code-action.nvim";
-                  rev = "main"; # or a specific commit hash
-                  sha256 = "sha256-SfqWLOYDeUhT31Ge7fVPi9vvAkLKAAxOgRCpaSeXoqo=";
+                  rev = "main";
+                  sha256 = "sha256-f3U4hvp7PNKrgJHfmCEnHWJC9tbkzrKvuHo5WejYpys=sha256";
                 };
               })
               tiny-inline-diagnostic-nvim
@@ -215,7 +215,7 @@ in
             # and a set of categories that you want
             categories = {
               general = true;
-              ai = false;
+              ai = true;
               lua = true;
               nix = true;
               go = false;
