@@ -5,8 +5,6 @@ with lib;
 let
   cfg = config.tools.dotnet;
 
-  vscodeSdkPath = "/usr/local/share/dotnet";
-
   dotnet-env = with pkgs.dotnetCorePackages;
     combinePackages [ sdk_8_0 sdk_9_0 sdk_10_0 ];
 
@@ -44,10 +42,9 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ dotnet-env ];
+    home.packages = [ dotnet-env pkgs.csharprepl ];
 
-    home.sessionPath = [ "$HOME/.dotnet/tools" vscodeSdkPath ];
-    home.sessionVariables = { DOTNET_ROOT = vscodeSdkPath; };
+    home.sessionPath = [ "$HOME/.dotnet/tools" ];
 
     home.file.".nuget/NuGet/NuGet.Config".source =
       let nugetConfig = buildNugetConfig cfg.nugetSources;

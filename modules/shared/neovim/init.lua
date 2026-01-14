@@ -372,80 +372,6 @@ require("lze").load({
         end,
     },
     {
-        "nvim-treesitter",
-        enabled = nixCats("general") or nixCats("miniNvim") or false,
-        -- cmd = { "" },
-        event = "DeferredUIEnter",
-        -- ft = "",
-        -- keys = "",
-        -- colorscheme = "",
-        load = function(name)
-            vim.cmd.packadd(name)
-            vim.cmd.packadd("nvim-treesitter-textobjects")
-        end,
-        after = function(plugin)
-            -- [[ Configure Treesitter ]]
-            -- See `:help nvim-treesitter`
-            require("nvim-treesitter.configs").setup({
-                highlight = { enable = true },
-                indent = { enable = false },
-                incremental_selection = {
-                    enable = true,
-                    keymaps = {
-                        init_selection = "<c-space>",
-                        node_incremental = "<c-space>",
-                        scope_incremental = "<c-s>",
-                        node_decremental = "<M-space>",
-                    },
-                },
-                textobjects = {
-                    select = {
-                        enable = true,
-                        lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
-                        keymaps = {
-                            -- You can use the capture groups defined in textobjects.scm
-                            ["aa"] = "@parameter.outer",
-                            ["ia"] = "@parameter.inner",
-                            ["af"] = "@function.outer",
-                            ["if"] = "@function.inner",
-                            ["ac"] = "@class.outer",
-                            ["ic"] = "@class.inner",
-                        },
-                    },
-                    move = {
-                        enable = true,
-                        set_jumps = true, -- whether to set jumps in the jumplist
-                        goto_next_start = {
-                            ["]m"] = "@function.outer",
-                            ["]]"] = "@class.outer",
-                        },
-                        goto_next_end = {
-                            ["]M"] = "@function.outer",
-                            ["]["] = "@class.outer",
-                        },
-                        goto_previous_start = {
-                            ["[m"] = "@function.outer",
-                            ["[["] = "@class.outer",
-                        },
-                        goto_previous_end = {
-                            ["[M"] = "@function.outer",
-                            ["[]"] = "@class.outer",
-                        },
-                    },
-                    swap = {
-                        enable = true,
-                        swap_next = {
-                            ["<leader>a"] = "@parameter.inner",
-                        },
-                        swap_previous = {
-                            ["<leader>A"] = "@parameter.inner",
-                        },
-                    },
-                },
-            })
-        end,
-    },
-    {
         "mini.nvim",
         enabled = nixCats("general") or false,
         event = "DeferredUIEnter",
@@ -791,15 +717,15 @@ require("lze").load({
             )
 
             require("nvim-dap-virtual-text").setup({
-                enabled = true,         -- enable this plugin (the default)
-                enabled_commands = true, -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
+                enabled = true,                     -- enable this plugin (the default)
+                enabled_commands = true,            -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
                 highlight_changed_variables = true, -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
-                highlight_new_as_changed = false, -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
-                show_stop_reason = true, -- show stop reason when stopped for exceptions
-                commented = false,      -- prefix virtual text with comment string
-                only_first_definition = true, -- only show virtual text at first definition (if there are multiple)
-                all_references = false, -- show virtual text on all all references of the variable (not only definitions)
-                clear_on_continue = false, -- clear virtual text on "continue" (might cause flickering when stepping)
+                highlight_new_as_changed = false,   -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
+                show_stop_reason = true,            -- show stop reason when stopped for exceptions
+                commented = false,                  -- prefix virtual text with comment string
+                only_first_definition = true,       -- only show virtual text at first definition (if there are multiple)
+                all_references = false,             -- show virtual text on all all references of the variable (not only definitions)
+                clear_on_continue = false,          -- clear virtual text on "continue" (might cause flickering when stepping)
                 --- A callback that determines how a variable is displayed or whether it should be omitted
                 --- variable Variable https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable
                 --- buf number
@@ -818,8 +744,8 @@ require("lze").load({
                 virt_text_pos = vim.fn.has("nvim-0.10") == 1 and "inline" or "eol",
 
                 -- experimental features:
-                all_frames = false, -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
-                virt_lines = false, -- show virtual lines instead of virtual text (will flicker!)
+                all_frames = false,      -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
+                virt_lines = false,      -- show virtual lines instead of virtual text (will flicker!)
                 virt_text_win_col = nil, -- position the virtual text at a fixed window column (starting from the first text column) ,
                 -- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
             })
@@ -918,11 +844,11 @@ require("lze").load({
             require("CopilotChat").setup({
                 window = {
                     layout = "float",
-                    width = 120, -- Fixed width in columns
-                    height = 30, -- Fixed height in rows
+                    width = 120,        -- Fixed width in columns
+                    height = 30,        -- Fixed height in rows
                     border = "rounded", -- 'single', 'double', 'rounded', 'solid'
                     title = "🤖 AI Assistant",
-                    zindex = 100, -- Ensure window stays on top
+                    zindex = 100,       -- Ensure window stays on top
                 },
 
                 headers = {

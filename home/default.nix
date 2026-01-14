@@ -1,18 +1,16 @@
 # Main user-level configuration
-{
-  pkgs,
-  lib,
-  userConfig,
-  config,
-  inputs,
-  ...
+{ pkgs
+, lib
+, userConfig
+, config
+, inputs
+, ...
 }:
 
 let
   modules = import ../modules/shared/modules.nix { inherit lib; };
 in
 {
-  # Let Home Manager install and manage itself.
   nixpkgs = {
     config.allowUnfree = true;
     overlays = [
@@ -53,12 +51,14 @@ in
   };
 
   fonts.fontconfig.enable = true;
-
-  programs = { } // import ../modules/shared/home-manager.nix { inherit pkgs lib config; };
+  programs = {
+    home-manager.enable = true;
+  }
+  // import ../modules/shared/terminal.nix { inherit pkgs lib config; };
 
   services = {
     colima = {
-      enable = false;
+      enable = true;
 
       config = {
         cpu = 4;

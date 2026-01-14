@@ -1,7 +1,5 @@
 { pkgs, ... }:
 {
-  home-manager.enable = true;
-
   atuin = {
     enable = true;
     flags = [ "--disable-up-arrow" ];
@@ -39,6 +37,8 @@
   };
 
   jq.enable = true;
+
+  lazydocker.enable = true;
 
   ssh = {
     enable = true;
@@ -93,29 +93,10 @@
 
   fzf.enable = true;
 
-  helix.enable = true;
-
-  lazydocker.enable = true;
-
-  nushell.enable = true;
-
   starship = {
     enable = true;
     settings = {
       command_timeout = 2000;
-    };
-  };
-
-  yazi.enable = true;
-
-  zellij = {
-    enable = true;
-    settings = {
-      ui = {
-        pane_frames = {
-          rounded_corners = true;
-        };
-      };
     };
   };
 

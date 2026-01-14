@@ -11,7 +11,6 @@
 
     casks = [
       "1password"
-      "cloudflare-warp"
       "google-chrome"
       "firefox"
       "obsidian"

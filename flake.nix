@@ -13,8 +13,17 @@
     helix.url = "github:helix-editor/helix";
   };
 
-  outputs = inputs@{ self, nix-darwin, home-manager, nixpkgs, nixCats
-    , neovim-nightly-overlay, csharp-language-server, helix }:
+  outputs =
+    inputs@{ self
+    , nix-darwin
+    , home-manager
+    , nixpkgs
+    , nixCats
+    , neovim-nightly-overlay
+    , csharp-language-server
+    , helix
+    ,
+    }:
     let
       # User configuration - define your user details here
       userConfig = {
@@ -31,11 +40,14 @@
               email = "hadyn.youens@educationperfect.com";
               name = userConfig.fullName;
             };
-            core = { autocrlf = "input"; };
+            core = {
+              autocrlf = "input";
+            };
           };
         };
       };
-    in {
+    in
+    {
       darwinConfigurations."Hadyns-MacBook-Pro" = nix-darwin.lib.darwinSystem {
         specialArgs = { inherit inputs userConfig; };
         modules = [

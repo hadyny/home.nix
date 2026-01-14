@@ -27,11 +27,12 @@ let
     fi
 
     echo "🔐 Getting ECR login token and logging into Docker..."
-    if ${pkgs.awscli2}/bin/aws ecr get-login-password --region ap-southeast-2 --profile ecr | ${pkgs.podman}/bin/podman login --username AWS --password-stdin 058337015204.dkr.ecr.ap-southeast-2.amazonaws.com >/dev/null; then
+    if ${pkgs.awscli2}/bin/aws ecr get-login-password --region ap-southeast-2 --profile ecr | ${pkgs.docker}/bin/docker login --username AWS --password-stdin 058337015204.dkr.ecr.ap-southeast-2.amazonaws.com >/dev/null; then
       echo "✅ Successfully logged into AWS ECR!"
     else
       echo "❌ Failed to log into AWS ECR"
       exit 1
     fi
   '';
-in { home.packages = with pkgs; [ awscli2 podman dockerLoginScript ]; }
+in
+{ home.packages = with pkgs; [ awscli2 docker dockerLoginScript ]; }

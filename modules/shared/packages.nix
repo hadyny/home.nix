@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 with pkgs;
 [
   _1password-cli
@@ -6,14 +6,12 @@ with pkgs;
   # dev
   devenv
   rustywind
-  nixd
-  nixfmt
   bun
-  podman
-  podman-tui
-  podman-desktop
-  podman-compose
-  inputs.csharp-language-server.packages.${stdenv.hostPlatform.system}.default
+
+  # for zed
+  nil
+  nixfmt
+  csharpier
 
   # general development & utils
   httpie
@@ -31,9 +29,11 @@ with pkgs;
   shfmt
   shellcheck
   stylelint
+
   terraform
   spicedb
   spicedb-zed
+
   mitmproxy
 
   # kafka

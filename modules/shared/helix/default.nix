@@ -1,11 +1,19 @@
 { inputs, pkgs, ... }:
 {
+  programs.yazi.enable = true;
   programs.helix = {
     enable = true;
     # package = pkgs.unstable.helix;
     package = inputs.helix.packages.${pkgs.stdenv.hostPlatform.system}.default;
     extraPackages = with pkgs; [
+      inputs.csharp-language-server.packages.${stdenv.hostPlatform.system}.default
+      netcoredbg
+      csharpier
       nixpkgs-fmt
+      nil
+      lua-language-server
+      graphql-language-service-cli
+      marksman
       vtsls
       vscode-langservers-extracted
       emmet-language-server
@@ -14,6 +22,7 @@
       roslyn-ls
       scooter
       tailwindcss-language-server
+      terraform-ls
     ];
     # defaultEditor = true;
     settings = {
@@ -21,7 +30,6 @@
       editor = {
         line-number = "relative";
         mouse = true;
-        auto-info = true;
         true-color = true;
         color-modes = true;
         popup-border = "all";
@@ -64,9 +72,9 @@
           center = [
             "file-name"
             "file-modification-indicator"
+            "version-control"
           ];
           right = [
-            "version-control"
             "diagnostics"
             "selections"
             "position"
@@ -149,45 +157,63 @@
 
     languages = {
       language-server = {
-        eslint = {
+        vscode-eslint-language-server = {
+          command = "${pkgs.vscode-langservers-extracted}/bin/vscode-eslint-language-server";
           args = [ "--stdio" ];
-          command = "vscode-eslint-language-server";
-
           config = {
             nodePath = "";
-            experimental = {
-              useFlatConfig = true;
+            quiet = false;
+            rulesCustomizations = [
+              {
+                rule = "prettier/prettier";
+                severity = "error";
+              }
+            ];
+            run = "onType";
+            validate = "on";
+            codeAction = {
+              disableRuleComment = {
+                enable = true;
+                location = "separateLine";
+              };
+              showDocumentation = {
+                enable = true;
+              };
+            };
+            experimental.useFlatConfig = true;
+            problems = {
+              shortenToSingleLine = false;
             };
             workingDirectory.mode = "auto";
-            format.enable = false;
             codeActionsOnSave = {
+              enable = true;
               mode = "all";
-              "source.fixAll.eslint" = true;
             };
           };
         };
 
         typescript-language-server = {
           command = "vtsls";
-        };
-
-        typescript-language-server.config.javascript.inlayHints = {
-          includeInlayEnumMemberValueHints = false;
-          includeInlayFunctionLikeReturnTypeHints = false;
-          includeInlayFunctionParameterTypeHints = false;
-          includeInlayParameterNameHints = "all";
-          includeInlayParameterNameHintsWhenArgumentMatchesName = false;
-          includeInlayPropertyDeclarationTypeHints = false;
-          includeInlayVariableTypeHints = false;
-        };
-        typescript-language-server.config.typescript.inlayHints = {
-          includeInlayEnumMemberValueHints = false;
-          includeInlayFunctionLikeReturnTypeHints = false;
-          includeInlayFunctionParameterTypeHints = false;
-          includeInlayParameterNameHints = "all";
-          includeInlayParameterNameHintsWhenArgumentMatchesName = false;
-          includeInlayPropertyDeclarationTypeHints = false;
-          includeInlayVariableTypeHints = false;
+          config = {
+            javascript.inlayHints = {
+              includeInlayEnumMemberValueHints = false;
+              includeInlayFunctionLikeReturnTypeHints = false;
+              includeInlayFunctionParameterTypeHints = false;
+              includeInlayParameterNameHints = "all";
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false;
+              includeInlayPropertyDeclarationTypeHints = false;
+              includeInlayVariableTypeHints = false;
+            };
+            typescript.inlayHints = {
+              # includeInlayEnumMemberValueHints = false;
+              # includeInlayFunctionLikeReturnTypeHints = false;
+              # includeInlayFunctionParameterTypeHints = false;
+              includeInlayParameterNameHints = "all";
+              # includeInlayParameterNameHintsWhenArgumentMatchesName = false;
+              # includeInlayPropertyDeclarationTypeHints = false;
+              # includeInlayVariableTypeHints = false;
+            };
+          };
         };
 
         roslyn-ls = {
@@ -211,6 +237,11 @@
           args = [ "--stdio" ];
 
         };
+
+        terraform = {
+          command = "terraform-ls";
+          args = [ "serve" ];
+        };
       };
 
       language = [
@@ -227,7 +258,7 @@
               name = "typescript-language-server";
             }
             "tailwindcss"
-            "eslint"
+            "vscode-eslint-language-server"
           ];
           formatter = {
             command = "prettierd";
@@ -236,29 +267,11 @@
               "x.js"
             ];
           };
-        }
-        {
-          name = "jsx";
-          indent = {
-            tab-width = 4;
-            unit = "    ";
-          };
-          auto-format = true;
-          language-servers = [
-            {
-              except-features = [ "format" ];
-              name = "typescript-language-server";
-            }
-            "tailwindcss"
-            "eslint"
+          roots = [
+            "package-lock.json"
+            "tsconfig.json"
+            ".prettierrc.json"
           ];
-          formatter = {
-            command = "prettierd";
-            args = [
-              "--stdin-filepath"
-              "x.js"
-            ];
-          };
         }
         {
           name = "typescript";
@@ -273,15 +286,20 @@
               name = "typescript-language-server";
             }
             "tailwindcss"
-            "eslint"
+            "vscode-eslint-language-server"
           ];
           formatter = {
             command = "prettierd";
             args = [
               "--stdin-filepath"
-              "x.js"
+              "x.ts"
             ];
           };
+          roots = [
+            "package-lock.json"
+            "tsconfig.json"
+            ".prettierrc.json"
+          ];
         }
         {
           name = "tsx";
@@ -296,26 +314,45 @@
               name = "typescript-language-server";
             }
             "tailwindcss"
-            "eslint"
+            "vscode-eslint-language-server"
           ];
           formatter = {
             command = "prettierd";
             args = [
               "--stdin-filepath"
-              "x.js"
+              "x.tsx"
             ];
           };
+          roots = [
+            "package-lock.json"
+            "tsconfig.json"
+            ".prettierrc.json"
+          ];
+        }
+        {
+          name = "graphql";
+          language-servers = [
+            {
+              except-features = [ "format" ];
+              name = "typescript-language-server";
+            }
+            "vscode-eslint-language-server"
+          ];
+          formatter = {
+            command = "prettierd";
+            args = [
+              "--stdin-filepath"
+              "x.graphql"
+            ];
+          };
+          roots = [
+            "package-lock.json"
+            "tsconfig.json"
+            ".prettierrc.json"
+          ];
         }
         {
           name = "css";
-          indent = {
-            tab-width = 4;
-            unit = "    ";
-          };
-          auto-format = true;
-        }
-        {
-          name = "scss";
           indent = {
             tab-width = 4;
             unit = "    ";
@@ -368,6 +405,20 @@
             # "roslyn-ls"
             "csls"
           ];
+          formatter = {
+            command = "csharpier";
+            args = [ "format" ];
+          };
+        }
+        {
+          name = "hcl";
+          language-servers = [ "terraform-ls" ];
+          language-id = "terraform";
+        }
+        {
+          name = "tfvars";
+          language-servers = [ "terraform-ls" ];
+          language-id = "terraform-vars";
         }
       ];
     };
