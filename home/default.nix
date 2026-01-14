@@ -58,7 +58,7 @@ in
 
   services = {
     colima = {
-      enable = true;
+      enable = false;
 
       config = {
         cpu = 4;

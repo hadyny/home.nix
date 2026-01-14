@@ -5,30 +5,15 @@ with pkgs;
 
   # dev
   devenv
-  vtsls
-  tailwindcss-language-server
   rustywind
   nixd
-  nil
   nixfmt
-  nufmt
-  prettierd
   bun
-  scooter
-  fsautocomplete
-  omnisharp-roslyn
-  roslyn-ls
+  podman
+  podman-tui
+  podman-desktop
+  podman-compose
   inputs.csharp-language-server.packages.${stdenv.hostPlatform.system}.default
-  emmet-language-server
-  (vscode-langservers-extracted.overrideAttrs (oldAttrs: {
-    version = "4.8.0";
-    src = pkgs.fetchFromGitHub {
-      owner = "hrsh7th";
-      repo = "vscode-langservers-extracted";
-      rev = "v4.8.0";
-      sha256 = "sha256-sGnxmEQ0J74zNbhRpsgF/cYoXwn4jh9yBVjk6UiUdK0=";
-    };
-  }))
 
   # general development & utils
   httpie
