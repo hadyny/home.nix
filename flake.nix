@@ -10,10 +10,11 @@
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     csharp-language-server.url = "github:sofusa/csharp-language-server";
+    helix.url = "github:helix-editor/helix";
   };
 
   outputs = inputs@{ self, nix-darwin, home-manager, nixpkgs, nixCats
-    , neovim-nightly-overlay, csharp-language-server }:
+    , neovim-nightly-overlay, csharp-language-server, helix }:
     let
       # User configuration - define your user details here
       userConfig = {
