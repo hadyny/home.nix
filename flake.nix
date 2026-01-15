@@ -14,15 +14,15 @@
   };
 
   outputs =
-    inputs@{ self
-    , nix-darwin
-    , home-manager
-    , nixpkgs
-    , nixCats
-    , neovim-nightly-overlay
-    , csharp-language-server
-    , helix
-    ,
+    inputs@{
+      self,
+      nix-darwin,
+      home-manager,
+      nixpkgs,
+      nixCats,
+      neovim-nightly-overlay,
+      csharp-language-server,
+      helix,
     }:
     let
       # User configuration - define your user details here
@@ -51,7 +51,7 @@
       darwinConfigurations."Hadyns-MacBook-Pro" = nix-darwin.lib.darwinSystem {
         specialArgs = { inherit inputs userConfig; };
         modules = [
-          ./darwin-configuration.nix
+          ./hosts/darwin/configuration.nix
           home-manager.darwinModules.home-manager
           {
             home-manager.useUserPackages = true;

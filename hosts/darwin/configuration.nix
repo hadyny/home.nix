@@ -1,16 +1,22 @@
-{ pkgs, lib, userConfig, ... }:
-let modules = import ./modules/shared/modules.nix { inherit lib; };
-in {
+{
+  pkgs,
+  lib,
+  userConfig,
+  ...
+}:
+let
+  modules = import ../../modules/shared/modules.nix { inherit lib; };
+in
+{
   documentation.enable = false;
 
   nixpkgs = {
     hostPlatform = "aarch64-darwin";
     config.allowUnfree = true;
-    overlays = [ (import ./overlays/pinned.nix) ];
+    overlays = [ (import ../../overlays/pinned.nix) ];
   };
 
-  imports = [ ./certificates.nix ]
-    ++ (modules.importAllModules ./modules/darwin);
+  imports = [ ../../certificates.nix ] ++ (modules.importAllModules ../../modules/darwin);
 
   programs.zsh.enable = true;
 
@@ -59,6 +65,7 @@ in {
         "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
       ];
     };
+    # TODO: Move to work specific area
     registry = {
       ep = {
         from = {
@@ -87,7 +94,9 @@ in {
         "com.apple.swipescrolldirection" = false;
       };
 
-      loginwindow = { GuestEnabled = false; };
+      loginwindow = {
+        GuestEnabled = false;
+      };
 
       trackpad = {
         Clicking = true;
@@ -113,13 +122,20 @@ in {
     };
   };
   targets.darwin.dock = {
-    apps = [ "Slack" "Firefox Developer Edition" "Google Chrome" "Obsidian" ];
+    apps = [
+      "Slack"
+      "Firefox Developer Edition"
+      "Google Chrome"
+      "Obsidian"
+    ];
 
-    others = [({
-      path = "${userConfig.home}/Downloads";
-      sort = "dateadded";
-      view = "grid";
-    })];
+    others = [
+      {
+        path = "${userConfig.home}/Downloads";
+        sort = "dateadded";
+        view = "grid";
+      }
+    ];
   };
 
 }
