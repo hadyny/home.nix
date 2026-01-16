@@ -1,5 +1,9 @@
 {
-  imports = [ ./aws.nix ../../modules/shared/secureEnv/onePassword.nix ];
+  imports = [
+    ./aws.nix
+    ../../shared/secureEnv/onePassword.nix
+    ../home-manager.nix
+  ];
 
   tools.dotnet = {
     nugetSources = {

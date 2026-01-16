@@ -51,13 +51,15 @@
       darwinConfigurations."Hadyns-MacBook-Pro" = nix-darwin.lib.darwinSystem {
         specialArgs = { inherit inputs userConfig; };
         modules = [
-          ./hosts/darwin/configuration.nix
           home-manager.darwinModules.home-manager
           {
-            home-manager.useUserPackages = true;
-            home-manager.users.hadyn = ./home;
-            home-manager.extraSpecialArgs = { inherit inputs userConfig; };
+            home-manager = {
+              useUserPackages = true;
+              users.hadyn = ./modules/darwin/work;
+              extraSpecialArgs = { inherit inputs userConfig; };
+            };
           }
+          ./hosts/darwin/work
         ];
       };
     };

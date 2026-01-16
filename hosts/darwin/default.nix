@@ -4,9 +4,7 @@
   userConfig,
   ...
 }:
-let
-  modules = import ../../modules/shared/modules.nix { inherit lib; };
-in
+
 {
   documentation.enable = false;
 
@@ -16,7 +14,12 @@ in
     overlays = [ (import ../../overlays/pinned.nix) ];
   };
 
-  imports = [ ../../certificates.nix ] ++ (modules.importAllModules ../../modules/darwin);
+  imports = [
+    ../../modules/darwin/apps.nix
+    ../../modules/darwin/raycast.nix
+    ../../modules/darwin/dock-apps.nix
+    ../../modules/darwin/plists.nix
+  ];
 
   programs.zsh.enable = true;
 
@@ -26,11 +29,7 @@ in
   };
   ids.gids.nixbld = 350;
 
-  fonts.packages = with pkgs; [
-    maple-mono.NF-unhinted
-    nerd-fonts.fira-code
-    nerd-fonts.commit-mono
-  ];
+  fonts.packages = import ../../modules/shared/fonts.nix { inherit pkgs; };
 
   # set up current user
   users.users.${userConfig.name} = {
@@ -65,20 +64,6 @@ in
         "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
       ];
     };
-    # TODO: Move to work specific area
-    registry = {
-      ep = {
-        from = {
-          type = "indirect";
-          id = "ep";
-        };
-        to = {
-          type = "git";
-          url = "ssh://git@github.com/educationperfect/ep-nix";
-        };
-      };
-    };
-
   };
 
   system = {

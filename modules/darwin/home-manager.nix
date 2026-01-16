@@ -1,37 +1,40 @@
 # Main user-level configuration
-{ pkgs
-, lib
-, userConfig
-, config
-, inputs
-, ...
+{
+  pkgs,
+  lib,
+  userConfig,
+  config,
+  ...
 }:
 
 let
-  modules = import ../modules/shared/modules.nix { inherit lib; };
+  shared-programs = import ../shared/home-manager.nix { inherit config pkgs lib; };
 in
 {
   nixpkgs = {
     config.allowUnfree = true;
     overlays = [
-      (import ../overlays/pinned.nix)
+      (import ../../overlays/pinned.nix)
     ];
   };
 
   imports = [
-    ../modules/shared/ghostty
-    ../modules/shared/neovim
-    ../modules/shared/helix
-    ../modules/shared/services/colima.nix
-    ../modules/shared/settings/wallpaper.nix
-    ./work
-  ]
-  ++ (modules.importAllModules ../modules/shared/tools);
+    ../shared/ghostty
+    ../shared/neovim
+    ../shared/helix
+    ../shared/services/colima.nix
+    ../shared/settings/wallpaper.nix
+
+    ../shared/tools/aws.nix
+    ../shared/tools/docker.nix
+    ../shared/tools/dotnet.nix
+    ../shared/tools/git.nix
+  ];
 
   home = {
     username = userConfig.name;
     homeDirectory = userConfig.home;
-    wallpaper.file = ./config/wallpaper/nord.jpg;
+    wallpaper.file = ../shared/config/wallpaper/nord.jpg;
 
     sessionVariables = {
       EDITOR = "nvim";
@@ -40,7 +43,7 @@ in
       HOMEBREW_NO_ENV_HINTS = 1;
     };
 
-    packages = pkgs.callPackage ../modules/shared/packages.nix { inherit pkgs inputs; };
+    packages = pkgs.callPackage ../shared/packages.nix { inherit pkgs; };
 
     sessionPath = [ "/opt/homebrew/bin" ];
 
@@ -50,11 +53,9 @@ in
     };
   };
 
+  programs = shared-programs // { };
+
   fonts.fontconfig.enable = true;
-  programs = {
-    home-manager.enable = true;
-  }
-  // import ../modules/shared/terminal.nix { inherit pkgs lib config; };
 
   services = {
     colima = {

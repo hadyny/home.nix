@@ -21,7 +21,6 @@
       "rider"
       "datagrip"
       "spotify"
-      "vivaldi"
       "zed"
     ];
 

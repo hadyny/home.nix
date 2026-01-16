@@ -3,7 +3,6 @@
   programs.yazi.enable = true;
   programs.helix = {
     enable = true;
-    # package = pkgs.unstable.helix;
     package = inputs.helix.packages.${pkgs.stdenv.hostPlatform.system}.default;
     extraPackages = with pkgs; [
       inputs.csharp-language-server.packages.${stdenv.hostPlatform.system}.default
