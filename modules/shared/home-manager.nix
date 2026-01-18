@@ -100,6 +100,15 @@
     };
   };
 
+  yazi = {
+    enable = true;
+    plugins = {
+      "full-border" = pkgs.yaziPlugins.full-border;
+      "rich-preview" = pkgs.yaziPlugins.rich-preview;
+      "starship" = pkgs.yaziPlugins.starship;
+    };
+  };
+
   zsh.enable = true;
 
   zoxide.enable = true;

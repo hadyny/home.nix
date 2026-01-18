@@ -3,16 +3,15 @@ self: super:
 let
   # a function that takes a descriptive name and a hash of nixpkgs-unstable to pin
   # and returns the channel at that version
-  pinned = name: hash:
-    import
-      (builtins.fetchGit {
-        # Descriptive name to make the store path easier to identify
-        name = "pinned-${name}";
-        url = "https://github.com/NixOS/nixpkgs/";
-        ref = "refs/heads/nixpkgs-unstable";
-        rev = hash;
-      })
-      { };
+  pinned =
+    name: hash:
+    import (builtins.fetchGit {
+      # Descriptive name to make the store path easier to identify
+      name = "pinned-${name}";
+      url = "https://github.com/NixOS/nixpkgs/";
+      ref = "refs/heads/nixpkgs-unstable";
+      rev = hash;
+    }) { };
 
 in
 {

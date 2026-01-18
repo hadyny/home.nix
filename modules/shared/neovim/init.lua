@@ -1,8 +1,10 @@
+-- TODO:
+-- - set up easy-dotnet properly
+
 local vim = vim
 local options = vim.o
 local globals = vim.g
 local diagnostics = vim.diagnostic
-local vscode = vim.g.vscode
 
 globals.mapleader = " "
 globals.maplocalleader = " "
@@ -65,8 +67,18 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
+-- vim.api.nvim_create_autocmd('LspAttach', {
+--   callback = function(ev)
+--     local client = vim.lsp.get_client_by_id(ev.data.client_id)
+--     if client:supports_method('textDocument/completion') then
+--       vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+--     end
+--   end,
+-- })
+
 diagnostics.config({
     virtual_text = false,
+    virtual_lines = { current_line = true },
     signs = {
         text = {
             [diagnostics.severity.ERROR] = "󰅙",
@@ -129,117 +141,36 @@ map(
     '"_dP',
     { noremap = true, silent = true, desc = "Paste over selection without erasing unnamed register" }
 )
-if nixCats("general") or nixCats("miniNvim") and not vscode then
-    vim.cmd.colorscheme("tokyonight-night")
-end
 map("n", "<Esc>", ":noh<CR><Esc>", { noremap = true, silent = true }) -- escape to cancel search
 
 map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
-map("n", "<leader>k", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 
 -- file
-map("n", "<leader>f+", "<Cmd>set foldlevel=99<cr>", { desc = "Expand all folds" })
-map("n", "<leader>f-", "<Cmd>set foldlevel=0<cr>", { desc = "Collapse all folds" })
-
-map("n", "<leader>-", "<Cmd>foldclose<cr>", { desc = "Collapse current fold" })
-map("n", "<leader>+", "<Cmd>foldopen<cr>", { desc = "Expand current fold" })
+-- map("n", "<leader>f+", "<Cmd>set foldlevel=99<cr>", { desc = "Expand all folds" })
+-- map("n", "<leader>f-", "<Cmd>set foldlevel=0<cr>", { desc = "Collapse all folds" })
+--
+-- map("n", "<leader>-", "<Cmd>foldclose<cr>", { desc = "Collapse current fold" })
+-- map("n", "<leader>+", "<Cmd>foldopen<cr>", { desc = "Expand current fold" })
 
 -- Buffer mappings
-map("n", "<leader>b[", "<cmd>bprev<CR>", { desc = "Previous buffer" })
-map("n", "<leader><b]", "<cmd>bnext<CR>", { desc = "Next buffer" })
-map("n", "<leader>bl", "<cmd>b#<CR>", { desc = "Last buffer" })
-map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "delete buffer" })
-map("n", "gb", ":ls<cr>:b<space>", { noremap = true, desc = "Goto buffer" })
+-- map("n", "<leader>b[", "<cmd>bprev<CR>", { desc = "Previous buffer" })
+-- map("n", "<leader><b]", "<cmd>bnext<CR>", { desc = "Next buffer" })
+-- map("n", "<leader>bl", "<cmd>b#<CR>", { desc = "Last buffer" })
+-- map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "delete buffer" })
+-- map("n", "gb", ":ls<cr>:b<space>", { noremap = true, desc = "Goto buffer" })
 
--- code
-map("n", "<Leader>cr", "<Cmd>lua vim.lsp.buf.rename()<cr>", { desc = "Rename" })
-map("n", "<Leader>cf", "<Cmd>lua vim.lsp.buf.format()<cr>", { desc = "Format buffer" })
-
-if not nixCats("general") and not nixCats("miniNvim") then
-    return
+if (nixCats("general")) then
+    vim.cmd.colorscheme("tokyonight-night")
 end
 
 require("lze").load({
     {
-        "mini.nvim",
-        enabled = (nixCats("miniNvim") and not vscode) or false,
-        event = "DeferredUIEnter",
-        load = function(name)
-            vim.cmd.packadd(name)
-            vim.cmd.packadd("mini.nvim")
-        end,
-        after = function(plugin)
-            require("mini.ai").setup()
-            require("mini.comment").setup()
-            require("mini.completion").setup()
-            require("mini.pairs").setup()
-            require("mini.basics").setup()
-            require("mini.bufremove").setup()
-            local miniclue = require("mini.clue")
-            miniclue.setup({
-                triggers = {
-                    -- Leader triggers
-                    { mode = "n", keys = "<Leader>" },
-                    { mode = "x", keys = "<Leader>" },
-
-                    -- Built-in completion
-                    { mode = "i", keys = "<C-x>" },
-
-                    -- `g` key
-                    { mode = "n", keys = "g" },
-                    { mode = "x", keys = "g" },
-
-                    -- Marks
-                    { mode = "n", keys = "'" },
-                    { mode = "n", keys = "`" },
-                    { mode = "x", keys = "'" },
-                    { mode = "x", keys = "`" },
-
-                    -- Registers
-                    { mode = "n", keys = '"' },
-                    { mode = "x", keys = '"' },
-                    { mode = "i", keys = "<C-r>" },
-                    { mode = "c", keys = "<C-r>" },
-
-                    -- Window commands
-                    { mode = "n", keys = "<C-w>" },
-
-                    -- `z` key
-                    { mode = "n", keys = "z" },
-                    { mode = "x", keys = "z" },
-                },
-
-                clues = {
-                    -- Enhance this by adding descriptions for <Leader> mapping groups
-                    miniclue.gen_clues.builtin_completion(),
-                    miniclue.gen_clues.g(),
-                    miniclue.gen_clues.marks(),
-                    miniclue.gen_clues.registers(),
-                    miniclue.gen_clues.windows(),
-                    miniclue.gen_clues.z(),
-                },
-            })
-            require("mini.diff").setup()
-            require("mini.git").setup()
-            require("mini.cursorword").setup({ delay = 1000 })
-            local MiniIcons = require("mini.icons")
-            MiniIcons.setup()
-            MiniIcons.mock_nvim_web_devicons()
-            MiniIcons.tweak_lsp_kind()
-            require("mini.notify").setup()
-            require("mini.statusline").setup()
-            require("mini.pick").setup()
-            require("mini.extra").setup()
-        end,
-    },
-    {
         "blink.cmp",
-        enabled = (nixCats("general") and not vscode) or false,
+        enabled = nixCats("general") or false,
         event = "DeferredUIEnter",
         on_require = "blink",
         load = function(name)
             vim.cmd.packadd(name)
-            -- vim.cmd.packadd("blink-cmp-avante")
         end,
 
         after = function(plugin)
@@ -251,91 +182,24 @@ require("lze").load({
                 },
                 signature = { enabled = true },
                 sources = {
-                    default = { "lsp", "path", "snippets", "buffer" },
-                    -- default = { "avante", "lsp", "path", "snippets", "buffer" },
-                    -- providers = {
-                    --     avante = {
-                    --         module = "blink-cmp-avante",
-                    --         name = "Avante",
-                    --         opts = {},
-                    --     },
-                    -- },
+                    default = { "lsp", "easy-dotnet", "path", "snippets", "buffer" },
+                    providers = {
+                        ["easy-dotnet"] = {
+                            name = "easy-dotnet",
+                            enabled = true,
+                            module = "easy-dotnet.completion.blink",
+                            score_offset = 10000,
+                            async = true,
+                        },
+                    },
                 },
                 cmdline = { keymap = { preset = "default", ["<CR>"] = { "select_accept_and_enter", "fallback" } } },
             })
         end,
     },
     {
-        "snacks.nvim",
-        enabled = (nixCats("general") and not vscode) or false,
-        after = function(plugin)
-            local snacks = require("snacks")
-            snacks.setup({
-                animate = { enabled = true },
-                bigfile = { enabled = true },
-                explorer = { enabled = true },
-                input = { enabled = true },
-                lazygit = { enabled = true },
-                picker = {
-                    enabled = true,
-                    sources = { explorer = { layout = { layout = { position = "right" } } } },
-                },
-                quickfile = { enabled = true },
-                rename = { enabled = true },
-                scope = { enabled = true },
-                scroll = { enabled = true },
-                -- statuscolumn = { enabled = true },
-            })
-            map("n", "<leader>e", function()
-                snacks.picker.explorer()
-            end, { desc = "Explorer" })
-            map("n", "<leader><leader>", function()
-                snacks.picker.smart()
-            end, { desc = "Smart Fuzzy Find" })
-            map("n", "<leader>ff", function()
-                snacks.picker.files({ hidden = true })
-            end, { desc = "Fuzzy find files" })
-            map("n", "<leader>fr", function()
-                snacks.picker.recent()
-            end, { desc = "Fuzzy find recent files" })
-            map("n", "<leader>sg", function()
-                snacks.picker.grep()
-            end, { desc = "Find string in CWD" })
-            map("n", "<leader>sc", function()
-                snacks.picker.grep_word()
-            end, { desc = "Find word under cursor in CWD" })
-            map("n", "<leader>bs", function()
-                snacks.picker.buffers({ layout = { preset = "select" } })
-            end, { desc = "Fuzzy find buffers" })
-            map("n", "<leader>ft", function()
-                snacks.picker()
-            end, { desc = "Other pickers..." })
-            map("n", "<leader>h", function()
-                snacks.picker.help()
-            end, { desc = "Find help tags" })
-            map("n", "<leader>go", function()
-                snacks.gitbrowse()
-            end, { desc = "Open file online" })
-            map("n", "<leader>sh", function()
-                snacks.picker.search_history()
-            end, { desc = "Search History" })
-            map("n", "<leader>/", function()
-                snacks.picker.lines()
-            end, { desc = "Buffer Lines" })
-            map("n", "<leader>gg", function()
-                snacks.lazygit.open()
-            end, { desc = "Lazygit" })
-            map("n", "<leader>gl", function()
-                snacks.lazygit.log_file()
-            end, { desc = "Git log for current file" })
-            map("n", "<leader>gL", function()
-                snacks.lazygit.log()
-            end, { desc = "Git log" })
-        end,
-    },
-    {
         "lualine.nvim",
-        enabled = (nixCats("general") and not vscode) or false,
+        enabled = nixCats("general") or false,
         -- cmd = { "" },
         event = "DeferredUIEnter",
         -- ft = "",
@@ -385,21 +249,12 @@ require("lze").load({
         end,
     },
     {
-        "vim-startuptime",
-        enabled = nixCats("general") or false,
-        cmd = { "StartupTime" },
-        before = function(_)
-            vim.g.startuptime_event_width = 0
-            vim.g.startuptime_tries = 10
-            vim.g.startuptime_exe_path = nixCats.packageBinPath
-        end,
-    },
-    {
         "which-key.nvim",
-        enabled = (nixCats("general") and not vscode) or false,
+        enabled = nixCats("general") or false,
         event = "DeferredUIEnter",
         opts = {
             delay = 0,
+            preset = "helix"
         },
         keys = {
             {
@@ -407,57 +262,31 @@ require("lze").load({
                 function()
                     require("which-key").show({ global = false })
                 end,
-                desc = "Buffer Local Keymaps (which-key)",
+                desc = "Keymaps",
             },
         },
         after = function(plugin)
             require("which-key").add({
-                {
-                    "<Leader>b",
-                    group = "buffers",
-                    expand = function()
-                        return require("which-key.extras").expand.buf()
-                    end,
-                },
-                { "<Leader>a", group = "ai" },
-                { "<Leader>f", group = "files" },
-                { "<Leader>c", group = "code" },
-                { "<Leader>g", group = "git" },
-                { "<Leader>s", group = "search" },
-                { "g",         group = "goto" },
-                { "<Leader>t", group = "testing" },
-                { "<Leader>d", group = "debug" },
-            })
-        end,
-    },
-    {
-        "obsidian.nvim",
-        enabled = (nixCats("docs") and not vscode) or false,
-        event = "DeferredUIEnter",
-        ft = "markdown",
-        after = function()
-            require("obsidian").setup({
-                legacy_commands = false,
-                workspaces = {
-                    {
-                        name = "personal",
-                        path = "~/Documents/Vault",
-                    },
-                },
-                completion = {
-                    blink = true,
-                    min_chars = 2,
-                    create_new = true,
-                },
-                picker = {
-                    name = "snacks.pick",
-                },
+                -- {
+                --     "<Leader>b",
+                --     group = "buffers",
+                --     expand = function()
+                --         return require("which-key.extras").expand.buf()
+                --     end,
+                -- },
+                -- { "<Leader>f", group = "files" },
+                -- { "<Leader>c", group = "code" },
+                -- { "<Leader>g", group = "git" },
+                -- { "<Leader>s", group = "search" },
+                -- { "g",         group = "goto" },
+                -- { "<Leader>t", group = "testing" },
+                -- { "<Leader>d", group = "debug" },
             })
         end,
     },
     {
         "gitsigns.nvim",
-        enabled = (nixCats("general") and not vscode) or false,
+        enabled = nixCats("general") or false,
         event = "DeferredUIEnter",
         -- cmd = { "" },
         -- ft = "",
@@ -497,33 +326,33 @@ require("lze").load({
 
                     -- Actions
                     -- visual mode
-                    map("v", "<leader>hs", function()
-                        gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-                    end, { desc = "stage git hunk" })
-                    map("v", "<leader>hr", function()
-                        gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-                    end, { desc = "reset git hunk" })
+                    -- map("v", "<leader>hs", function()
+                    --     gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+                    -- end, { desc = "stage git hunk" })
+                    -- map("v", "<leader>hr", function()
+                    --     gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+                    -- end, { desc = "reset git hunk" })
                     -- normal mode
-                    map("n", "<leader>gs", gs.stage_hunk, { desc = "git stage hunk" })
-                    map("n", "<leader>gr", gs.reset_hunk, { desc = "git reset hunk" })
-                    map("n", "<leader>gS", gs.stage_buffer, { desc = "git Stage buffer" })
-                    map("n", "<leader>gu", gs.undo_stage_hunk, { desc = "undo stage hunk" })
-                    map("n", "<leader>gR", gs.reset_buffer, { desc = "git Reset buffer" })
-                    map("n", "<leader>gp", gs.preview_hunk, { desc = "preview git hunk" })
-                    map("n", "<leader>gb", function()
-                        gs.blame_line({ full = false })
-                    end, { desc = "git blame line" })
-                    map("n", "<leader>gd", gs.diffthis, { desc = "git diff against index" })
-                    map("n", "<leader>gD", function()
-                        gs.diffthis("~")
-                    end, { desc = "git diff against last commit" })
-
-                    -- Toggles
-                    map("n", "<leader>gtb", gs.toggle_current_line_blame, { desc = "toggle git blame line" })
-                    map("n", "<leader>gtd", gs.toggle_deleted, { desc = "toggle git show deleted" })
-
-                    -- Text object
-                    map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "select git hunk" })
+                    -- map("n", "<leader>gs", gs.stage_hunk, { desc = "git stage hunk" })
+                    -- map("n", "<leader>gr", gs.reset_hunk, { desc = "git reset hunk" })
+                    -- map("n", "<leader>gS", gs.stage_buffer, { desc = "git Stage buffer" })
+                    -- map("n", "<leader>gu", gs.undo_stage_hunk, { desc = "undo stage hunk" })
+                    -- map("n", "<leader>gR", gs.reset_buffer, { desc = "git Reset buffer" })
+                    -- map("n", "<leader>gp", gs.preview_hunk, { desc = "preview git hunk" })
+                    -- map("n", "<leader>gb", function()
+                    --     gs.blame_line({ full = false })
+                    -- end, { desc = "git blame line" })
+                    -- map("n", "<leader>gd", gs.diffthis, { desc = "git diff against index" })
+                    -- map("n", "<leader>gD", function()
+                    --     gs.diffthis("~")
+                    -- end, { desc = "git diff against last commit" })
+                    --
+                    -- -- Toggles
+                    -- map("n", "<leader>gtb", gs.toggle_current_line_blame, { desc = "toggle git blame line" })
+                    -- map("n", "<leader>gtd", gs.toggle_deleted, { desc = "toggle git show deleted" })
+                    --
+                    -- -- Text object
+                    -- map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "select git hunk" })
                 end,
             })
         end,
@@ -552,9 +381,9 @@ require("lze").load({
     {
         "conform.nvim",
         enabled = nixCats("general") or false,
-        keys = {
-            { "<leader>cf", desc = "Code format" },
-        },
+        -- keys = {
+        --     { "<leader>cf", desc = "Code format" },
+        -- },
         after = function(plugin)
             local conform = require("conform")
 
@@ -590,8 +419,7 @@ require("lze").load({
             { "<F1>",       desc = "Debug: Step Into" },
             { "<F2>",       desc = "Debug: Step Over" },
             { "<F3>",       desc = "Debug: Step Out" },
-            { "<leader>db", desc = "Debug: Toggle Breakpoint" },
-            { "<leader>dB", desc = "Debug: Set Breakpoint" },
+            { "<leader>tb", desc = "Debug: Toggle Breakpoint",       silent = true },
             { "<F7>",       desc = "Debug: See last session result." },
         },
         -- colorscheme = "",
@@ -763,6 +591,37 @@ require("lze").load({
         end,
     },
     {
+        "yazi.nvim",
+        enabled = nixCats("general") or false,
+        keys = {
+            { "<leader>e", function() require("yazi").yazi() end, desc = "Yazi" }
+        },
+        event = "DeferredUIEnter",
+        after = function(plugin)
+            require("yazi").setup({
+                open_for_directories = true,
+            })
+        end,
+    },
+    {
+        "fzf-lua",
+        enabled = nixCats("general") or false,
+        keys = {
+            { "<leader>b", "<cmd>FzfLua buffers<cr>",               desc = "List open buffers" },
+            { "<leader>f", "<cmd>FzfLua files<cr>",                 desc = "Find project files" },
+            { "<leader>/", "<cmd>FzfLua live_grep<cr>",             desc = "Search project" },
+            { "<leader>d", "<cmd>FzfLua diagnostics_document<cr>",  desc = "Document diagnostics" },
+            { "<leader>D", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace diagnostics" },
+
+        },
+        event = "DeferredUIEnter",
+        after = function(plugin)
+            require("fzf-lua").setup()
+        end,
+    },
+
+
+    {
         "render-markdown.nvim",
         enabled = nixCats("docs") or false,
         event = "DeferredUIEnter",
@@ -773,67 +632,11 @@ require("lze").load({
         end,
     },
     {
-        "tiny-code-action.nvim",
-        enabled = nixCats("general") or false,
-        event = "DeferredUIEnter",
-        after = function()
-            require("tiny-code-action").setup({
-                backend = "delta",
-                picker = "buffer",
-            })
-            map({ "n", "x" }, "<leader>ca", function()
-                require("tiny-code-action").code_action({})
-            end, { noremap = true, silent = true, desc = "Code action" })
-        end,
-    },
-    {
-        "tiny-inline-diagnostic.nvim",
-        enabled = nixCats("general") or false,
-        event = "DeferredUIEnter",
-        after = function()
-            require("tiny-inline-diagnostic").setup({
-                multilines = true,
-                break_line = { enabled = true },
-                enable_on_insert = false,
-            })
-        end,
-    },
-    {
         "fidget.nvim",
         enabled = nixCats("general") or false,
         event = "LspAttach",
         after = function()
             require("fidget").setup({})
-        end,
-    },
-    {
-        "quicker.nvim",
-        enabled = nixCats("general") or false,
-        event = "LspAttach",
-        after = function()
-            require("quicker").setup()
-            map("n", "<leader>q", "<Cmd>lua require('quicker').toggle()<cr>", { desc = "Toggle quickfix" })
-        end,
-    },
-    {
-        "avante.nvim",
-        enabled = nixCats("ai") or false,
-        event = "LspAttach",
-        after = function()
-            require("avante").setup({
-                input = {
-                    provider = "snacks",
-                    provider_opts = {
-                        title = "Avante Input",
-                        icon = " ",
-                        placeholder = "Enter your API key...",
-                    },
-                },
-                windows = {
-                    position = "left",
-                    width = 40,
-                },
-            })
         end,
     },
     {
@@ -866,7 +669,7 @@ require("lze").load({
     },
     {
         "nvim-highlight-colors",
-        enabled = (nixCats("reactjs") and not vscode) or false,
+        enabled = nixCats("reactjs") or false,
         event = "DeferredUIEnter",
         after = function(plugin)
             require("nvim-highlight-colors").setup({
@@ -875,80 +678,13 @@ require("lze").load({
         end,
     },
     {
-        "hlchunk.nvim",
-        enabled = (nixCats("general") and not vscode) or false,
-        event = "DeferredUIEnter",
-        after = function(plugin)
-            require("hlchunk").setup({
-                chunk = { enable = true },
-                line_num = { enable = true },
-            })
-        end,
-    },
-    {
         "easy-dotnet.nvim",
-        enabled = (nixCats("csharp") and not vscode) or false,
+        enabled = nixCats("csharp") or false,
         event = "LspAttach",
         after = function(plugin)
-            require("easy-dotnet").setup()
-        end,
-    },
-    {
-        "neotest",
-        enabled = nixCats("reactjs") or nixCats("csharp") or false,
-        event = "DeferredUIEnter",
-        load = function(name)
-            vim.cmd.packadd(name)
-            if nixCats("reactjs") then
-                vim.cmd.packadd("neotest-vitest")
-            end
-            if nixCats("csharp") then
-                vim.cmd.packadd("neotest-dotnet")
-            end
-        end,
-        after = function(plugin)
-            require("neotest").setup({
-                adapters = {
-                    nixCats("reactjs") and require("neotest-vitest") or nil,
-                    nixCats("csharp") and require("neotest-dotnet")({
-                        dap = { justMyCode = false },
-                    }) or nil,
-                },
+            require("easy-dotnet").setup({
+                picker = "fzf",
             })
-            map("n", "<Leader>tn", "<Cmd>lua require('neotest').run.run()<CR>", { desc = "Run nearest test" })
-            map(
-                "n",
-                "<Leader>tf",
-                "<Cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>",
-                { desc = "Run test file" }
-            )
-            map("n", "<Leader>tl", "<Cmd>lua require('neotest').run.run_last()<CR>", { desc = "Run last test" })
-            map(
-                "n",
-                "<Leader>td",
-                "<Cmd>lua require('neotest').run.run({strategy = 'dap'})<CR>",
-                { desc = "Debug nearest test" }
-            )
-            map("n", "<Leader>ts", "<Cmd>lua require('neotest').summary.toggle()<CR>", { desc = "Toggle test summary" })
-            map("n", "<Leader>to", "<Cmd>lua require('neotest').output.open()<CR>", { desc = "Show test output" })
-            map(
-                "n",
-                "<Leader>tp",
-                "<Cmd>lua require('neotest').output_panel.toggle()<CR>",
-                { desc = "Toggle output panel" }
-            )
-            map(
-                "n",
-                "[t",
-                "<Cmd>lua require('neotest').jump.prev({ status = 'failed' })<CR>",
-                { desc = "Jump to previous failed test" }
-            )
-            map(
-                "n",
-                "]t",
-                "<Cmd>lua require('neotest').jump.next({ status = 'failed' })<CR>",
-                { desc = "Jump to next failed test" }
-            )
         end,
     },
     {
@@ -977,18 +713,18 @@ local function lsp_on_attach(_, bufnr)
     -- See `:help K` for why this keymap
     nmap("K", vim.lsp.buf.hover, "Hover Documentation")
     nmap("<C-k>", vim.lsp.buf.signature_help, "Signature Documentation")
-    map("n", "gr", function()
-        Snacks.picker.lsp_references()
-    end, { desc = "Goto References" })
-    map("n", "gI", function()
-        Snacks.picker.lsp_implementations()
-    end, { desc = "Goto Implementations" })
-    map("n", "gd", function()
-        Snacks.picker.lsp_definitions()
-    end, { desc = "Goto Definitions" })
-    map("n", "gy", function()
-        Snacks.picker.lsp_type_definitions()
-    end, { desc = "Goto Type Definitions" })
+    -- map("n", "gr", function()
+    --     Snacks.picker.lsp_references()
+    -- end, { desc = "Goto References" })
+    -- map("n", "gI", function()
+    --     Snacks.picker.lsp_implementations()
+    -- end, { desc = "Goto Implementations" })
+    -- map("n", "gd", function()
+    --     Snacks.picker.lsp_definitions()
+    -- end, { desc = "Goto Definitions" })
+    -- map("n", "gy", function()
+    --     Snacks.picker.lsp_type_definitions()
+    -- end, { desc = "Goto Type Definitions" })
 
     if nixCats("csharp") then
         vim.treesitter.language.register("c_sharp", "csharp")
@@ -1014,7 +750,7 @@ end)
 require("lze").load({
     {
         "nvim-lspconfig",
-        enabled = nixCats("general") or nixCats("miniNvim") or false,
+        enabled = nixCats("general") or false,
         -- the on require handler will be needed here if you want to use the
         -- fallback method of getting filetypes if you don't provide any
         on_require = { "lspconfig" },
@@ -1133,7 +869,7 @@ require("lze").load({
                         },
                     },
                     formatting = {
-                        command = { "alejandra" },
+                        command = { "nixfmt" },
                     },
                     diagnostic = {
                         suppress = {
