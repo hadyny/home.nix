@@ -1,6 +1,3 @@
--- TODO:
--- - set up easy-dotnet properly
-
 local vim = vim
 local options = vim.o
 local globals = vim.g
@@ -616,7 +613,7 @@ require("lze").load({
         },
         event = "DeferredUIEnter",
         after = function(plugin)
-            require("fzf-lua").setup()
+            require("fzf-lua").setup({ { "border-fused", "fzf-native" }, winopts = { preview = { default = "bat" } } })
         end,
     },
 

@@ -68,6 +68,19 @@ in
               roslyn-ls
               netcoredbg
               csharpier
+              (buildDotnetGlobalTool {
+                pname = "EasyDotnet";
+                version = "2.3.61";
+                executables = "dotnet-easydotnet";
+                nugetHash = "sha256-0ud+u1PEwY11KFQBdYJWUFAJdS6mmcCIu2DlNmN3m/o=";
+                meta = with lib; {
+                  description = "C# JSON-RPC server powering the easy-dotnet.nvim Neovim plugin";
+                  homepage = "https://github.com/GustavEikaas/easy-dotnet.nvim";
+                  license = licenses.mit;
+                  maintainers = with maintainers; [ ];
+                  mainProgram = "dotnet-easydotnet";
+                };
+              })
             ];
             fsharp = with pkgs; [ fsautocomplete ];
             go = with pkgs; [
@@ -171,6 +184,7 @@ in
               suffix-LD = true;
               wrapRc = true;
               neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.neovim;
+              aliases = [ "nvimIde" ];
             };
             # and a set of categories that you want
             # (and other information to pass to lua)
@@ -199,7 +213,7 @@ in
               suffix-path = true;
               suffix-LD = true;
               wrapRc = true;
-              aliases = ["nvim"];
+              aliases = [ "nvim" ];
             };
             categories = {
               general = false;
