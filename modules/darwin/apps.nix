@@ -22,6 +22,7 @@
       "datagrip"
       "spotify"
       "zed"
+      "emacs-plus-app@master"
     ];
 
     global.brewfile = true;
@@ -31,7 +32,7 @@
       upgrade = true;
     };
 
-    taps = [ ];
+    taps = [ "d12frosted/emacs-plus" ];
     brews = [ ];
   };
 }

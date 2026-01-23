@@ -1,9 +1,8 @@
 { inputs, pkgs, ... }:
 {
-  programs.yazi.enable = true;
   programs.helix = {
     enable = true;
-    package = inputs.helix.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    package = pkgs.helix;
     extraPackages = with pkgs; [
       inputs.csharp-language-server.packages.${stdenv.hostPlatform.system}.default
       netcoredbg

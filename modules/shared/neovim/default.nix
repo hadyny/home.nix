@@ -92,6 +92,9 @@ in
               go-tools
               go
             ];
+            docs = with pkgs; [
+              multimarkdown
+            ];
           };
 
           # This is for plugins that will load at startup without using packadd:
@@ -122,7 +125,6 @@ in
               blink-cmp
               nvim-treesitter.withAllGrammars
               gitsigns-nvim
-              nvim-lint
               conform-nvim
               nvim-dap
               nvim-dap-ui
@@ -183,7 +185,7 @@ in
               suffix-path = true;
               suffix-LD = true;
               wrapRc = true;
-              neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.neovim;
+              # neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.neovim;
               aliases = [ "nvimIde" ];
             };
             # and a set of categories that you want

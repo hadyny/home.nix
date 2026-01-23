@@ -64,6 +64,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
+-- TODO: Try native completion again when more mature
 -- vim.api.nvim_create_autocmd('LspAttach', {
 --   callback = function(ev)
 --     local client = vim.lsp.get_client_by_id(ev.data.client_id)
@@ -160,6 +161,10 @@ if (nixCats("general")) then
     vim.cmd.colorscheme("tokyonight-night")
 end
 
+if not (nixCats("general")) then
+    return
+end
+
 require("lze").load({
     {
         "blink.cmp",
@@ -172,25 +177,41 @@ require("lze").load({
 
         after = function(plugin)
             require("blink.cmp").setup({
-                -- See :h blink-cmp-config-keymap for configuring keymaps
                 keymap = { preset = "default", ["<CR>"] = { "select_and_accept", "fallback" } },
                 appearance = {
                     nerd_font_variant = "mono",
                 },
+                completion = {
+                    accept = {
+                        auto_brackets = {
+                            enabled = true
+                        }
+                    }
+                },
                 signature = { enabled = true },
                 sources = {
-                    default = { "lsp", "easy-dotnet", "path", "snippets", "buffer" },
-                    providers = {
-                        ["easy-dotnet"] = {
-                            name = "easy-dotnet",
-                            enabled = true,
-                            module = "easy-dotnet.completion.blink",
-                            score_offset = 10000,
-                            async = true,
-                        },
-                    },
+                    default = { "lsp", "path", "snippets", "buffer" },
+                    providers = vim.tbl_extend("force", {},
+                        nixCats("csharp") and {
+                            ["easy-dotnet"] = {
+                                name = "easy-dotnet",
+                                enabled = true,
+                                module = "easy-dotnet.completion.blink",
+                                score_offset = 10000,
+                                async = true,
+                            }
+                        } or {}
+                    ),
                 },
-                cmdline = { keymap = { preset = "default", ["<CR>"] = { "select_accept_and_enter", "fallback" } } },
+                cmdline = {
+                    enabled = true,
+                    keymap = {
+                        preset = "default", ["<CR>"] = { "select_accept_and_enter", "fallback" }
+                    },
+                    completion = {
+                        list = { selection = { preselect = false } },
+                    }
+                },
             })
         end,
     },
@@ -355,27 +376,6 @@ require("lze").load({
         end,
     },
     {
-        "nvim-lint",
-        enabled = nixCats("general") or false,
-        event = "FileType",
-        after = function(plugin)
-            require("lint").linters_by_ft = {
-                -- NOTE: download some linters in lspsAndRuntimeDeps
-                -- and configure them here
-                -- markdown = {'vale',},
-                javascript = nixCats("reactjs") and { "eslint" } or nil,
-                typescript = nixCats("reactjs") and { "eslint" } or nil,
-                go = nixCats("go") and { "golangcilint" } or nil,
-            }
-
-            vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-                callback = function()
-                    require("lint").try_lint()
-                end,
-            })
-        end,
-    },
-    {
         "conform.nvim",
         enabled = nixCats("general") or false,
         -- keys = {
@@ -396,13 +396,13 @@ require("lze").load({
 
             options.formatexpr = "v:lua.require'conform'.formatexpr()"
 
-            vim.keymap.set({ "n", "v" }, "<leader>cf", function()
-                conform.format({
-                    lsp_fallback = true,
-                    async = false,
-                    timeout_ms = 1000,
-                })
-            end, { desc = " Code format" })
+            -- vim.keymap.set({ "n", "v" }, "<leader>cf", function()
+            --     conform.format({
+            --         lsp_fallback = true,
+            --         async = false,
+            --         timeout_ms = 1000,
+            --     })
+            -- end, { desc = " Code format" })
         end,
     },
     {
@@ -606,6 +606,7 @@ require("lze").load({
         keys = {
             { "<leader>b", "<cmd>FzfLua buffers<cr>",               desc = "List open buffers" },
             { "<leader>f", "<cmd>FzfLua files<cr>",                 desc = "Find project files" },
+            { "<leader>r", "<cmd>FzfLua oldfiles<cr>",              desc = "Find recent files" },
             { "<leader>/", "<cmd>FzfLua live_grep<cr>",             desc = "Search project" },
             { "<leader>d", "<cmd>FzfLua diagnostics_document<cr>",  desc = "Document diagnostics" },
             { "<leader>D", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace diagnostics" },
@@ -613,11 +614,10 @@ require("lze").load({
         },
         event = "DeferredUIEnter",
         after = function(plugin)
-            require("fzf-lua").setup({ { "border-fused", "fzf-native" }, winopts = { preview = { default = "bat" } } })
+            local fzf = require("fzf-lua")
+            fzf.setup({ { "borderless-full", "fzf-native" }, winopts = { preview = { default = "bat" } } })
         end,
     },
-
-
     {
         "render-markdown.nvim",
         enabled = nixCats("docs") or false,
@@ -639,6 +639,9 @@ require("lze").load({
     {
         "CopilotChat.nvim",
         enabled = nixCats("general") or false,
+        keys = {
+            { "<leader>c", "<cmd>CopilotChatToggle<cr>", desc = "Copilot chat" },
+        },
         event = "DeferredUIEnter",
         after = function(plugin)
             require("CopilotChat").setup({
@@ -833,11 +836,11 @@ require("lze").load({
         enabled = nixCats("go") or false,
         lsp = {},
     },
-    {
-        "roslyn_ls",
-        enabled = nixCats("csharp") or false,
-        lsp = {},
-    },
+    -- {
+    --     "roslyn_ls",
+    --     enabled = nixCats("csharp") or false,
+    --     lsp = {},
+    -- },
     {
         "nixd",
         enabled = nixCats("nix") or false,

@@ -26,6 +26,7 @@
   environment = {
     shells = [ pkgs.zsh ];
     systemPackages = [ pkgs.nixpkgs-fmt ];
+    pathsToLink = [ "/share/zsh" ];
   };
   ids.gids.nixbld = 350;
 

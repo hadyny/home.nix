@@ -10,7 +10,7 @@
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     csharp-language-server.url = "github:sofusa/csharp-language-server";
-    helix.url = "github:helix-editor/helix";
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
   };
 
   outputs =
@@ -22,7 +22,7 @@
       nixCats,
       neovim-nightly-overlay,
       csharp-language-server,
-      helix,
+      emacs-overlay,
     }:
     let
       # User configuration - define your user details here

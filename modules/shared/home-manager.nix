@@ -1,10 +1,5 @@
 { pkgs, ... }:
 {
-  atuin = {
-    enable = true;
-    flags = [ "--disable-up-arrow" ];
-  };
-
   bat = {
     enable = true;
     extraPackages = with pkgs.bat-extras; [
@@ -34,6 +29,11 @@
     settings = {
       theme_background = false;
     };
+  };
+
+  emacs = {
+    enable = !pkgs.stdenv.isDarwin;
+    package = pkgs.emacs-unstable;
   };
 
   jq.enable = true;
@@ -76,22 +76,13 @@
     config.global.log_filter = "^(loading|using nix|error|deny|allow).*$";
   };
 
-  fish = {
-    enable = true;
-    shellInit = ''
-      string match -q "$TERM_PROGRAM" "vscode"
-      and . (code --locate-shell-integration-path fish)
-      set -U fish_greeting "🐟"
-    '';
-    plugins = with pkgs.fishPlugins; [
-      {
-        name = "sponge";
-        src = sponge.src;
-      }
-    ];
-  };
-
   fzf.enable = true;
+
+  mcfly = {
+    enable = true;
+    fzf.enable = true;
+    keyScheme = "vim";
+  };
 
   starship = {
     enable = true;
@@ -100,16 +91,42 @@
     };
   };
 
+  wezterm = {
+    enable = true;
+    enableZshIntegration = true;
+    extraConfig = builtins.readFile ./config/wezterm/wezterm.lua;
+  };
+
   yazi = {
     enable = true;
+    extraPackages = with pkgs; [
+      rich-cli
+    ];
+    initLua = ''
+      require('starship'):setup()
+      require('git'):setup()
+      if not os.getenv 'NVIM' then
+        require('full-border'):setup()
+      end
+    '';
     plugins = {
       "full-border" = pkgs.yaziPlugins.full-border;
-      "rich-preview" = pkgs.yaziPlugins.rich-preview;
       "starship" = pkgs.yaziPlugins.starship;
+      "git" = pkgs.yaziPlugins.git;
     };
   };
 
-  zsh.enable = true;
+  zsh = {
+    enable = true;
+    enableCompletion = true;
+    autocd = true;
+    autosuggestion.enable = true;
+    oh-my-zsh = {
+      enable = true;
+      plugins = [ "git" ];
+    };
+    syntaxHighlighting.enable = true;
+  };
 
   zoxide.enable = true;
 }

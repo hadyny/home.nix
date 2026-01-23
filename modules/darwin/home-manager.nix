@@ -4,6 +4,7 @@
   lib,
   userConfig,
   config,
+  inputs,
   ...
 }:
 
@@ -14,6 +15,7 @@ in
   nixpkgs = {
     config.allowUnfree = true;
     overlays = [
+      inputs.emacs-overlay.overlays.default
       (import ../../overlays/pinned.nix)
     ];
   };
@@ -43,7 +45,7 @@ in
       HOMEBREW_NO_ENV_HINTS = 1;
     };
 
-    packages = pkgs.callPackage ../shared/packages.nix { inherit pkgs; };
+    packages = pkgs.callPackage ../shared/packages.nix { inherit inputs pkgs; };
 
     sessionPath = [ "/opt/homebrew/bin" ];
 
@@ -58,6 +60,10 @@ in
   fonts.fontconfig.enable = true;
 
   services = {
+    emacs = {
+      enable = !pkgs.stdenv.isDarwin;
+      package = pkgs.emacs-unstable;
+    };
     colima = {
       enable = true;
 
