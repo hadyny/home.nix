@@ -68,19 +68,6 @@ in
               roslyn-ls
               netcoredbg
               csharpier
-              (buildDotnetGlobalTool {
-                pname = "EasyDotnet";
-                version = "2.3.61";
-                executables = "dotnet-easydotnet";
-                nugetHash = "sha256-0ud+u1PEwY11KFQBdYJWUFAJdS6mmcCIu2DlNmN3m/o=";
-                meta = with lib; {
-                  description = "C# JSON-RPC server powering the easy-dotnet.nvim Neovim plugin";
-                  homepage = "https://github.com/GustavEikaas/easy-dotnet.nvim";
-                  license = licenses.mit;
-                  maintainers = with maintainers; [ ];
-                  mainProgram = "dotnet-easydotnet";
-                };
-              })
             ];
             fsharp = with pkgs; [ fsautocomplete ];
             go = with pkgs; [
@@ -95,6 +82,7 @@ in
             docs = with pkgs; [
               multimarkdown
             ];
+            ai = with pkgs; [ opencode ];
           };
 
           # This is for plugins that will load at startup without using packadd:
@@ -129,7 +117,6 @@ in
               nvim-dap
               nvim-dap-ui
               nvim-dap-virtual-text
-              CopilotChat-nvim
               lualine-nvim
               fidget-nvim
               fzf-lua
@@ -138,7 +125,20 @@ in
             ];
             docs = with pkgs.vimPlugins; [
               render-markdown-nvim
+              orgmode
+              (pkgs.vimUtils.buildVimPlugin {
+                pname = "org-super-agenda.nvim";
+                version = "0.0.0";
+                doCheck = false;
+                src = pkgs.fetchFromGitHub {
+                  owner = "hamidi-dev";
+                  repo = "org-super-agenda.nvim";
+                  rev = "main";
+                  sha256 = "sha256-o2sreU31bfsc8NLNBZkqxQMNeR2XDg2a4FzH8CUw5Fw=";
+                };
+              })
             ];
+            ai = with pkgs.vimPlugins; [ opencode-nvim snacks-nvim ];
           };
 
           # shared libraries to be added to LD_LIBRARY_PATH
@@ -200,6 +200,7 @@ in
               fsharp = true;
               reactjs = true;
               docs = true;
+              ai = true;
             };
             # anything else to pass and grab in lua with `nixCats.extra`
             extra = {
@@ -226,6 +227,7 @@ in
               fsharp = false;
               reactjs = false;
               docs = false;
+              ai = false;
             };
             # anything else to pass and grab in lua with `nixCats.extra`
             extra = {

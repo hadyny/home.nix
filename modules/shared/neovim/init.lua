@@ -1,4 +1,7 @@
+---@diagnostic disable-next-line: undefined-global
 local vim = vim
+---@diagnostic disable-next-line: undefined-global
+local nixCats = nixCats
 local options = vim.o
 local globals = vim.g
 local diagnostics = vim.diagnostic
@@ -200,8 +203,18 @@ require("lze").load({
                                 score_offset = 10000,
                                 async = true,
                             }
+                        } or {},
+                        nixCats("docs") and {
+                            orgmode = {
+                                name = 'Orgmode',
+                                module = 'orgmode.org.autocompletion.blink',
+                                fallbacks = { 'buffer' },
+                            },
                         } or {}
                     ),
+                    per_filetype = {
+                        nixCats("docs") and { org = { 'orgmode' } } or {}
+                    }
                 },
                 cmdline = {
                     enabled = true,
@@ -613,16 +626,16 @@ require("lze").load({
 
         },
         event = "DeferredUIEnter",
-        after = function(plugin)
+        after = function(_)
             local fzf = require("fzf-lua")
-            fzf.setup({ { "borderless-full", "fzf-native" }, winopts = { preview = { default = "bat" } } })
+            fzf.setup({ { "ivy", "borderless-full", "fzf-native" }, winopts = { preview = { default = "bat" } } })
         end,
     },
     {
         "render-markdown.nvim",
         enabled = nixCats("docs") or false,
         event = "DeferredUIEnter",
-        after = function(plugin)
+        after = function(_)
             require("render-markdown").setup({
                 completions = { lsp = { enabled = true } },
             })
@@ -634,37 +647,6 @@ require("lze").load({
         event = "LspAttach",
         after = function()
             require("fidget").setup({})
-        end,
-    },
-    {
-        "CopilotChat.nvim",
-        enabled = nixCats("general") or false,
-        keys = {
-            { "<leader>c", "<cmd>CopilotChatToggle<cr>", desc = "Copilot chat" },
-        },
-        event = "DeferredUIEnter",
-        after = function(plugin)
-            require("CopilotChat").setup({
-                window = {
-                    layout = "float",
-                    width = 120,        -- Fixed width in columns
-                    height = 30,        -- Fixed height in rows
-                    border = "rounded", -- 'single', 'double', 'rounded', 'solid'
-                    title = "🤖 AI Assistant",
-                    zindex = 100,       -- Ensure window stays on top
-                },
-
-                headers = {
-                    user = "👤 You: ",
-                    assistant = "🤖 Copilot: ",
-                    tool = "🔧 Tool: ",
-                },
-                separator = "━━",
-                show_folds = false,
-                selection = function(source)
-                    return require("CopilotChat.select").visual(source) or require("CopilotChat.select").line(source)
-                end,
-            })
         end,
     },
     {
@@ -692,7 +674,7 @@ require("lze").load({
         enabled = nixCats("lua") or false,
         cmd = { "LazyDev" },
         ft = "lua",
-        after = function(_)
+        after = function(plugin)
             require("lazydev").setup({
                 library = {
                     { words = { "nixCats" }, path = (nixCats.nixCatsPath or "") .. "/lua" },
@@ -700,6 +682,139 @@ require("lze").load({
             })
         end,
     },
+    {
+        "orgmode",
+        enabled = nixCats("docs") or false,
+        after = function(_)
+            require("orgmode").setup({
+                org_agenda_files = '~/org/**/*',
+                org_default_notes_file = '~/org/notes.org',
+                org_todo_keywords = { "TODO", "IN_PROGRESS", "WAITING", "|", "DONE" },
+                mappings = {
+                    global = {
+                        org_agenda = 'oa',
+                        org_capture = 'X'
+                    }
+                },
+                org_capture_templates = {
+                    t = {
+                        description = 'Todo',
+                        template = '* TODO [#B] %?\nCreated: %T\n %u',
+                        target = '~/org/todo.org'
+                    },
+                    c = {
+                        description = 'Code Todo',
+                        template = '* TODO [#B] %?\nCreated: %T\n %u\n%i\n%a\nProposed Solution: ',
+                        target = '~/org/todo.org'
+                    },
+                    w = {
+                        description = 'Work log',
+                        template = '* %?',
+                        target = '~/org/work-log.org',
+                        datetree = true,
+                    },
+                    n = {
+                        description = 'Notes',
+                        template = '* %?',
+                        target = '~/org/notes.org',
+                    },
+
+                },
+                org_agenda_custom_commands = {
+                    w = {
+                        description = 'Week Overview',
+                        types = {
+                            {
+                                type = 'agenda',
+                                org_agenda_overriding_header = 'Whole week overview',
+                                org_agenda_span = 'week',        -- 'week' is default, so it's not necessary here, just an example
+                                org_agenda_start_on_weekday = 1, -- Start on Monday
+                                org_agenda_remove_tags = true    -- Do not show tags only for this view
+                            },
+
+                        },
+                    },
+                    o = {
+                        description = 'Combined Overview', -- Description shown in the prompt for the shortcut
+                        types = {
+                            {
+                                type = 'tags',                            -- Type can be agenda | tags | tags_todo
+                                match = '+PRIORITY="A"',                  --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+                                org_agenda_overriding_header = 'High priority todos',
+                                org_agenda_todo_ignore_deadlines = 'far', -- Ignore all deadlines that are too far in future (over org_deadline_warning_days). Possible values: all | near | far | past | future
+                            },
+                            {
+                                type = 'agenda',
+                                org_agenda_overriding_header = 'Today',
+                                org_agenda_span = 'day' -- can be any value as org_agenda_span
+                            },
+                            {
+                                type = 'tags',
+                                match = '+work', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+                                org_agenda_overriding_header = 'My work todos',
+                                -- org_agenda_todo_ignore_scheduled = 'all', -- Ignore all headlines that are scheduled. Possible values: past | future | all
+                            },
+                        }
+                    },
+                    p = {
+                        description = 'Personal agenda',
+                        types = {
+                            {
+                                type = 'tags_todo',
+                                match = '-work',
+                                org_agenda_overriding_header = 'My personal todos',
+                                org_agenda_category_filter_preset = 'todos',                       -- Show only headlines from `todos` category. Same value providad as when pressing `/` in the Agenda view
+                                org_agenda_sorting_strategy = { 'todo-state-up', 'priority-down' } -- See all options available on org_agenda_sorting_strategy
+                            },
+                            {
+                                type = 'agenda',
+                                org_agenda_overriding_header = 'Personal projects agenda',
+                                org_agenda_files = { '~/org/projects/**/*' }, -- Can define files outside of the default org_agenda_files
+                            },
+                            {
+                                type = 'tags',
+                                org_agenda_overriding_header = 'Personal projects notes',
+                                org_agenda_files = { '~/org/projects/**/*' },
+                            },
+                        }
+                    }
+                }
+            })
+        end
+    },
+    {
+        "opencode.nvim",
+        enabled = nixCats("ai") or false,
+        load = function(name)
+            vim.cmd.packadd(name)
+            vim.cmd.packadd("snacks.nvim")
+        end,
+        after = function(_)
+            options.autoread = true
+            map({ "n", "x" }, "<C-a>", function() require("opencode").ask("@this: ", { submit = true }) end,
+                { desc = "Ask opencode…" })
+            map({ "n", "x" }, "<C-x>", function() require("opencode").select() end,
+                { desc = "Execute opencode action…" })
+            map({ "n", "t" }, "<C-.>", function() require("opencode").toggle() end,
+                { desc = "Toggle opencode" })
+
+            map({ "n", "x" }, "go", function() return require("opencode").operator("@this ") end,
+                { desc = "Add range to opencode", expr = true })
+            map("n", "goo", function() return require("opencode").operator("@this ") .. "_" end,
+                { desc = "Add line to opencode", expr = true })
+
+            map("n", "<S-C-u>", function() require("opencode").command("session.half.page.up") end,
+                { desc = "Scroll opencode up" })
+            map("n", "<S-C-d>", function() require("opencode").command("session.half.page.down") end,
+                { desc = "Scroll opencode down" })
+
+            require("snacks").setup({
+                input = {},
+                picker = {},
+                terminal = {},
+            })
+        end
+    }
 })
 
 local function lsp_on_attach(_, bufnr)

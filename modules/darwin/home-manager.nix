@@ -23,7 +23,6 @@ in
   imports = [
     ../shared/ghostty
     ../shared/neovim
-    ../shared/helix
     ../shared/services/colima.nix
     ../shared/settings/wallpaper.nix
 

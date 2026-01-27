@@ -14,6 +14,20 @@ with pkgs;
   csharpier
   inputs.csharp-language-server.packages.${stdenv.hostPlatform.system}.default
 
+  (buildDotnetGlobalTool {
+    pname = "EasyDotnet";
+    version = "2.3.61";
+    executables = "dotnet-easydotnet";
+    nugetHash = "sha256-0ud+u1PEwY11KFQBdYJWUFAJdS6mmcCIu2DlNmN3m/o=";
+    meta = with lib; {
+      description = "C# JSON-RPC server powering the easy-dotnet.nvim Neovim plugin";
+      homepage = "https://github.com/GustavEikaas/easy-dotnet.nvim";
+      license = licenses.mit;
+      maintainers = with maintainers; [ ];
+      mainProgram = "dotnet-easydotnet";
+    };
+  })
+
   # emacs
   (python3Packages.buildPythonPackage rec {
     pname = "rassumfrassum";
@@ -32,9 +46,8 @@ with pkgs;
 
   posting
   gh-dash
-  harlequin
-  tasksh
-  taskwarrior-tui
+  rclone
+  opencode
 
   # general development & utils
   httpie

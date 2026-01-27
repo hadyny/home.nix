@@ -33,6 +33,7 @@
     };
 
     taps = [ "d12frosted/emacs-plus" ];
-    brews = [ ];
+    brews = [
+    ];
   };
 }
