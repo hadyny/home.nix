@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ pkgs, ... }:
 with pkgs;
 [
   _1password-cli
@@ -7,12 +7,6 @@ with pkgs;
   devenv
   rustywind
   bun
-
-  # for zed
-  nil
-  nixfmt
-  csharpier
-  inputs.csharp-language-server.packages.${stdenv.hostPlatform.system}.default
 
   (buildDotnetGlobalTool {
     pname = "EasyDotnet";
@@ -44,15 +38,9 @@ with pkgs;
   tailwindcss-language-server
   vscode-langservers-extracted
 
-  posting
-  gh-dash
-  rclone
-  opencode
-
   # general development & utils
-  httpie
+  posting
   moreutils
-  ripgrep # better grep
   cmake
   coreutils-prefixed
   duf # better df
@@ -65,6 +53,10 @@ with pkgs;
   shfmt
   shellcheck
   stylelint
+  tabiew # csv viewer
+  rich-cli # everything viewer
+  dbeaver-bin
+  kew
 
   terraform
   spicedb

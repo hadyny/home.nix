@@ -17,9 +17,12 @@ in
       font-thicken = true
       font-thicken-strength = 168
       adjust-cell-height = 25%
-      theme = light:"TokyoNight Day",dark:"TokyoNight Night"
+      theme = light:"Catppuccin Latte",dark:"Catppuccin Mocha"
       window-padding-x = 20
       window-padding-y = 20
+      macos-option-as-alt = true
+      keybind = alt+left=unbind
+      keybind = alt+right=unbind
     '';
   };
 }

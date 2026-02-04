@@ -9,7 +9,7 @@
 }:
 
 let
-  shared-programs = import ../shared/home-manager.nix { inherit config pkgs lib; };
+  shared-programs = import ../shared/home-manager.nix { inherit inputs config pkgs lib; };
 in
 {
   nixpkgs = {

@@ -8,12 +8,12 @@ config.font = wezterm.font 'Maple Mono NF'
 config.font_size = 15
 
 local appearance_themes = {
-    Light = 'Tokyo Night Day',
-    Dark = 'Tokyo Night'
+    Light = 'Catppuccin Latte',
+    Dark = 'Catppuccin Mocha'
 }
 
 local appearance = wezterm.gui.get_appearance()
-config.color_scheme = appearance_themes[appearance] or 'Tokyo Night'
+config.color_scheme = appearance_themes[appearance] or 'Catppuccin Mocha'
 
 config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false

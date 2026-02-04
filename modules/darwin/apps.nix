@@ -11,7 +11,7 @@
 
     casks = [
       "1password"
-      "google-chrome"
+      "ungoogled-chromium"
       "firefox"
       "obsidian"
       "postman"
@@ -21,7 +21,6 @@
       "rider"
       "datagrip"
       "spotify"
-      "zed"
       "emacs-plus-app@master"
     ];
 
