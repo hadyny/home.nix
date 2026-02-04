@@ -161,7 +161,7 @@ map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list
 -- map("n", "gb", ":ls<cr>:b<space>", { noremap = true, desc = "Goto buffer" })
 
 if (nixCats("general")) then
-    vim.cmd.colorscheme("tokyonight-night")
+    vim.cmd.colorscheme("catppuccin")
 end
 
 if not (nixCats("general")) then
@@ -178,7 +178,7 @@ require("lze").load({
             vim.cmd.packadd(name)
         end,
 
-        after = function(plugin)
+        after = function(_)
             require("blink.cmp").setup({
                 keymap = { preset = "default", ["<CR>"] = { "select_and_accept", "fallback" } },
                 appearance = {
@@ -236,7 +236,7 @@ require("lze").load({
         -- ft = "",
         -- keys = "",
         -- colorscheme = "",
-        after = function(plugin)
+        after = function(_)
             require("lualine").setup({
                 options = {
                     icons_enabled = true,
@@ -270,7 +270,7 @@ require("lze").load({
         "mini.nvim",
         enabled = nixCats("general") or false,
         event = "DeferredUIEnter",
-        after = function(plugin)
+        after = function(_)
             require("mini.pairs").setup()
             require("mini.cursorword").setup({ delay = 1000 })
             local MiniIcons = require("mini.icons")
@@ -296,7 +296,7 @@ require("lze").load({
                 desc = "Keymaps",
             },
         },
-        after = function(plugin)
+        after = function(_)
             require("which-key").add({
                 -- {
                 --     "<Leader>b",
@@ -323,17 +323,10 @@ require("lze").load({
         -- ft = "",
         -- keys = "",
         -- colorscheme = "",
-        after = function(plugin)
+        after = function(_)
             require("gitsigns").setup({
-                on_attach = function(bufnr)
+                on_attach = function(_)
                     local gs = package.loaded.gitsigns
-
-                    local function map(mode, l, r, opts)
-                        opts = opts or {}
-                        opts.buffer = bufnr
-                        vim.keymap.set(mode, l, r, opts)
-                    end
-
                     -- Navigation
                     map({ "n", "v" }, "]c", function()
                         if vim.wo.diff then
@@ -394,7 +387,7 @@ require("lze").load({
         -- keys = {
         --     { "<leader>cf", desc = "Code format" },
         -- },
-        after = function(plugin)
+        after = function(_)
             local conform = require("conform")
 
             conform.setup({
@@ -438,7 +431,7 @@ require("lze").load({
             vim.cmd.packadd("nvim-dap-ui")
             vim.cmd.packadd("nvim-dap-virtual-text")
         end,
-        after = function(plugin)
+        after = function(_)
             local dap = require("dap")
             local dapui = require("dapui")
 
@@ -596,7 +589,7 @@ require("lze").load({
         "nvim-dap-go",
         enabled = nixCats("go") or false,
         on_plugin = { "nvim-dap" },
-        after = function(plugin)
+        after = function(_)
             require("dap-go").setup()
         end,
     },
@@ -607,7 +600,7 @@ require("lze").load({
             { "<leader>e", function() require("yazi").yazi() end, desc = "Yazi" }
         },
         event = "DeferredUIEnter",
-        after = function(plugin)
+        after = function()
             require("yazi").setup({
                 open_for_directories = true,
             })
@@ -623,12 +616,11 @@ require("lze").load({
             { "<leader>/", "<cmd>FzfLua live_grep<cr>",             desc = "Search project" },
             { "<leader>d", "<cmd>FzfLua diagnostics_document<cr>",  desc = "Document diagnostics" },
             { "<leader>D", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace diagnostics" },
-
         },
         event = "DeferredUIEnter",
         after = function(_)
             local fzf = require("fzf-lua")
-            fzf.setup({ { "ivy", "borderless-full", "fzf-native" }, winopts = { preview = { default = "bat" } } })
+            fzf.setup({ { "borderless-full", "fzf-native" }, winopts = { preview = { default = "bat" } } })
         end,
     },
     {
@@ -653,7 +645,7 @@ require("lze").load({
         "nvim-highlight-colors",
         enabled = nixCats("reactjs") or false,
         event = "DeferredUIEnter",
-        after = function(plugin)
+        after = function(_)
             require("nvim-highlight-colors").setup({
                 render = "background",
             })
@@ -663,7 +655,7 @@ require("lze").load({
         "easy-dotnet.nvim",
         enabled = nixCats("csharp") or false,
         event = "LspAttach",
-        after = function(plugin)
+        after = function(_)
             require("easy-dotnet").setup({
                 picker = "fzf",
             })
@@ -674,7 +666,7 @@ require("lze").load({
         enabled = nixCats("lua") or false,
         cmd = { "LazyDev" },
         ft = "lua",
-        after = function(plugin)
+        after = function(_)
             require("lazydev").setup({
                 library = {
                     { words = { "nixCats" }, path = (nixCats.nixCatsPath or "") .. "/lua" },
@@ -685,11 +677,42 @@ require("lze").load({
     {
         "orgmode",
         enabled = nixCats("docs") or false,
+        load = function(name)
+            vim.cmd.packadd(name)
+            vim.cmd.packadd("org-modern.nvim")
+        end,
         after = function(_)
+            local Menu = require("org-modern.menu")
             require("orgmode").setup({
+                win_split_mode = { 'float', 0.9 },
                 org_agenda_files = '~/org/**/*',
                 org_default_notes_file = '~/org/notes.org',
-                org_todo_keywords = { "TODO", "IN_PROGRESS", "WAITING", "|", "DONE" },
+                org_hide_leading_stars = true,
+                org_todo_keywords = { "TODO", "IN-PROGRESS", "WAITING", "|", "DONE" },
+                org_todo_keyword_faces = {
+                    TODO = ':foreground #DAA520 :weight bold',
+                    ["IN-PROGRESS"] = ':foreground #00FFFF :slant italic',
+                    WAITING = ':foreground #FF8C00',
+                    DONE = ':foreground #32CD32',
+                },
+                ui = {
+                    menu = {
+                        handler = function(data)
+                            Menu:new({
+                                window = {
+                                    margin = { 1, 0, 1, 0 },
+                                    padding = { 0, 1, 0, 1 },
+                                    title_pos = "center",
+                                    border = "single",
+                                    zindex = 1000,
+                                },
+                                icons = {
+                                    separator = "➜",
+                                },
+                            }):open(data)
+                        end,
+                    },
+                },
                 mappings = {
                     global = {
                         org_agenda = 'oa',
@@ -699,13 +722,26 @@ require("lze").load({
                 org_capture_templates = {
                     t = {
                         description = 'Todo',
-                        template = '* TODO [#B] %?\nCreated: %T\n %u',
+                        template = '** TODO [#B] %?\nCreated: %T\n %u',
                         target = '~/org/todo.org'
                     },
                     c = {
                         description = 'Code Todo',
-                        template = '* TODO [#B] %?\nCreated: %T\n %u\n%i\n%a\nProposed Solution: ',
+                        template = '** TODO [#B] %?\nCreated: %T\n %u\n%i\n%a\nProposed Solution: ',
                         target = '~/org/todo.org'
+                    },
+                    e = 'Event',
+                    er = {
+                        description = 'Recurring Event',
+                        template = '** EVENT %?\n %T',
+                        target = '~/org/calendar.org',
+                        headline = 'Recurring Events'
+                    },
+                    eo = {
+                        description = 'One-off Event',
+                        template = '** EVENT %?\n%i\n',
+                        target = '~/org/schedule.org',
+                        headline = 'Events'
                     },
                     w = {
                         description = 'Work log',
@@ -718,9 +754,68 @@ require("lze").load({
                         template = '* %?',
                         target = '~/org/notes.org',
                     },
-
                 },
                 org_agenda_custom_commands = {
+                    c = {
+                        description = 'Current Work',
+                        types = {
+                            {
+                                type = 'tags',
+                                match = '+work+PRIORITY="A"-TODO="DONE"',
+                                org_agenda_overriding_header = 'High priority todos',
+                                org_agenda_todo_ignore_deadlines = 'far',
+                            },
+                            {
+                                type = 'tags',
+                                match = '+work-PRIORITY="A"-TODO="DONE"',
+                                org_agenda_overriding_header = 'Other todos',
+                                org_agenda_todo_ignore_deadlines = 'far',
+                            },
+                            {
+                                type = 'agenda',
+                                org_agenda_overriding_header = 'Previous work',
+                                org_agenda_start_on_weekday = false,
+                                org_agenda_start_day = '-3d',
+                                org_agenda_remove_tags = true -- Do not show tags only for this view
+                            },
+
+                        },
+                    },
+                    s = {
+                        description = 'Standup',
+                        types = {
+                            {
+                                type = 'tags',
+                                match = '+work+TODO="DONE"',
+                                org_agenda_overriding_header = 'Done',
+                                org_agenda_todo_ignore_deadlines = 'far',
+                                org_agenda_start_on_weekday = false,
+                                org_agenda_start_day = '-3d',
+                                org_agenda_remove_tags = true,
+                                org_agenda_sorting_strategy = {'time-down'},
+                                org_agenda_prefix_format = '  %?-12t% s'
+                            },
+                            {
+                                type = 'tags',
+                                match = '+work+TODO="IN_PROGRESS"',
+                                org_agenda_overriding_header = 'Doing',
+                                org_agenda_remove_tags = true
+                            },
+                            {
+                                type = 'tags',
+                                match = '+work+TODO="WAITING"',
+                                org_agenda_overriding_header = 'Blocked',
+                                org_agenda_remove_tags = true
+                            },
+                            {
+                                type = 'tags',
+                                match = '+work+TODO="TODO"',
+                                org_agenda_overriding_header = 'To do',
+                                org_agenda_remove_tags = true
+                            },
+
+                        },
+                    },
                     w = {
                         description = 'Week Overview',
                         types = {
@@ -739,7 +834,7 @@ require("lze").load({
                         types = {
                             {
                                 type = 'tags',                            -- Type can be agenda | tags | tags_todo
-                                match = '+PRIORITY="A"',                  --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+                                match = '+PRIORITY="A"-TODO="DONE"',      --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
                                 org_agenda_overriding_header = 'High priority todos',
                                 org_agenda_todo_ignore_deadlines = 'far', -- Ignore all deadlines that are too far in future (over org_deadline_warning_days). Possible values: all | near | far | past | future
                             },
@@ -750,34 +845,19 @@ require("lze").load({
                             },
                             {
                                 type = 'tags',
-                                match = '+work', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
-                                org_agenda_overriding_header = 'My work todos',
+                                match = '+work-TODO="DONE"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+                                org_agenda_overriding_header = 'Work tasks',
+                                -- org_agenda_todo_ignore_scheduled = 'all', -- Ignore all headlines that are scheduled. Possible values: past | future | all
+                            },
+                            {
+                                type = 'tags',
+                                match = '-work-TODO="DONE"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+                                org_agenda_overriding_header = 'Personal tasks',
+                                org_agenda_files = { '~/org/todo.org' },
                                 -- org_agenda_todo_ignore_scheduled = 'all', -- Ignore all headlines that are scheduled. Possible values: past | future | all
                             },
                         }
                     },
-                    p = {
-                        description = 'Personal agenda',
-                        types = {
-                            {
-                                type = 'tags_todo',
-                                match = '-work',
-                                org_agenda_overriding_header = 'My personal todos',
-                                org_agenda_category_filter_preset = 'todos',                       -- Show only headlines from `todos` category. Same value providad as when pressing `/` in the Agenda view
-                                org_agenda_sorting_strategy = { 'todo-state-up', 'priority-down' } -- See all options available on org_agenda_sorting_strategy
-                            },
-                            {
-                                type = 'agenda',
-                                org_agenda_overriding_header = 'Personal projects agenda',
-                                org_agenda_files = { '~/org/projects/**/*' }, -- Can define files outside of the default org_agenda_files
-                            },
-                            {
-                                type = 'tags',
-                                org_agenda_overriding_header = 'Personal projects notes',
-                                org_agenda_files = { '~/org/projects/**/*' },
-                            },
-                        }
-                    }
                 }
             })
         end
@@ -814,6 +894,27 @@ require("lze").load({
                 terminal = {},
             })
         end
+    },
+    {
+        "zk-nvim",
+        enabled = nixCats("docs") or false,
+        after = function(_)
+            require("zk").setup({
+                picker = "fzf_lua",
+                lsp = {
+                    config = {
+                        name = "zk",
+                        cmd = { "zk", "lsp" },
+                        filetypes = { "markdown" },
+                    },
+
+                    auto_attach = {
+                        enabled = true,
+                    },
+                },
+            })
+        end
+
     }
 })
 

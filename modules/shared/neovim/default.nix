@@ -127,16 +127,17 @@ in
               render-markdown-nvim
               orgmode
               (pkgs.vimUtils.buildVimPlugin {
-                pname = "org-super-agenda.nvim";
+                pname = "org-modern.nvim";
                 version = "0.0.0";
                 doCheck = false;
                 src = pkgs.fetchFromGitHub {
-                  owner = "hamidi-dev";
-                  repo = "org-super-agenda.nvim";
+                  owner = "danilshvalov";
+                  repo = "org-modern.nvim";
                   rev = "main";
-                  sha256 = "sha256-o2sreU31bfsc8NLNBZkqxQMNeR2XDg2a4FzH8CUw5Fw=";
+                  sha256 = "sha256-TYs3g5CZDVXCFXuYaj3IriJ4qlIOxQgArVOzT7pqkqs=";
                 };
               })
+              zk-nvim
             ];
             ai = with pkgs.vimPlugins; [ opencode-nvim snacks-nvim ];
           };
