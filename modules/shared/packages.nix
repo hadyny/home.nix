@@ -57,6 +57,7 @@ with pkgs;
   rich-cli # everything viewer
   dbeaver-bin
   kew
+  claude-code github-mcp-server
 
   terraform
   spicedb
