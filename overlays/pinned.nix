@@ -11,7 +11,7 @@ let
       url = "https://github.com/NixOS/nixpkgs/";
       ref = "refs/heads/nixpkgs-unstable";
       rev = hash;
-    }) { system = super.system; };
+    }) { system = super.stdenv.hostPlatform.system; };
 
 in
 {

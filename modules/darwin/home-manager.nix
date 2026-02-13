@@ -20,17 +20,7 @@ in
     ];
   };
 
-  imports = [
-    ../shared/ghostty
-    ../shared/neovim
-    ../shared/services/colima.nix
-    ../shared/settings/wallpaper.nix
-
-    ../shared/tools/aws.nix
-    ../shared/tools/docker.nix
-    ../shared/tools/dotnet.nix
-    ../shared/tools/git.nix
-  ];
+  imports = [ ../shared ];
 
   home = {
     username = userConfig.name;
@@ -85,13 +75,6 @@ in
     };
   };
 
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
-  home.stateVersion = "21.05";
+  # https://nix-community.github.io/home-manager/release-notes.html
+  home.stateVersion = "24.11";
 }

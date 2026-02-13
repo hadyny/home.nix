@@ -8,14 +8,14 @@ let
   storePasswordCmd = namespace: key: value: comment:
     if pkgs.stdenv.hostPlatform.isDarwin then
       ''
-        security add-generic-password -U -a ${namespace} -s ${key} -w "${value}" -j "${comment}"''
+        /usr/bin/security add-generic-password -U -a ${namespace} -s ${key} -w "${value}" -j "${comment}"''
     else
       ''
         echo "${value}" | ${pkgs.libsecret}/bin/secret-tool store --label='${comment}' namespace '${namespace}' key '${key}' '';
 
   lookupPasswordCmd = namespace: key:
     if pkgs.stdenv.hostPlatform.isDarwin then
-      "security find-generic-password -w -s '${key}' -a '${namespace}' "
+      "/usr/bin/security find-generic-password -w -s '${key}' -a '${namespace}' "
     else
       "${pkgs.libsecret}/bin/secret-tool lookup namespace '${namespace}' key '${key}' ";
 
