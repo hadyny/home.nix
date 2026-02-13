@@ -19,20 +19,17 @@
     enable = true;
     sessionVariables = {
       EP_NUGET_SOURCE_URL = {
-        account = "educationperfect.1password.com";
         vault = "Employee";
         item = "GitHub";
         field = "nuget url";
       };
       EP_NUGET_SOURCE_PASS = {
-        account = "educationperfect.1password.com";
         vault = "Employee";
         item = "GitHub";
         field = "nuget token";
       };
 
       EP_NUGET_SOURCE_USER = {
-        account = "educationperfect.1password.com";
         vault = "Employee";
         item = "GitHub";
         field = "username";

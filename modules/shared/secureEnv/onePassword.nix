@@ -67,7 +67,6 @@ in {
     sessionVariables = mkOption {
       type = types.attrsOf (types.submodule {
         options = {
-          account = mkOption { type = types.str; };
           vault = mkOption { type = types.str; };
           item = mkOption { type = types.str; };
           field = mkOption { type = types.str; };
@@ -79,7 +78,6 @@ in {
     sshKeys = mkOption {
       type = types.attrsOf (types.submodule {
         options = {
-          account = mkOption { type = types.str; };
           vault = mkOption { type = types.str; };
           item = mkOption { type = types.str; };
           field = mkOption { type = types.str; };

@@ -51,9 +51,7 @@ in
     enable = mkEnableOption "Enable AWS CLI and profiles";
 
     credentials = mkOption {
-      # type = types.attrsOf (types.oneOf [ plainCredentialsType ssoProfileType] );
       type = types.attrsOf plainCredentialsType;
-      # type = types.attrsOf (ssoProfileType);
       default = { };
     };
 

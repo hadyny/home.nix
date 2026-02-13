@@ -127,7 +127,7 @@ in {
                     }
                     {
                       name = "bugfix";
-                      description = "a butfix branch";
+                      description = "a bugfix branch";
                       value = "bugfix";
                     }
                     {

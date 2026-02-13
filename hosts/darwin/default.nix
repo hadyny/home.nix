@@ -91,7 +91,6 @@
 
       finder = {
         CreateDesktop = false;
-        AppleShowAllExtensions = true;
         FXEnableExtensionChangeWarning = false;
       };
 

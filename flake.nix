@@ -56,11 +56,27 @@
           {
             home-manager = {
               useUserPackages = true;
-              users.hadyn = ./modules/darwin/work;
+              users.${userConfig.name} = ./modules/darwin/work;
               extraSpecialArgs = { inherit inputs userConfig; };
             };
           }
           ./hosts/darwin/work
+        ];
+      };
+
+      nixosConfigurations."nixos" = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs userConfig; };
+        modules = [
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useUserPackages = true;
+              users.${userConfig.name} = ./modules/nixos/home-manager.nix;
+              extraSpecialArgs = { inherit inputs userConfig; };
+            };
+          }
+          ./hosts/nixos
         ];
       };
     };

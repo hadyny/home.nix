@@ -21,9 +21,9 @@ let
         trap cleanup EXIT
 
         ${colimaBin} start \
-        --arch aarch64
-        --vm-type=vz
-        --vz-rosetta
+        --arch aarch64 \
+        --vm-type=vz \
+        --vz-rosetta \
         --activate=${boolToString cfg.config.autoActivate} \
         --cpu=${toString cfg.config.cpu} \
         --memory=${toString cfg.config.memory} \
@@ -75,7 +75,7 @@ let
       memory = mkOption {
         type = types.ints.positive;
         default = 8;
-        description = "Size of the disk in GiB to be allocated to the virtual machine";
+        description = "Memory in GiB to be allocated to the virtual machine";
       };
 
       autoActivate = mkOption {
@@ -135,7 +135,7 @@ in
         config = {
           KeepAlive = true;
           RunAtLoad = true;
-          WorkingDirectory = (builtins.getEnv "HOME");
+          WorkingDirectory = config.home.homeDirectory;
           ProgramArguments = [
             "${colimaWatcher cfg}"
           ];
