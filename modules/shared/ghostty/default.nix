@@ -13,10 +13,10 @@ in
   home.file = mkIf (!(config.programs.ghostty.enable or false)) {
     ".config/ghostty/config".text = ''
       font-family = "Maple Mono NF"
-      font-size = 14
+      font-size = 15
       font-thicken = true
       font-thicken-strength = 168
-      adjust-cell-height = 25%
+      adjust-cell-height = 2%
       theme = light:"Catppuccin Latte",dark:"Catppuccin Mocha"
       window-padding-x = 20
       window-padding-y = 20

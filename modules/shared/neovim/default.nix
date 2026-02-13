@@ -70,15 +70,6 @@ in
               csharpier
             ];
             fsharp = with pkgs; [ fsautocomplete ];
-            go = with pkgs; [
-              gopls
-              delve
-              golint
-              golangci-lint
-              gotools
-              go-tools
-              go
-            ];
             docs = with pkgs; [
               multimarkdown
             ];
@@ -87,19 +78,20 @@ in
 
           # This is for plugins that will load at startup without using packadd:
           startupPlugins = {
-            general = with pkgs.vimPlugins; [
-              lze
-              lzextras
+            themes = with pkgs.vimPlugins; [
               catppuccin-nvim
               onenord-nvim
               tokyonight-nvim
+            ];
+            general = with pkgs.vimPlugins; [
+              lze
+              lzextras
             ];
           };
 
           # not loaded automatically at startup.
           # use with packadd and an autocommand in config to achieve lazy loading
           optionalPlugins = {
-            go = with pkgs.vimPlugins; [ nvim-dap-go ];
             lua = with pkgs.vimPlugins; [ lazydev-nvim ];
             reactjs = with pkgs.vimPlugins; [
               nvim-highlight-colors
@@ -109,6 +101,7 @@ in
             ];
             general = with pkgs.vimPlugins; [
               mini-nvim
+              bufferline-nvim
               nvim-lspconfig
               blink-cmp
               nvim-treesitter.withAllGrammars
@@ -119,7 +112,7 @@ in
               nvim-dap-virtual-text
               lualine-nvim
               fidget-nvim
-              fzf-lua
+              snacks-nvim
               which-key-nvim
               yazi-nvim
             ];
@@ -139,7 +132,10 @@ in
               })
               zk-nvim
             ];
-            ai = with pkgs.vimPlugins; [ opencode-nvim snacks-nvim ];
+            ai = with pkgs.vimPlugins; [
+              opencode-nvim
+              snacks-nvim
+            ];
           };
 
           # shared libraries to be added to LD_LIBRARY_PATH
@@ -196,12 +192,12 @@ in
               general = true;
               lua = true;
               nix = true;
-              go = false;
               csharp = true;
               fsharp = true;
               reactjs = true;
               docs = true;
               ai = true;
+              themes = true;
             };
             # anything else to pass and grab in lua with `nixCats.extra`
             extra = {
@@ -223,12 +219,12 @@ in
               general = false;
               lua = false;
               nix = false;
-              go = false;
               csharp = false;
               fsharp = false;
               reactjs = false;
               docs = false;
               ai = false;
+              themes = true;
             };
             # anything else to pass and grab in lua with `nixCats.extra`
             extra = {

@@ -1,7 +1,3 @@
----@diagnostic disable-next-line: undefined-global
-local vim = vim
----@diagnostic disable-next-line: undefined-global
-local nixCats = nixCats
 local options = vim.o
 local globals = vim.g
 local diagnostics = vim.diagnostic
@@ -67,15 +63,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
--- TODO: Try native completion again when more mature
--- vim.api.nvim_create_autocmd('LspAttach', {
---   callback = function(ev)
---     local client = vim.lsp.get_client_by_id(ev.data.client_id)
---     if client:supports_method('textDocument/completion') then
---       vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
---     end
---   end,
--- })
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "nix",
+    callback = function()
+        vim.opt_local.expandtab = true
+        vim.opt_local.shiftwidth = 2
+        vim.opt_local.softtabstop = 2
+    end,
+})
 
 diagnostics.config({
     virtual_text = false,
@@ -146,25 +141,30 @@ map("n", "<Esc>", ":noh<CR><Esc>", { noremap = true, silent = true }) -- escape 
 
 map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 
--- file
--- map("n", "<leader>f+", "<Cmd>set foldlevel=99<cr>", { desc = "Expand all folds" })
--- map("n", "<leader>f-", "<Cmd>set foldlevel=0<cr>", { desc = "Collapse all folds" })
---
--- map("n", "<leader>-", "<Cmd>foldclose<cr>", { desc = "Collapse current fold" })
--- map("n", "<leader>+", "<Cmd>foldopen<cr>", { desc = "Expand current fold" })
-
--- Buffer mappings
--- map("n", "<leader>b[", "<cmd>bprev<CR>", { desc = "Previous buffer" })
--- map("n", "<leader><b]", "<cmd>bnext<CR>", { desc = "Next buffer" })
--- map("n", "<leader>bl", "<cmd>b#<CR>", { desc = "Last buffer" })
--- map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "delete buffer" })
--- map("n", "gb", ":ls<cr>:b<space>", { noremap = true, desc = "Goto buffer" })
-
-if (nixCats("general")) then
+if (nixCats("themes")) then
     vim.cmd.colorscheme("catppuccin")
 end
 
 if not (nixCats("general")) then
+    vim.api.nvim_create_autocmd('LspAttach', {
+        callback = function(ev)
+            local client = vim.lsp.get_client_by_id(ev.data.client_id)
+            if client:supports_method('textDocument/completion') then
+                vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+            end
+        end,
+    })
+    map("n", "<leader>f+", "<Cmd>set foldlevel=99<cr>", { desc = "Expand all folds" })
+    map("n", "<leader>f-", "<Cmd>set foldlevel=0<cr>", { desc = "Collapse all folds" })
+
+    map("n", "<leader>-", "<Cmd>foldclose<cr>", { desc = "Collapse current fold" })
+    map("n", "<leader>+", "<Cmd>foldopen<cr>", { desc = "Expand current fold" })
+
+    map("n", "<leader>b[", "<cmd>bprev<CR>", { desc = "Previous buffer" })
+    map("n", "<leader><b]", "<cmd>bnext<CR>", { desc = "Next buffer" })
+    map("n", "<leader>bl", "<cmd>b#<CR>", { desc = "Last buffer" })
+    map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "delete buffer" })
+    map("n", "gb", ":ls<cr>:b<space>", { noremap = true, desc = "Goto buffer" })
     return
 end
 
@@ -189,7 +189,9 @@ require("lze").load({
                         auto_brackets = {
                             enabled = true
                         }
-                    }
+                    },
+                    documentation = { auto_show = true, auto_show_delay_ms = 500 },
+                    ghost_text = { enabled = true },
                 },
                 signature = { enabled = true },
                 sources = {
@@ -231,11 +233,7 @@ require("lze").load({
     {
         "lualine.nvim",
         enabled = nixCats("general") or false,
-        -- cmd = { "" },
         event = "DeferredUIEnter",
-        -- ft = "",
-        -- keys = "",
-        -- colorscheme = "",
         after = function(_)
             require("lualine").setup({
                 options = {
@@ -262,6 +260,23 @@ require("lze").load({
                     },
 
                     lualine_x = { "filetype" },
+                },
+            })
+        end,
+    },
+    {
+        "bufferline.nvim",
+        enabled = nixCats("general") or false,
+        event = "DeferredUIEnter",
+        after = function(_)
+            require("bufferline").setup({
+                highlights = require("catppuccin.special.bufferline").get_theme(),
+                options = {
+                    numbers = "none",
+                    diagnostics = "nvim_lsp",
+                    show_buffer_close_icons = false,
+                    show_close_icon = false,
+                    separator_style = "thick",
                 },
             })
         end,
@@ -297,32 +312,12 @@ require("lze").load({
             },
         },
         after = function(_)
-            require("which-key").add({
-                -- {
-                --     "<Leader>b",
-                --     group = "buffers",
-                --     expand = function()
-                --         return require("which-key.extras").expand.buf()
-                --     end,
-                -- },
-                -- { "<Leader>f", group = "files" },
-                -- { "<Leader>c", group = "code" },
-                -- { "<Leader>g", group = "git" },
-                -- { "<Leader>s", group = "search" },
-                -- { "g",         group = "goto" },
-                -- { "<Leader>t", group = "testing" },
-                -- { "<Leader>d", group = "debug" },
-            })
         end,
     },
     {
         "gitsigns.nvim",
         enabled = nixCats("general") or false,
         event = "DeferredUIEnter",
-        -- cmd = { "" },
-        -- ft = "",
-        -- keys = "",
-        -- colorscheme = "",
         after = function(_)
             require("gitsigns").setup({
                 on_attach = function(_)
@@ -347,36 +342,6 @@ require("lze").load({
                         end)
                         return "<Ignore>"
                     end, { expr = true, desc = "Jump to previous hunk" })
-
-                    -- Actions
-                    -- visual mode
-                    -- map("v", "<leader>hs", function()
-                    --     gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-                    -- end, { desc = "stage git hunk" })
-                    -- map("v", "<leader>hr", function()
-                    --     gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-                    -- end, { desc = "reset git hunk" })
-                    -- normal mode
-                    -- map("n", "<leader>gs", gs.stage_hunk, { desc = "git stage hunk" })
-                    -- map("n", "<leader>gr", gs.reset_hunk, { desc = "git reset hunk" })
-                    -- map("n", "<leader>gS", gs.stage_buffer, { desc = "git Stage buffer" })
-                    -- map("n", "<leader>gu", gs.undo_stage_hunk, { desc = "undo stage hunk" })
-                    -- map("n", "<leader>gR", gs.reset_buffer, { desc = "git Reset buffer" })
-                    -- map("n", "<leader>gp", gs.preview_hunk, { desc = "preview git hunk" })
-                    -- map("n", "<leader>gb", function()
-                    --     gs.blame_line({ full = false })
-                    -- end, { desc = "git blame line" })
-                    -- map("n", "<leader>gd", gs.diffthis, { desc = "git diff against index" })
-                    -- map("n", "<leader>gD", function()
-                    --     gs.diffthis("~")
-                    -- end, { desc = "git diff against last commit" })
-                    --
-                    -- -- Toggles
-                    -- map("n", "<leader>gtb", gs.toggle_current_line_blame, { desc = "toggle git blame line" })
-                    -- map("n", "<leader>gtd", gs.toggle_deleted, { desc = "toggle git show deleted" })
-                    --
-                    -- -- Text object
-                    -- map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "select git hunk" })
                 end,
             })
         end,
@@ -384,213 +349,23 @@ require("lze").load({
     {
         "conform.nvim",
         enabled = nixCats("general") or false,
-        -- keys = {
-        --     { "<leader>cf", desc = "Code format" },
-        -- },
         after = function(_)
             local conform = require("conform")
 
             conform.setup({
                 formatters_by_ft = {
                     lua = nixCats("lua") and { "stylua" } or nil,
-                    go = nixCats("go") and { "gofmt", "golint" } or nil,
                     typescript = nixCats("reactjs") and { "prettier" } or nil,
                     typescriptreact = nixCats("reactjs") and { "prettier" } or nil,
                     csharp = nixCats("csharp") and { "csharpier" } or nil,
                 },
-            })
-
-            options.formatexpr = "v:lua.require'conform'.formatexpr()"
-
-            -- vim.keymap.set({ "n", "v" }, "<leader>cf", function()
-            --     conform.format({
-            --         lsp_fallback = true,
-            --         async = false,
-            --         timeout_ms = 1000,
-            --     })
-            -- end, { desc = " Code format" })
-        end,
-    },
-    {
-        "nvim-dap",
-        enabled = nixCats("general") or false,
-        -- cmd = { "" },
-        -- event = "",
-        -- ft = "",
-        keys = {
-            { "<F5>",       desc = "Debug: Start/Continue" },
-            { "<F1>",       desc = "Debug: Step Into" },
-            { "<F2>",       desc = "Debug: Step Over" },
-            { "<F3>",       desc = "Debug: Step Out" },
-            { "<leader>tb", desc = "Debug: Toggle Breakpoint",       silent = true },
-            { "<F7>",       desc = "Debug: See last session result." },
-        },
-        -- colorscheme = "",
-        load = function(name)
-            vim.cmd.packadd(name)
-            vim.cmd.packadd("nvim-dap-ui")
-            vim.cmd.packadd("nvim-dap-virtual-text")
-        end,
-        after = function(_)
-            local dap = require("dap")
-            local dapui = require("dapui")
-
-            if nixCats("csharp") then
-                dap.adapters.netcoredbg = {
-                    type = "executable",
-                    command = "netcoredbg",
-                    args = { "--interpreter=vscode" },
-                }
-                dap.configurations.cs = {
-                    {
-                        type = "netcoredbg",
-                        name = "launch - netcoredbg",
-                        request = "launch",
-                        program = function()
-                            return vim.fn.input("Path to dll", vim.fn.getcwd() .. "/bin/Debug/", "file")
-                        end,
-                    },
-                }
-            end
-
-            if nixCats("reactjs") then
-                dap.configurations.typescript = {
-                    {
-                        type = "node2",
-                        name = "Launch TypeScript",
-                        request = "launch",
-                        program = "${file}",
-                        cwd = vim.fn.getcwd(),
-                        sourceMaps = true,
-                        protocol = "inspector",
-                        outFiles = { "${workspaceFolder}/dist/**/*.js" },
-                    },
-                }
-                dap.configurations.javascript = dap.configurations.typescript
-            end
-
-            -- Basic debugging keymaps, feel free to change to your liking!
-            map("n", "<F5>", dap.continue, { desc = "Debug: Start/Continue" })
-            map("n", "<F1>", dap.step_into, { desc = "Debug: Step Into" })
-            map("n", "<F2>", dap.step_over, { desc = "Debug: Step Over" })
-            map("n", "<F3>", dap.step_out, { desc = "Debug: Step Out" })
-            map("n", "<leader>db", dap.toggle_breakpoint, { desc = "Debug: Toggle Breakpoint" })
-            map("n", "<leader>dB", function()
-                dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
-            end, { desc = "Debug: Set Breakpoint" })
-
-            -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-            map("n", "<F7>", dapui.toggle, { desc = "Debug: See last session result." })
-
-            dap.listeners.after.event_initialized["dapui_config"] = dapui.open
-            dap.listeners.before.event_terminated["dapui_config"] = dapui.close
-            dap.listeners.before.event_exited["dapui_config"] = dapui.close
-
-            -- Dap UI setup
-            -- For more information, see |:help nvim-dap-ui|
-            dapui.setup({
-                -- Set icons to characters that are more likely to work in every terminal.
-                --    Feel free to remove or use ones that you like more! :)
-                --    Don't feel like these are good choices.
-                icons = { expanded = "▾", collapsed = "▸", current_frame = "*" },
-                controls = {
-                    icons = {
-                        pause = "⏸",
-                        play = "▶",
-                        step_into = "⏎",
-                        step_over = "⏭",
-                        step_out = "⏮",
-                        step_back = "b",
-                        run_last = "▶▶",
-                        terminate = "⏹",
-                        disconnect = "⏏",
-                    },
+                format_on_save = {
+                    timeout_ms = 500,
+                    lsp_format = "fallback",
                 },
             })
 
-            -- DAP UI widgets
-            map("n", "<Leader>dk", "<Cmd>lua require'dap.ui.widgets'.hover()<CR>", { desc = "DAP Hover Widget" })
-            map(
-                "n",
-                "<Leader>ds",
-                "<Cmd>lua require'dap.ui.widgets'.sidebar(require'dap.ui.widgets'.scopes).open()<CR>",
-                { desc = "DAP Scopes" }
-            )
-            map(
-                "n",
-                "<Leader>df",
-                "<Cmd>lua require'dap.ui.widgets'.sidebar(require'dap.ui.widgets'.frames).open()<CR>",
-                { desc = "DAP Frames" }
-            )
-            map(
-                "n",
-                "<Leader>dV",
-                "<Cmd>lua require'dap.ui.widgets'.hover(function() return vim.fn.expand('<cexpr>') end)<CR>",
-                { desc = "DAP Hover Expression" }
-            )
-            map(
-                "v",
-                "<Leader>dv",
-                "<Cmd>lua require'dap.ui.widgets'.hover(function() return vim.fn.expand('<cexpr>') end)<CR>",
-                { desc = "DAP Hover Selection" }
-            )
-            map(
-                "n",
-                "<Leader>dc",
-                "<Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
-                { desc = "Conditional Breakpoint" }
-            )
-            map(
-                "n",
-                "<Leader>dm",
-                "<Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>",
-                { desc = "Logpoint Message" }
-            )
-
-            require("nvim-dap-virtual-text").setup({
-                enabled = true,                     -- enable this plugin (the default)
-                enabled_commands = true,            -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
-                highlight_changed_variables = true, -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
-                highlight_new_as_changed = false,   -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
-                show_stop_reason = true,            -- show stop reason when stopped for exceptions
-                commented = false,                  -- prefix virtual text with comment string
-                only_first_definition = true,       -- only show virtual text at first definition (if there are multiple)
-                all_references = false,             -- show virtual text on all all references of the variable (not only definitions)
-                clear_on_continue = false,          -- clear virtual text on "continue" (might cause flickering when stepping)
-                --- A callback that determines how a variable is displayed or whether it should be omitted
-                --- variable Variable https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable
-                --- buf number
-                --- stackframe dap.StackFrame https://microsoft.github.io/debug-adapter-protocol/specification#Types_StackFrame
-                --- node userdata tree-sitter node identified as variable definition of reference (see `:h tsnode`)
-                --- options nvim_dap_virtual_text_options Current options for nvim-dap-virtual-text
-                --- string|nil A text how the virtual text should be displayed or nil, if this variable shouldn't be displayed
-                display_callback = function(variable, buf, stackframe, node, options)
-                    if options.virt_text_pos == "inline" then
-                        return " = " .. variable.value
-                    else
-                        return variable.name .. " = " .. variable.value
-                    end
-                end,
-                -- position of virtual text, see `:h nvim_buf_set_extmark()`, default tries to inline the virtual text. Use 'eol' to set to end of line
-                virt_text_pos = vim.fn.has("nvim-0.10") == 1 and "inline" or "eol",
-
-                -- experimental features:
-                all_frames = false,      -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
-                virt_lines = false,      -- show virtual lines instead of virtual text (will flicker!)
-                virt_text_win_col = nil, -- position the virtual text at a fixed window column (starting from the first text column) ,
-                -- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
-            })
-
-            -- NOTE: Install lang specific config
-            -- either in here, or in a separate plugin spec as demonstrated for go below.
-        end,
-    },
-    {
-        "nvim-dap-go",
-        enabled = nixCats("go") or false,
-        on_plugin = { "nvim-dap" },
-        after = function(_)
-            require("dap-go").setup()
+            options.formatexpr = "v:lua.require'conform'.formatexpr()"
         end,
     },
     {
@@ -607,20 +382,18 @@ require("lze").load({
         end,
     },
     {
-        "fzf-lua",
+        "snacks.nvim",
         enabled = nixCats("general") or false,
         keys = {
-            { "<leader>b", "<cmd>FzfLua buffers<cr>",               desc = "List open buffers" },
-            { "<leader>f", "<cmd>FzfLua files<cr>",                 desc = "Find project files" },
-            { "<leader>r", "<cmd>FzfLua oldfiles<cr>",              desc = "Find recent files" },
-            { "<leader>/", "<cmd>FzfLua live_grep<cr>",             desc = "Search project" },
-            { "<leader>d", "<cmd>FzfLua diagnostics_document<cr>",  desc = "Document diagnostics" },
-            { "<leader>D", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace diagnostics" },
+            { "<leader>f", function() Snacks.picker.smart() end,              desc = "Find Files" },
+            { "<leader>b", function() Snacks.picker.buffers() end,            desc = "Buffers" },
+            { "<leader>:", function() Snacks.picker.command_history() end,    desc = "Command History" },
+            { "<leader>/", function() Snacks.picker.grep() end,               desc = "Search project" },
+            { "<leader>d", function() Snacks.picker.diagnostics() end,        desc = "Diagnostics" },
+            { "<leader>D", function() Snacks.picker.diagnostics_buffer() end, desc = "Buffer Diagnostics" },
         },
         event = "DeferredUIEnter",
         after = function(_)
-            local fzf = require("fzf-lua")
-            fzf.setup({ { "borderless-full", "fzf-native" }, winopts = { preview = { default = "bat" } } })
         end,
     },
     {
@@ -654,10 +427,83 @@ require("lze").load({
     {
         "easy-dotnet.nvim",
         enabled = nixCats("csharp") or false,
+        -- on_plugin = { "nvim-dap" },
         event = "LspAttach",
+        ft = "cs",
+        load = function(name)
+            vim.cmd.packadd(name)
+            vim.cmd.packadd("nvim-dap")
+            vim.cmd.packadd("nvim-dap-ui")
+            vim.cmd.packadd("nvim-dap-virtual-text")
+        end,
+
         after = function(_)
+            local dap = require("dap")
+            local dapui = require("dapui")
+            map("n", "q", function()
+                dap.terminate()
+                dap.clear_breakpoints()
+            end, { desc = "Terminate and clear breakpoints" })
+
+            -- Basic debugging keymaps, feel free to change to your liking!
+            map("n", "<F5>", dap.continue, { desc = "Debug: Start/Continue" })
+            map("n", "<F11>", dap.step_into, { desc = "Debug: Step Into" })
+            map("n", "<F10>", dap.step_over, { desc = "Debug: Step Over" })
+            map("n", "<F12>", dap.step_out, { desc = "Debug: Step Out" })
+            map("n", "<leader>B", dap.toggle_breakpoint, { desc = "Debug: Toggle Breakpoint" })
+
+            -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
+            map("n", "<F7>", dapui.toggle, { desc = "Debug: See last session result." })
+
+            dap.listeners.after.event_initialized["dapui_config"] = dapui.open
+            dap.listeners.before.event_terminated["dapui_config"] = dapui.close
+            dap.listeners.before.event_exited["dapui_config"] = dapui.close
+
+            dapui.setup({
+                icons = { expanded = "▾", collapsed = "▸", current_frame = "*" },
+                controls = {
+                    icons = {
+                        pause = "⏸",
+                        play = "▶",
+                        step_into = "⏎",
+                        step_over = "⏭",
+                        step_out = "⏮",
+                        step_back = "b",
+                        run_last = "▶▶",
+                        terminate = "⏹",
+                        disconnect = "⏏",
+                    },
+                },
+            })
+            require("nvim-dap-virtual-text").setup({
+                enabled = true,                     -- enable this plugin (the default)
+                enabled_commands = true,            -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
+                highlight_changed_variables = true, -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
+                highlight_new_as_changed = false,   -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
+                show_stop_reason = true,            -- show stop reason when stopped for exceptions
+                commented = false,                  -- prefix virtual text with comment string
+                only_first_definition = true,       -- only show virtual text at first definition (if there are multiple)
+                all_references = false,             -- show virtual text on all all references of the variable (not only definitions)
+                clear_on_continue = false,          -- clear virtual text on "continue" (might cause flickering when stepping)
+                display_callback = function(variable, buf, stackframe, node, options)
+                    if options.virt_text_pos == "inline" then
+                        return " = " .. variable.value
+                    else
+                        return variable.name .. " = " .. variable.value
+                    end
+                end,
+                -- position of virtual text, see `:h nvim_buf_set_extmark()`, default tries to inline the virtual text. Use 'eol' to set to end of line
+                virt_text_pos = vim.fn.has("nvim-0.10") == 1 and "inline" or "eol",
+
+                -- experimental features:
+                all_frames = false,      -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
+                virt_lines = false,      -- show virtual lines instead of virtual text (will flicker!)
+                virt_text_win_col = nil, -- position the virtual text at a fixed window column (starting from the first text column) ,
+            })
+
+
             require("easy-dotnet").setup({
-                picker = "fzf",
+                picker = "snacks",
             })
         end,
     },
@@ -681,6 +527,10 @@ require("lze").load({
             vim.cmd.packadd(name)
             vim.cmd.packadd("org-modern.nvim")
         end,
+        keys = {
+            { "<leader>oa", "<cmd>Org agenda<cr>",  desc = "Org agenda" },
+            { "<leader>oc", "<cmd>Org capture<cr>", desc = "Org capture" },
+        },
         after = function(_)
             local Menu = require("org-modern.menu")
             require("orgmode").setup({
@@ -775,7 +625,7 @@ require("lze").load({
                                 type = 'agenda',
                                 org_agenda_overriding_header = 'Previous work',
                                 org_agenda_start_on_weekday = false,
-                                org_agenda_start_day = '-3d',
+                                org_agenda_start_day = '-2d',
                                 org_agenda_remove_tags = true -- Do not show tags only for this view
                             },
 
@@ -785,19 +635,17 @@ require("lze").load({
                         description = 'Standup',
                         types = {
                             {
-                                type = 'tags',
+                                type = 'agenda',
                                 match = '+work+TODO="DONE"',
-                                org_agenda_overriding_header = 'Done',
+                                org_agenda_overriding_header = 'Did yesterday',
                                 org_agenda_todo_ignore_deadlines = 'far',
                                 org_agenda_start_on_weekday = false,
-                                org_agenda_start_day = '-3d',
+                                org_agenda_start_day = '-1d',
                                 org_agenda_remove_tags = true,
-                                org_agenda_sorting_strategy = {'time-down'},
-                                org_agenda_prefix_format = '  %?-12t% s'
                             },
                             {
                                 type = 'tags',
-                                match = '+work+TODO="IN_PROGRESS"',
+                                match = '+work+TODO="IN-PROGRESS"',
                                 org_agenda_overriding_header = 'Doing',
                                 org_agenda_remove_tags = true
                             },
@@ -900,7 +748,7 @@ require("lze").load({
         enabled = nixCats("docs") or false,
         after = function(_)
             require("zk").setup({
-                picker = "fzf_lua",
+                picker = "snacks_picker",
                 lsp = {
                     config = {
                         name = "zk",
@@ -1047,16 +895,6 @@ require("lze").load({
         lsp = {},
         enabled = nixCats("reactjs") or false,
     },
-    {
-        "gopls",
-        enabled = nixCats("go") or false,
-        lsp = {},
-    },
-    -- {
-    --     "roslyn_ls",
-    --     enabled = nixCats("csharp") or false,
-    --     lsp = {},
-    -- },
     {
         "nixd",
         enabled = nixCats("nix") or false,
