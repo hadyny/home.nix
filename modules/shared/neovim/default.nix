@@ -48,7 +48,7 @@ in
           # at RUN TIME for plugins. Will be available to PATH within neovim terminal
           # this includes LSPs
           lspsAndRuntimeDeps = {
-            general = with pkgs; [ ];
+            general = with pkgs; [ delta ];
             lua = with pkgs; [
               lua-language-server
               stylua
@@ -58,6 +58,7 @@ in
               nixfmt
             ];
             reactjs = with pkgs; [
+              prettierd
               tailwindcss-language-server
               rustywind
               graphql-language-service-cli
@@ -111,9 +112,24 @@ in
               nvim-dap-ui
               nvim-dap-virtual-text
               lualine-nvim
+              lspkind-nvim
+              diffview-nvim
+              neogit
               fidget-nvim
               snacks-nvim
               which-key-nvim
+              (pkgs.vimUtils.buildVimPlugin {
+                pname = "tiny-code-action.nvim";
+                version = "0.0.0";
+                doCheck = false;
+                src = pkgs.fetchFromGitHub {
+                  owner = "rachartier";
+                  repo = "tiny-code-action.nvim";
+                  rev = "main";
+                  sha256 = "sha256-f3U4hvp7PNKrgJHfmCEnHWJC9tbkzrKvuHo5WejYpys=sha256";
+                };
+              })
+              tiny-inline-diagnostic-nvim
               yazi-nvim
             ];
             docs = with pkgs.vimPlugins; [
@@ -130,7 +146,6 @@ in
                   sha256 = "sha256-TYs3g5CZDVXCFXuYaj3IriJ4qlIOxQgArVOzT7pqkqs=";
                 };
               })
-              zk-nvim
             ];
             ai = with pkgs.vimPlugins; [
               opencode-nvim
@@ -222,7 +237,7 @@ in
               csharp = false;
               fsharp = false;
               reactjs = false;
-              docs = false;
+              docs = true;
               ai = false;
               themes = true;
             };
