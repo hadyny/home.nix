@@ -308,7 +308,7 @@ The configuration includes numerous CLI tools and programs:
 - **Dev Tools**: direnv, devenv, lazygit, lazydocker
 - **File Management**: yazi, eza, fd, ripgrep, bat
 - **Multiplexers**: zellij with custom layouts
-- **Utilities**: btop, jq, mcfly, zoxide, yt-dlp
+- **Utilities**: btop, jq, zoxide, television
 
 ## Key Bindings
 

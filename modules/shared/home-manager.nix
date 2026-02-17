@@ -10,6 +10,11 @@
     ];
   };
 
+  broot = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   btop = {
     enable = true;
     settings = {
@@ -25,8 +30,6 @@
   jq.enable = true;
 
   lazydocker.enable = true;
-
-  rclone.enable = true;
 
   ssh = {
     enable = true;
@@ -68,12 +71,6 @@
 
   gh-dash.enable = true;
 
-  mcfly = {
-    enable = true;
-    fzf.enable = true;
-    keyScheme = "vim";
-  };
-
   opencode.enable = true;
 
   ripgrep.enable = true;
@@ -85,9 +82,26 @@
     };
   };
 
-  taskwarrior = {
+  nix-search-tv = {
     enable = true;
-    package = pkgs.taskwarrior3;
+    enableTelevisionIntegration = true;
+  };
+
+  television = {
+    enable = true;
+    enableZshIntegration = true;
+    channels = {
+      brew-packages = fromTOML (builtins.readFile ./config/television/brew-packages.toml);
+      docker-compose = fromTOML (builtins.readFile ./config/television/docker-compose.toml);
+      docker-containers = fromTOML (builtins.readFile ./config/television/docker-containers.toml);
+      docker-volumes = fromTOML (builtins.readFile ./config/television/docker-volumes.toml);
+      downloads = fromTOML (builtins.readFile ./config/television/downloads.toml);
+      gh-prs = fromTOML (builtins.readFile ./config/television/gh-prs.toml);
+      git-reflog = fromTOML (builtins.readFile ./config/television/git-reflog.toml);
+      git-remotes = fromTOML (builtins.readFile ./config/television/git-remotes.toml);
+      git-stash = fromTOML (builtins.readFile ./config/television/git-stash.toml);
+      zoxide = fromTOML (builtins.readFile ./config/television/zoxide.toml);
+    };
   };
 
   wezterm = {
@@ -114,8 +128,6 @@
       "git" = pkgs.yaziPlugins.git;
     };
   };
-
-  yt-dlp.enable = true;
 
   zellij = {
     enable = true;
@@ -148,6 +160,21 @@
                 ];
               };
             }
+            {
+              tab = {
+                _props = {
+                  name = "Claude";
+                };
+                _children = [
+                  {
+                    pane = {
+                      command = "claude";
+                    };
+                  }
+                ];
+              };
+            }
+
             {
               tab = {
                 _props = {
@@ -185,7 +212,8 @@
                 _children = [
                   {
                     pane = {
-                      command = "yazi";
+                      command = "broot";
+                      args = [ "-sdpg" ];
                     };
                   }
                 ];
@@ -219,31 +247,6 @@
     '';
     settings = {
       theme = "catppuccin-mocha";
-    };
-  };
-
-  zk = {
-    enable = true;
-    settings = {
-      notebook = {
-        dir = "~/notes";
-      };
-      note = {
-        language = "en";
-        default-title = "Untitled";
-        filename = "{{id}}-{{slug title}}";
-        extension = "md";
-        id-charset = "alphanum";
-        id-length = 4;
-        id-case = "lower";
-      };
-      extra = {
-        author = "Hadyn";
-      };
-      tool = {
-        fzf-preview = "bat -p --color always {-1}";
-        editor = "nvimIde";
-      };
     };
   };
 
