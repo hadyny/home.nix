@@ -9,7 +9,14 @@
 }:
 
 let
-  shared-programs = import ../shared/home-manager.nix { inherit inputs config pkgs lib; };
+  shared-programs = import ../shared/home-manager.nix {
+    inherit
+      inputs
+      config
+      pkgs
+      lib
+      ;
+  };
 in
 {
   nixpkgs = {
@@ -31,7 +38,9 @@ in
       TERM = "xterm-256color";
     };
 
-    packages = pkgs.callPackage ../shared/packages.nix { inherit inputs pkgs; };
+    packages =
+      pkgs.callPackage ../shared/packages.nix { inherit inputs pkgs; }
+      ++ pkgs.callPackage ./packages.nix { inherit inputs pkgs; };
   };
 
   programs = shared-programs // { };

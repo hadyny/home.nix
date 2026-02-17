@@ -21,6 +21,7 @@ with pkgs;
   tabiew # csv viewer
   rich-cli # everything viewer
   kew # music player
+  nur.repos.forkprince.helium-nightly
 
   # ─────────────────────────────────────────────────────────────
   # Development Tools
@@ -76,6 +77,8 @@ with pkgs;
     pyproject = true;
     build-system = [ pkgs.python3.pkgs.setuptools ];
   })
+  multimarkdown
+  prettier
 
   # ─────────────────────────────────────────────────────────────
   # Infrastructure & DevOps

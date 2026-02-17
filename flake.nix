@@ -4,6 +4,10 @@
   inputs = {
     # TODO: swift is broken on nixpkgs-unstable: https://github.com/nixos/nixpkgs/issues/483584
     nixpkgs.url = "github:NixOS/nixpkgs/70801e06d9730c4f1704fbd3bbf5b8e11c03a2a7";
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-darwin.url = "github:LnL7/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
@@ -20,6 +24,7 @@
       nix-darwin,
       home-manager,
       nixpkgs,
+      nur,
       nixCats,
       neovim-nightly-overlay,
       csharp-language-server,

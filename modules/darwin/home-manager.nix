@@ -9,12 +9,20 @@
 }:
 
 let
-  shared-programs = import ../shared/home-manager.nix { inherit inputs config pkgs lib; };
+  shared-programs = import ../shared/home-manager.nix {
+    inherit
+      inputs
+      config
+      pkgs
+      lib
+      ;
+  };
 in
 {
   nixpkgs = {
     config.allowUnfree = true;
     overlays = [
+      inputs.nur.overlays.default
       inputs.emacs-overlay.overlays.default
       (import ../../overlays/pinned.nix)
     ];
