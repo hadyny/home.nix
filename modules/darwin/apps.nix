@@ -21,7 +21,7 @@
       "rider"
       "datagrip"
       "spotify"
-      "emacs-plus-app@master"
+      "emacs-plus-app@master" "libvterm"
     ];
 
     global.brewfile = true;

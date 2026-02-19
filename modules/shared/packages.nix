@@ -79,6 +79,7 @@ with pkgs;
   })
   multimarkdown
   prettier
+  nil
 
   # ─────────────────────────────────────────────────────────────
   # Infrastructure & DevOps

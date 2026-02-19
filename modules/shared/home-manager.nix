@@ -25,6 +25,7 @@
   emacs = {
     enable = !pkgs.stdenv.isDarwin;
     package = pkgs.emacs-unstable;
+    extraPackages = epkgs: [ epkgs.vterm ];
   };
 
   jq.enable = true;
@@ -247,6 +248,11 @@
     '';
     settings = {
       theme = "catppuccin-mocha";
+      ui = {
+        pane_frames = {
+          hide_session_name = true;
+        };
+      };
     };
   };
 
