@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 with pkgs;
 [
   # ─────────────────────────────────────────────────────────────
@@ -40,6 +40,8 @@ with pkgs;
   typescript-language-server
   tailwindcss-language-server
   vscode-langservers-extracted
+  inputs.csharp-language-server.packages.${pkgs.stdenv.hostPlatform.system}.default
+  nil
 
   # ─────────────────────────────────────────────────────────────
   # JavaScript / TypeScript
@@ -79,7 +81,6 @@ with pkgs;
   })
   multimarkdown
   prettier
-  nil
 
   # ─────────────────────────────────────────────────────────────
   # Infrastructure & DevOps

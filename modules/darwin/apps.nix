@@ -21,7 +21,7 @@
       "rider"
       "datagrip"
       "spotify"
-      "emacs-plus-app@master" "libvterm"
+      "emacs-plus-app@master"
     ];
 
     global.brewfile = true;
@@ -33,6 +33,7 @@
 
     taps = [ "d12frosted/emacs-plus" ];
     brews = [
+      "libvterm"
     ];
   };
 }

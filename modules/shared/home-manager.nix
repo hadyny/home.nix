@@ -248,11 +248,8 @@
     '';
     settings = {
       theme = "catppuccin-mocha";
-      ui = {
-        pane_frames = {
-          hide_session_name = true;
-        };
-      };
+      show_startup_tips = false;
+      pane_frames = false;
     };
   };
 
