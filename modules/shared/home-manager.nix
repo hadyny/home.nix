@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 {
   bat = {
     enable = true;
@@ -185,7 +185,8 @@
                 _children = [
                   {
                     pane = {
-                      command = "nvimIde";
+                      command = "emacs";
+                      args = [ "-nw" ];
                     };
                   }
                 ];
@@ -269,25 +270,6 @@
       }
     ];
     syntaxHighlighting.enable = true;
-  };
-
-  zed-editor = {
-    enable = true;
-    extensions = [
-      "HTML"
-      "catppuccin"
-      "lua"
-      "csharp"
-      "nix"
-      "graphql"
-      "elisp"
-    ];
-    extraPackages = [
-      pkgs.nil
-      pkgs.nixfmt
-      pkgs.csharpier
-      inputs.csharp-language-server.packages.${pkgs.stdenv.hostPlatform.system}.default
-    ];
   };
 
   zoxide.enable = true;

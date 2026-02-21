@@ -14,7 +14,6 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
-    csharp-language-server.url = "github:sofusa/csharp-language-server";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
   };
 
@@ -27,7 +26,6 @@
       nur,
       nixCats,
       neovim-nightly-overlay,
-      csharp-language-server,
       emacs-overlay,
     }:
     let

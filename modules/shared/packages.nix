@@ -40,14 +40,14 @@ with pkgs;
   typescript-language-server
   tailwindcss-language-server
   vscode-langservers-extracted
-  inputs.csharp-language-server.packages.${pkgs.stdenv.hostPlatform.system}.default
   nil
+  roslyn-ls
 
   # ─────────────────────────────────────────────────────────────
   # JavaScript / TypeScript
   # ─────────────────────────────────────────────────────────────
   bun
-  rustywind # tailwind class sorter
+  # rustywind # tailwind class sorter
 
   # ─────────────────────────────────────────────────────────────
   # .NET
@@ -80,7 +80,7 @@ with pkgs;
     build-system = [ pkgs.python3.pkgs.setuptools ];
   })
   multimarkdown
-  prettier
+  # prettier
 
   # ─────────────────────────────────────────────────────────────
   # Infrastructure & DevOps
