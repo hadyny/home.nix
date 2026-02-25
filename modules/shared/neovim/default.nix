@@ -20,6 +20,7 @@ in
       packageNames = [
         "neovimIde"
         "neovimVanilla"
+        "neovimFallback"
       ];
 
       luaPath = ./.;
@@ -48,16 +49,14 @@ in
           # at RUN TIME for plugins. Will be available to PATH within neovim terminal
           # this includes LSPs
           lspsAndRuntimeDeps = {
-            general = with pkgs; [ delta ];
-            lua = with pkgs; [
+            general = with pkgs; [
+              delta
               lua-language-server
               stylua
-            ];
-            nix = with pkgs; [
               nixd
               nixfmt
             ];
-            reactjs = with pkgs; [
+            typescript = with pkgs; [
               prettierd
               tailwindcss-language-server
               rustywind
@@ -69,10 +68,11 @@ in
               roslyn-ls
               netcoredbg
               csharpier
+              fsautocomplete
             ];
-            fsharp = with pkgs; [ fsautocomplete ];
             docs = with pkgs; [
               multimarkdown
+              marksman
             ];
             ai = with pkgs; [ opencode ];
           };
@@ -93,16 +93,26 @@ in
           # not loaded automatically at startup.
           # use with packadd and an autocommand in config to achieve lazy loading
           optionalPlugins = {
-            lua = with pkgs.vimPlugins; [ lazydev-nvim ];
-            reactjs = with pkgs.vimPlugins; [
-              nvim-highlight-colors
-            ];
             csharp = with pkgs.vimPlugins; [
               easy-dotnet-nvim
+              (pkgs.vimUtils.buildVimPlugin {
+                pname = "csharp-explorer.nvim";
+                version = "0.0.0";
+                doCheck = false;
+                src = pkgs.fetchFromGitHub {
+                  owner = "dtrh95";
+                  repo = "csharp-explorer.nvim";
+                  rev = "main";
+                  sha256 = "sha256-Pif3jJJyTm35XAfMFrldsnqH/0/M+dC7igAi+Upf0q8=";
+                };
+              })
+
+              nvim-tree-lua
             ];
             general = with pkgs.vimPlugins; [
+              lazydev-nvim
+              nvim-highlight-colors
               mini-nvim
-              bufferline-nvim
               nvim-lspconfig
               blink-cmp
               nvim-treesitter.withAllGrammars
@@ -111,13 +121,8 @@ in
               nvim-dap
               nvim-dap-ui
               nvim-dap-virtual-text
-              lualine-nvim
               lspkind-nvim
-              diffview-nvim
-              neogit
-              fidget-nvim
               snacks-nvim
-              which-key-nvim
               (pkgs.vimUtils.buildVimPlugin {
                 pname = "tiny-code-action.nvim";
                 version = "0.0.0";
@@ -129,11 +134,23 @@ in
                   sha256 = "sha256-f3U4hvp7PNKrgJHfmCEnHWJC9tbkzrKvuHo5WejYpys=sha256";
                 };
               })
-              tiny-inline-diagnostic-nvim
               yazi-nvim
             ];
             docs = with pkgs.vimPlugins; [
               render-markdown-nvim
+              checkmate-nvim
+              (pkgs.vimUtils.buildVimPlugin {
+                pname = "markdown-agenda.nvim";
+                version = "0.0.0";
+                doCheck = false;
+                src = pkgs.fetchFromGitHub {
+                  owner = "Kamyil";
+                  repo = "markdown-agenda.nvim";
+                  rev = "main";
+                  sha256 = "sha256-aucBpYzrGMd7rOOtFJUR89BB9Zd2SSHM4gSbDqbYUWs=";
+                };
+              })
+
               orgmode
               (pkgs.vimUtils.buildVimPlugin {
                 pname = "org-modern.nvim";
@@ -205,11 +222,8 @@ in
             # and a set of categories that you want
             categories = {
               general = true;
-              lua = true;
-              nix = true;
               csharp = true;
-              fsharp = true;
-              reactjs = true;
+              typescript = true;
               docs = true;
               ai = true;
               themes = true;
@@ -232,11 +246,8 @@ in
             };
             categories = {
               general = false;
-              lua = false;
-              nix = false;
               csharp = false;
-              fsharp = false;
-              reactjs = false;
+              typescript = false;
               docs = true;
               ai = false;
               themes = true;
@@ -246,6 +257,32 @@ in
               nixdExtras.nixpkgs = "import ${pkgs.path} {}";
             };
           };
+
+        neovimFallback =
+          { pkgs, name, ... }:
+          {
+            # they contain a settings set defined above
+            # see :help nixCats.flake.outputs.settings
+            settings = {
+              suffix-path = true;
+              suffix-LD = true;
+              wrapRc = true;
+              aliases = [ ];
+            };
+            categories = {
+              general = false;
+              csharp = false;
+              typescript = false;
+              docs = false;
+              ai = false;
+              themes = false;
+            };
+            # anything else to pass and grab in lua with `nixCats.extra`
+            extra = {
+              nixdExtras.nixpkgs = "import ${pkgs.path} {}";
+            };
+          };
+
       };
     };
   };

@@ -185,8 +185,7 @@
                 _children = [
                   {
                     pane = {
-                      command = "emacs";
-                      args = [ "-nw" ];
+                      command = "nvimIde";
                     };
                   }
                 ];

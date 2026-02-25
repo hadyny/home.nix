@@ -74,6 +74,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 diagnostics.config({
 	virtual_text = false,
+	virtual_lines = { current_line = true },
 	signs = {
 		text = {
 			[diagnostics.severity.ERROR] = "󰅙",
@@ -184,7 +185,7 @@ end
 require("lze").load({
 	{
 		"blink.cmp",
-		enabled = nixCats("general") or false,
+		enabled = false,
 		event = "DeferredUIEnter",
 		on_require = "blink",
 		load = function(name)
@@ -254,60 +255,8 @@ require("lze").load({
 		end,
 	},
 	{
-		"lualine.nvim",
-		enabled = nixCats("general") or false,
-		event = "DeferredUIEnter",
-		after = function(_)
-			require("lualine").setup({
-				options = {
-					icons_enabled = true,
-					section_separators = { left = "", right = "" },
-					component_separators = { left = "", right = "" },
-				},
-				sections = {
-					lualine_c = {
-						{
-							"filename",
-							path = 1,
-							status = true,
-						},
-					},
-				},
-				inactive_sections = {
-					lualine_b = {
-						{
-							"filename",
-							path = 3,
-							status = true,
-						},
-					},
-
-					lualine_x = { "filetype" },
-				},
-			})
-		end,
-	},
-	{
-		"bufferline.nvim",
-		enabled = nixCats("general") or false,
-		event = "DeferredUIEnter",
-		after = function(_)
-			require("bufferline").setup({
-				highlights = require("catppuccin.special.bufferline").get_theme(),
-				options = {
-					numbers = "none",
-					diagnostics = "nvim_lsp",
-					show_buffer_close_icons = false,
-					show_close_icon = false,
-					separator_style = "thick",
-				},
-			})
-		end,
-	},
-	{
 		"mini.nvim",
 		enabled = nixCats("general") or false,
-		event = "DeferredUIEnter",
 		after = function(_)
 			require("mini.pairs").setup()
 			require("mini.cursorword").setup({ delay = 1000 })
@@ -315,26 +264,62 @@ require("lze").load({
 			MiniIcons.setup()
 			MiniIcons.mock_nvim_web_devicons()
 			MiniIcons.tweak_lsp_kind()
-		end,
-	},
-	{
-		"which-key.nvim",
-		enabled = nixCats("general") or false,
-		event = "DeferredUIEnter",
-		opts = {
-			delay = 0,
-			preset = "helix",
-		},
-		keys = {
-			{
-				"<leader>?",
-				function()
-					require("which-key").show({ global = false })
+			require("mini.statusline").setup()
+			require("mini.completion").setup({
+				set_vim_settings = false,
+			})
+			vim.api.nvim_create_autocmd("BufEnter", {
+				callback = function()
+					local buftype = vim.bo.buftype
+					if buftype == "prompt" or buftype == "nofile" then
+						vim.b.minicompletion_disable = true
+					end
 				end,
-				desc = "Keymaps",
-			},
-		},
-		after = function(_) end,
+			})
+			require("mini.cmdline").setup()
+			local miniclue = require("mini.clue")
+			miniclue.setup({
+				triggers = {
+					-- Leader triggers
+					{ mode = { "n", "x" }, keys = "<Leader>" },
+
+					-- `[` and `]` keys
+					{ mode = "n", keys = "[" },
+					{ mode = "n", keys = "]" },
+
+					-- Built-in completion
+					{ mode = "i", keys = "<C-x>" },
+
+					-- `g` key
+					{ mode = { "n", "x" }, keys = "g" },
+
+					-- Marks
+					{ mode = { "n", "x" }, keys = "'" },
+					{ mode = { "n", "x" }, keys = "`" },
+
+					-- Registers
+					{ mode = { "n", "x" }, keys = '"' },
+					{ mode = { "i", "c" }, keys = "<C-r>" },
+
+					-- Window commands
+					{ mode = "n", keys = "<C-w>" },
+
+					-- `z` key
+					{ mode = { "n", "x" }, keys = "z" },
+				},
+
+				clues = {
+					-- Enhance this by adding descriptions for <Leader> mapping groups
+					miniclue.gen_clues.square_brackets(),
+					miniclue.gen_clues.builtin_completion(),
+					miniclue.gen_clues.g(),
+					miniclue.gen_clues.marks(),
+					miniclue.gen_clues.registers(),
+					miniclue.gen_clues.windows(),
+					miniclue.gen_clues.z(),
+				},
+			})
+		end,
 	},
 	{
 		"gitsigns.nvim",
@@ -376,7 +361,7 @@ require("lze").load({
 
 			conform.setup({
 				formatters_by_ft = {
-					lua = nixCats("lua") and { "stylua" } or nil,
+					lua = nixCats("general") and { "stylua" } or nil,
 					csharp = nixCats("csharp") and { "csharpier" } or nil,
 				},
 				format_on_save = {
@@ -461,7 +446,6 @@ require("lze").load({
 				desc = "Tree explorer",
 			},
 		},
-		event = "DeferredUIEnter",
 		after = function(_)
 			require("snacks").setup({
 				picker = {
@@ -471,8 +455,23 @@ require("lze").load({
 						},
 					},
 				},
-				input = {},
-				terimal = {},
+				notifier = {},
+				statuscolumn = {},
+			})
+
+			vim.api.nvim_create_autocmd("LspProgress", {
+				---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
+				callback = function(ev)
+					local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+					vim.notify(vim.lsp.status(), "info", {
+						id = "lsp_progress",
+						title = "LSP Progress",
+						opts = function(notif)
+							notif.icon = ev.data.params.value.kind == "end" and " "
+								or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+						end,
+					})
+				end,
 			})
 		end,
 	},
@@ -483,31 +482,40 @@ require("lze").load({
 		after = function(_)
 			require("render-markdown").setup({
 				completions = { lsp = { enabled = true } },
+				checkbox = { enabled = false },
 			})
 		end,
 	},
 	{
-		"fidget.nvim",
-		enabled = nixCats("general") or false,
-		event = "LspAttach",
-		after = function()
-			require("fidget").setup({})
+		"checkmate.nvim",
+		enabled = nixCats("docs") or false,
+		ft = "markdown",
+		after = function(_)
+			require("checkmate").setup()
+		end,
+	},
+	{
+		"markdown-agenda.nvim",
+		enabled = nixCats("docs") or false,
+		after = function(_)
+			require("markdown-agenda").setup({
+				directory = "~/notes",
+			})
 		end,
 	},
 	{
 		"nvim-highlight-colors",
-		enabled = nixCats("reactjs") or false,
+		enabled = nixCats("typescript") or false,
 		event = "DeferredUIEnter",
 		after = function(_)
 			require("nvim-highlight-colors").setup({
-				render = "background",
+				render = "foreground",
 			})
 		end,
 	},
 	{
 		"easy-dotnet.nvim",
 		enabled = nixCats("csharp") or false,
-		-- on_plugin = { "nvim-dap" },
 		event = "LspAttach",
 		ft = "cs",
 		load = function(name)
@@ -588,7 +596,7 @@ require("lze").load({
 	},
 	{
 		"lazydev.nvim",
-		enabled = nixCats("lua") or false,
+		enabled = nixCats("general") or false,
 		cmd = { "LazyDev" },
 		ft = "lua",
 		after = function(_)
@@ -600,31 +608,8 @@ require("lze").load({
 		end,
 	},
 	{
-		"diffview.nvim",
-		enabled = nixCats("general") or false,
-		event = "DeferredUIEnter",
-		after = function(_)
-			require("diffview").setup({})
-		end,
-	},
-	{
-		"neogit",
-		enabled = nixCats("general") or false,
-		event = "DeferredUIEnter",
-		keys = {
-			{
-				"<leader>g",
-				"<cmd>Neogit<cr>",
-				desc = "Command History",
-			},
-		},
-		after = function(_)
-			require("neogit").setup({})
-		end,
-	},
-	{
 		"tiny-code-action.nvim",
-		enabled = nixCats("general") or false,
+		enabled = false,
 		event = "LspAttach",
 		after = function(_)
 			require("tiny-code-action").setup({
@@ -637,20 +622,8 @@ require("lze").load({
 		end,
 	},
 	{
-		"tiny-inline-diagnostic.nvim",
-		enabled = nixCats("general") or false,
-		event = "LspAttach",
-		after = function(_)
-			require("tiny-inline-diagnostic").setup({
-				multilines = true,
-				break_line = { enabled = true },
-				enable_on_insert = false,
-			})
-		end,
-	},
-	{
 		"orgmode",
-		enabled = nixCats("docs") or false,
+		enabled = false,
 		load = function(name)
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("org-modern.nvim")
@@ -938,7 +911,7 @@ require("lze").load({
 	},
 	{
 		"lua_ls",
-		enabled = nixCats("lua") or false,
+		enabled = nixCats("general") or false,
 		lsp = {
 			filetypes = { "lua" },
 			settings = {
@@ -959,7 +932,7 @@ require("lze").load({
 	},
 	{
 		"eslint",
-		enabled = nixCats("reactjs") or false,
+		enabled = nixCats("typescript") or false,
 		lsp = {
 			filetypes = {
 				"javascript",
@@ -974,18 +947,18 @@ require("lze").load({
 	},
 	{
 		"vtsls",
-		enabled = nixCats("reactjs") or false,
+		enabled = nixCats("typescript") or false,
 		lsp = {},
 	},
 	{
 		"fsautocomplete",
-		enabled = nixCats("fsharp") or false,
+		enabled = nixCats("csharp") or false,
 		lsp = {},
 	},
 	{
 		"tailwindcss",
 		lsp = {},
-		enabled = nixCats("reactjs") or false,
+		enabled = nixCats("typescript") or false,
 	},
 	{
 		"graphql",
@@ -994,16 +967,21 @@ require("lze").load({
 				"graphql",
 			},
 		},
-		enabled = nixCats("reactjs") or false,
+		enabled = nixCats("typescript") or false,
 	},
 	{
 		"jsonls",
 		lsp = {},
-		enabled = nixCats("reactjs") or false,
+		enabled = nixCats("typescript") or false,
+	},
+	{
+		"marksman",
+		lsp = {},
+		enabled = nixCats("general") or false,
 	},
 	{
 		"nixd",
-		enabled = nixCats("nix") or false,
+		enabled = nixCats("general") or false,
 		lsp = {
 			filetypes = { "nix" },
 			settings = {

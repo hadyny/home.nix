@@ -42,7 +42,9 @@ in
       HOMEBREW_NO_ENV_HINTS = 1;
     };
 
-    packages = pkgs.callPackage ../shared/packages.nix { inherit inputs pkgs; };
+    packages =
+      (pkgs.callPackage ../shared/packages.nix { inherit inputs pkgs; })
+      ++ (pkgs.callPackage ./packages.nix { inherit pkgs; });
 
     sessionPath = [ "/opt/homebrew/bin" ];
 

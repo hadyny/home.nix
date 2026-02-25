@@ -11,17 +11,16 @@
 
     casks = [
       "1password"
-      "ungoogled-chromium"
       "firefox"
       "obsidian"
       "postman"
       "slack"
       "ghostty"
-      "visual-studio-code"
       "rider"
       "datagrip"
       "spotify"
       "emacs-plus-app@master"
+      "claude-code"
     ];
 
     global.brewfile = true;
@@ -34,6 +33,7 @@
     taps = [ "d12frosted/emacs-plus" ];
     brews = [
       "libvterm"
+      "dstask"
     ];
   };
 }
