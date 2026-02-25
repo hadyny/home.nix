@@ -22,7 +22,9 @@ in
   nixpkgs = {
     config.allowUnfree = true;
     overlays = [
+      inputs.nur.overlays.default
       inputs.emacs-overlay.overlays.default
+      inputs.nix-nvim.overlays.default
       (import ../../overlays/pinned.nix)
     ];
   };
@@ -39,8 +41,8 @@ in
     };
 
     packages =
-      pkgs.callPackage ../shared/packages.nix { inherit inputs pkgs; }
-      ++ pkgs.callPackage ./packages.nix { inherit inputs pkgs; };
+      pkgs.callPackage ../shared/packages.nix { inherit pkgs; }
+      ++ pkgs.callPackage ./packages.nix { inherit pkgs; };
   };
 
   programs = shared-programs // { };

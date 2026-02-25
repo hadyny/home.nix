@@ -22,8 +22,8 @@ in
   nixpkgs = {
     config.allowUnfree = true;
     overlays = [
-      inputs.nur.overlays.default
       inputs.emacs-overlay.overlays.default
+      inputs.nix-nvim.overlays.default
       (import ../../overlays/pinned.nix)
     ];
   };

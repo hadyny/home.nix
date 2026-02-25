@@ -32,6 +32,11 @@
 
   lazydocker.enable = true;
 
+  mcfly = {
+    enable = true;
+    fzf.enable = true;
+  };
+
   ssh = {
     enable = true;
     enableDefaultConfig = false;
@@ -68,48 +73,22 @@
     config.global.log_filter = "^(loading|using nix|error|deny|allow).*$";
   };
 
-  fzf.enable = true;
+  fzf = {
+    enable = true;
+    colors = {
+      fg = "#908caa,bg:#191724,hl:#ebbcba";
+      "fg+" = "#e0def4,bg+:#26233a,hl+:#ebbcba";
+      border = "#403d52,header:#31748f,gutter:#191724";
+      spinner = "#f6c177,info:#9ccfd8";
+      pointer = "#c4a7e7,marker:#eb6f92,prompt:#908caa";
+    };
+  };
 
   gh-dash.enable = true;
 
   opencode.enable = true;
 
   ripgrep.enable = true;
-
-  starship = {
-    enable = true;
-    settings = {
-      command_timeout = 2000;
-    };
-  };
-
-  nix-search-tv = {
-    enable = true;
-    enableTelevisionIntegration = true;
-  };
-
-  television = {
-    enable = true;
-    enableZshIntegration = true;
-    channels = {
-      brew-packages = fromTOML (builtins.readFile ./config/television/brew-packages.toml);
-      docker-compose = fromTOML (builtins.readFile ./config/television/docker-compose.toml);
-      docker-containers = fromTOML (builtins.readFile ./config/television/docker-containers.toml);
-      docker-volumes = fromTOML (builtins.readFile ./config/television/docker-volumes.toml);
-      downloads = fromTOML (builtins.readFile ./config/television/downloads.toml);
-      gh-prs = fromTOML (builtins.readFile ./config/television/gh-prs.toml);
-      git-reflog = fromTOML (builtins.readFile ./config/television/git-reflog.toml);
-      git-remotes = fromTOML (builtins.readFile ./config/television/git-remotes.toml);
-      git-stash = fromTOML (builtins.readFile ./config/television/git-stash.toml);
-      zoxide = fromTOML (builtins.readFile ./config/television/zoxide.toml);
-    };
-  };
-
-  wezterm = {
-    enable = true;
-    enableZshIntegration = true;
-    extraConfig = builtins.readFile ./config/wezterm/wezterm.lua;
-  };
 
   yazi = {
     enable = true;
@@ -247,7 +226,6 @@
       }
     '';
     settings = {
-      theme = "catppuccin-mocha";
       show_startup_tips = false;
       pane_frames = false;
     };
@@ -258,14 +236,23 @@
     enableCompletion = true;
     autocd = true;
     autosuggestion.enable = true;
-    oh-my-zsh = {
-      enable = true;
-      plugins = [ "git" ];
-    };
+    initExtra = ''
+      autoload -U promptinit; promptinit
+      prompt pure
+    '';
+
     plugins = [
       {
         name = "fzf-tab";
         src = "${pkgs.zsh-fzf-tab}/share/fzf-tab";
+      }
+      {
+        name = pkgs.zsh-nix-shell.pname;
+        src = pkgs.zsh-nix-shell.src;
+      }
+      {
+        name = pkgs.pure-prompt.pname;
+        src = pkgs.pure-prompt.src;
       }
     ];
     syntaxHighlighting.enable = true;

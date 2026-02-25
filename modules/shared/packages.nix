@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 with pkgs;
 [
   # ─────────────────────────────────────────────────────────────
@@ -32,6 +32,7 @@ with pkgs;
   shellcheck
   stylelint
   fontconfig
+  nvim-pkg
 
   # ─────────────────────────────────────────────────────────────
   # Language Servers & LSPs

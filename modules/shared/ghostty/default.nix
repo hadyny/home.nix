@@ -16,8 +16,8 @@ in
       font-size = 15
       font-thicken = true
       font-thicken-strength = 168
-      adjust-cell-height = 2%
-      theme = light:"Catppuccin Latte",dark:"Catppuccin Mocha"
+      adjust-cell-height = 5%
+      theme = light:"Rose Pine Dawn",dark:"Rose Pine"
       window-padding-x = 20
       window-padding-y = 20
       macos-option-as-alt = true

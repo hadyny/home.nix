@@ -83,6 +83,7 @@ in
               catppuccin-nvim
               onenord-nvim
               tokyonight-nvim
+              rose-pine
             ];
             general = with pkgs.vimPlugins; [
               lze
@@ -106,7 +107,6 @@ in
                   sha256 = "sha256-Pif3jJJyTm35XAfMFrldsnqH/0/M+dC7igAi+Upf0q8=";
                 };
               })
-
               nvim-tree-lua
             ];
             general = with pkgs.vimPlugins; [
@@ -139,18 +139,6 @@ in
             docs = with pkgs.vimPlugins; [
               render-markdown-nvim
               checkmate-nvim
-              (pkgs.vimUtils.buildVimPlugin {
-                pname = "markdown-agenda.nvim";
-                version = "0.0.0";
-                doCheck = false;
-                src = pkgs.fetchFromGitHub {
-                  owner = "Kamyil";
-                  repo = "markdown-agenda.nvim";
-                  rev = "main";
-                  sha256 = "sha256-aucBpYzrGMd7rOOtFJUR89BB9Zd2SSHM4gSbDqbYUWs=";
-                };
-              })
-
               orgmode
               (pkgs.vimUtils.buildVimPlugin {
                 pname = "org-modern.nvim";
@@ -242,7 +230,6 @@ in
               suffix-path = true;
               suffix-LD = true;
               wrapRc = true;
-              aliases = [ "nvim" ];
             };
             categories = {
               general = false;

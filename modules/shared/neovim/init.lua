@@ -18,13 +18,13 @@ options.shiftwidth = 4
 options.smartcase = true
 options.ignorecase = true
 options.laststatus = 3
+-- vim.opt.statusline = " %f %m %= %l:%c ❖ "
 options.number = true
 options.relativenumber = true
 options.scrolloff = 4
 options.sidescrolloff = 8
 options.completeopt = "menu,preview,noselect,popup"
 options.confirm = true
-options.showmode = false
 options.mouse = "a"
 options.winborder = "single"
 options.inccommand = "split"
@@ -142,7 +142,13 @@ map("n", "<Esc>", ":noh<CR><Esc>", { noremap = true, silent = true }) -- escape 
 map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 
 if nixCats("themes") then
-	vim.cmd.colorscheme("catppuccin")
+	require("rose-pine").setup({
+		highlight_groups = {
+			StatusLine = { fg = "pine", bg = "pine", blend = 10 },
+			StatusLineNC = { fg = "subtle", bg = "surface" },
+		},
+	})
+	vim.cmd.colorscheme("rose-pine")
 end
 
 if not (nixCats("general")) then
@@ -491,15 +497,33 @@ require("lze").load({
 		enabled = nixCats("docs") or false,
 		ft = "markdown",
 		after = function(_)
-			require("checkmate").setup()
-		end,
-	},
-	{
-		"markdown-agenda.nvim",
-		enabled = nixCats("docs") or false,
-		after = function(_)
-			require("markdown-agenda").setup({
-				directory = "~/notes",
+			require("checkmate").setup({
+				metadata = {
+					started = {
+						aliases = { "init" },
+						style = { fg = "#9fd6d5" },
+						get_value = function()
+							return tostring(os.date("%d/%m/%y %H:%M"))
+						end,
+						key = "<leader>Ts",
+						sort_order = 20,
+					},
+					done = {
+						aliases = { "completed", "finished" },
+						style = { fg = "#96de7a" },
+						get_value = function()
+							return tostring(os.date("%d/%m/%y %H:%M"))
+						end,
+						key = "<leader>Td",
+						on_add = function(todo)
+							require("checkmate").set_todo_state(todo, "checked")
+						end,
+						on_remove = function(todo)
+							require("checkmate").set_todo_state(todo, "unchecked")
+						end,
+						sort_order = 30,
+					},
+				},
 			})
 		end,
 	},

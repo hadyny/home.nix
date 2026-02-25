@@ -15,6 +15,7 @@
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
+    nix-nvim.url = "github:hadyny/nix-nvim";
   };
 
   outputs =
@@ -27,6 +28,7 @@
       nixCats,
       neovim-nightly-overlay,
       emacs-overlay,
+      nix-nvim,
     }:
     let
       # User configuration - define your user details here
