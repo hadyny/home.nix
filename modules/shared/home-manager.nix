@@ -95,6 +95,7 @@
     extraPackages = with pkgs; [
       rich-cli
     ];
+    shellWrapperName = "y";
     initLua = ''
       require('starship'):setup()
       require('git'):setup()
@@ -164,7 +165,7 @@
                 _children = [
                   {
                     pane = {
-                      command = "nvimIde";
+                      command = "nvim";
                     };
                   }
                 ];

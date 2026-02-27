@@ -12,7 +12,6 @@
     casks = [
       "1password"
       "firefox"
-      "obsidian"
       "postman"
       "slack"
       "ghostty"

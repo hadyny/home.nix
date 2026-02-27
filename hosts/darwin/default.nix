@@ -111,7 +111,6 @@
       "Slack"
       "Firefox Developer Edition"
       "Google Chrome"
-      "Obsidian"
     ];
 
     others = [

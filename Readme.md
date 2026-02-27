@@ -240,7 +240,6 @@ targets.darwin.dock = {
   apps = [
     "Slack"
     "Firefox"
-    "Obsidian"
   ];
 
   others = [
@@ -285,10 +284,15 @@ homebrew = {
     "1password"
     "firefox"
     "slack"
-    "visual-studio-code"
+    "ghostty"
+    "rider"
+    "datagrip"
+    "spotify"
+    "emacs-plus-app@master"
+    "claude-code"
   ];
-  brews = [ ];
-  taps = [ ];
+  brews = [ "libvterm" "dstask" ];
+  taps = [ "d12frosted/emacs-plus" ];
 
   onActivation = {
     cleanup = "zap";      # Remove unlisted packages
@@ -302,15 +306,16 @@ homebrew = {
 
 The configuration includes numerous CLI tools and programs:
 
-- **Shells**: zsh with oh-my-zsh, starship prompt, fzf-tab
-- **Editors**: Neovim (nixCats), Zed, Emacs
-- **Terminals**: Ghostty, WezTerm
-- **Dev Tools**: direnv, devenv, lazygit, lazydocker
-- **File Management**: yazi, eza, fd, ripgrep, bat
+- **Shells**: zsh with pure prompt, fzf-tab, mcfly history search
+- **Editors**: Neovim (nixCats), Emacs (emacs-plus on macOS)
+- **Terminals**: Ghostty
+- **Dev Tools**: direnv, devenv, lazygit, lazydocker, gh-dash, opencode
+- **File Management**: yazi, broot, eza, fd, ripgrep, bat
 - **Multiplexers**: zellij with custom layouts
-- **Utilities**: btop, jq, zoxide, television
+- **Utilities**: btop, jq, zoxide, posting, tabiew, kew
 
 ## Key Bindings
 
 - **Caps Lock** is remapped to **Control**
 - Zellij: `Ctrl+e` for session mode (instead of `Ctrl+o`)
+- Zellij: pane frames disabled, startup tips off
