@@ -8,9 +8,8 @@
   home.file.".config/rassumfrassum/tslint.py".source = ./config/rassumfrassum/tslint.py;
 
   imports = [
-    # Terminal & Editor
+    # Terminal
     ./ghostty
-    ./neovim
 
     # Services
     ./services/colima.nix

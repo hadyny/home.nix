@@ -100,12 +100,12 @@ with pkgs;
   # ─────────────────────────────────────────────────────────────
   redpanda-client
   kafkactl
-  kcat
+  # kcat # broken: avro-c++ fails to build against boost 1.89 (boost_system no longer separate)
 
   # ─────────────────────────────────────────────────────────────
   # Networking & Debugging
   # ─────────────────────────────────────────────────────────────
-  mitmproxy
+  # mitmproxy
   dbeaver-bin
   github-mcp-server
 ]

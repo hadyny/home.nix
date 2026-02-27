@@ -86,6 +86,8 @@
 
   gh-dash.enable = true;
 
+  neovim.enable = true;
+
   opencode.enable = true;
 
   ripgrep.enable = true;
@@ -237,7 +239,7 @@
     enableCompletion = true;
     autocd = true;
     autosuggestion.enable = true;
-    initExtra = ''
+    initContent = ''
       autoload -U promptinit; promptinit
       prompt pure
     '';
