@@ -86,8 +86,6 @@
 
   gh-dash.enable = true;
 
-  neovim.enable = true;
-
   opencode.enable = true;
 
   ripgrep.enable = true;

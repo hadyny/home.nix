@@ -2,7 +2,6 @@
   description = "Home-manager darwin config";
 
   inputs = {
-    # TODO: swift is broken on nixpkgs-unstable: https://github.com/nixos/nixpkgs/issues/483584
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nur = {
       url = "github:nix-community/NUR";
