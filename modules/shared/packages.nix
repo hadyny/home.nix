@@ -33,6 +33,8 @@ with pkgs;
   stylelint
   fontconfig
   nvim-pkg
+  scooter
+  koji
 
   # ─────────────────────────────────────────────────────────────
   # Language Servers & LSPs
