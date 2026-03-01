@@ -83,10 +83,10 @@ in {
           customCommands = [
             {
               key = "C";
-              command = "npx git-cz";
-              description = "commit with commitizen";
+              command = "koji";
+              description = "commit with koji";
               context = "files";
-              loadingText = "opening commitizen commit tool";
+              loadingText = "opening koji commit tool";
               output = "terminal";
             }
             {

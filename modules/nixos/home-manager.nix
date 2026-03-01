@@ -66,6 +66,7 @@ in
       githubUser = userConfig.githubUser;
       workspaces = userConfig.gitWorkspaces;
     };
+    koji.enable = true;
   };
 
   home.stateVersion = "24.11";

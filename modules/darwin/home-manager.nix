@@ -84,6 +84,7 @@ in
       githubUser = userConfig.githubUser;
       workspaces = userConfig.gitWorkspaces;
     };
+    koji.enable = true;
   };
 
   # https://nix-community.github.io/home-manager/release-notes.html

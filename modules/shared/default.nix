@@ -22,5 +22,6 @@
     ./tools/docker.nix
     ./tools/dotnet.nix
     ./tools/git.nix
+    ./tools/koji.nix
   ];
 }
