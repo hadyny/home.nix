@@ -3,7 +3,7 @@
 with lib;
 
 let
-  cfg = config.services.colima;
+  cfg = config.settings.colima;
   requiredPackages = with pkgs; [ colima docker ];
 
   colimaWatcher = cfg:
@@ -118,7 +118,9 @@ let
   };
 in
 {
-  options.services.colima = {
+  options.settings.colima = {
+    enable = mkEnableOption "Enable Colima container runtime";
+
     config = mkOption {
       type = colimaOpts;
       default = {};

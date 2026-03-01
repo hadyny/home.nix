@@ -9,7 +9,7 @@ let
       url = "https://github.com/NixOS/nixpkgs/";
       ref = ref;
       rev = hash;
-    }) { system = super.stdenv.hostPlatform.system; };
+    }) { localSystem = super.stdenv.hostPlatform.system; };
 
   pinned = name: hash: pinnedAt name "refs/heads/nixpkgs-unstable" hash;
   pinnedMaster = name: hash: pinnedAt name "refs/heads/master" hash;

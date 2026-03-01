@@ -34,7 +34,6 @@ in
   home = {
     username = userConfig.name;
     homeDirectory = userConfig.home;
-    wallpaper.file = ../shared/config/wallpaper/nord.jpg;
 
     sessionVariables = {
       EDITOR = "nvim";
@@ -63,6 +62,14 @@ in
     emacs = {
       enable = !pkgs.stdenv.isDarwin;
       package = pkgs.emacs-unstable;
+    };
+  };
+
+  settings = {
+    ghostty.enable = true;
+    wallpaper = {
+      enable = true;
+      file = ../shared/config/wallpaper/nord.jpg;
     };
     colima = {
       enable = true;

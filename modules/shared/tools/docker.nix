@@ -1,6 +1,10 @@
-{ pkgs, ... }:
+{ pkgs, config, lib, ... }:
+
+with lib;
 
 let
+  cfg = config.tools.docker;
+
   dockerLoginScript = pkgs.writeShellScriptBin "docker-login" ''
     set -euo pipefail
 
@@ -35,4 +39,12 @@ let
     fi
   '';
 in
-{ home.packages = with pkgs; [ awscli2 docker dockerLoginScript ]; }
+{
+  options.tools.docker = {
+    enable = mkEnableOption "Enable Docker and related tools";
+  };
+
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [ awscli2 docker dockerLoginScript ];
+  };
+}
