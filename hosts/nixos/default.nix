@@ -21,10 +21,15 @@
     pathsToLink = [ "/share/zsh" ];
   };
 
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+  };
+
   services.greetd = {
     enable = true;
     settings.default_session = {
-      command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${pkgs.hyprland}/bin/Hyprland";
+      command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${pkgs.hyprland}/bin/Hyprland";
       user = "greeter";
     };
     settings.initial_session = {
@@ -40,7 +45,7 @@
     home = "/home/${userConfig.name}";
     shell = pkgs.zsh;
     initialPassword = "password123";
-    extraGroups = [ "wheel" "docker" "video" "input" ];
+    extraGroups = [ "wheel" "docker" "video" "input" "seat" ];
   };
 
   nix = {
