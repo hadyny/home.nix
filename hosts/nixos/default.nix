@@ -13,7 +13,7 @@
   };
 
   programs.zsh.enable = true;
-  programs.hyprland.enable = true;
+  programs.sway.enable = true;
 
   environment = {
     shells = [ pkgs.zsh ];
@@ -29,11 +29,11 @@
   services.greetd = {
     enable = true;
     settings.default_session = {
-      command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${pkgs.hyprland}/bin/Hyprland";
+      command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${pkgs.sway}/bin/sway";
       user = "greeter";
     };
     settings.initial_session = {
-      command = "env WLR_RENDERER=pixman LIBGL_ALWAYS_SOFTWARE=1 ${pkgs.hyprland}/bin/Hyprland";
+      command = "env WLR_RENDERER=pixman LIBGL_ALWAYS_SOFTWARE=1 ${pkgs.sway}/bin/sway";
       user = userConfig.name;
     };
   };

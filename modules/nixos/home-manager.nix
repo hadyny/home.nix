@@ -59,56 +59,47 @@ in
 
   settings.ghostty.enable = true;
 
-  wayland.windowManager.hyprland = {
+  wayland.windowManager.sway = {
     enable = true;
-    settings = {
-      monitor = ",preferred,auto,1";
+    config = {
+      modifier = "Mod4";
+      terminal = "ghostty";
+      menu = "wofi --show drun";
 
-      env = [
-        "XDG_SESSION_TYPE,wayland"
-        "XDG_CURRENT_DESKTOP,Hyprland"
-        "LIBGL_ALWAYS_SOFTWARE,1"
-      ];
+      input."*".xkb_layout = "us";
 
-      exec-once = [ "ghostty" ];
+      startup = [ { command = "ghostty"; } ];
 
-      general = {
-        gaps_in = 5;
-        gaps_out = 10;
-        border_size = 2;
-        layout = "dwindle";
+      keybindings =
+        let mod = "Mod4";
+        in lib.mkOptionDefault (
+          {
+            "${mod}+q" = "kill";
+            "${mod}+f" = "fullscreen toggle";
+            "${mod}+v" = "floating toggle";
+          }
+          // builtins.listToAttrs (builtins.genList (i: {
+            name = "${mod}+${toString (i + 1)}";
+            value = "workspace number ${toString (i + 1)}";
+          }) 9)
+          // builtins.listToAttrs (builtins.genList (i: {
+            name = "${mod}+Shift+${toString (i + 1)}";
+            value = "move container to workspace number ${toString (i + 1)}";
+          }) 9)
+        );
+
+      gaps = {
+        inner = 5;
+        outer = 10;
       };
 
-      decoration.rounding = 8;
-
-      animations.enabled = false;
-
-      input = {
-        kb_layout = "us";
-        follow_mouse = 1;
-      };
-
-      "$mod" = "SUPER";
-
-      bind =
-        [
-          "$mod, Return, exec, ghostty"
-          "$mod, Q, killactive"
-          "$mod, D, exec, wofi --show drun"
-          "$mod, F, fullscreen"
-          "$mod, V, togglefloating"
-          "$mod, left, movefocus, l"
-          "$mod, right, movefocus, r"
-          "$mod, up, movefocus, u"
-          "$mod, down, movefocus, d"
-          "$mod SHIFT, left, movewindow, l"
-          "$mod SHIFT, right, movewindow, r"
-          "$mod SHIFT, up, movewindow, u"
-          "$mod SHIFT, down, movewindow, d"
-        ]
-        ++ (builtins.genList (i: "$mod, ${toString (i + 1)}, workspace, ${toString (i + 1)}") 9)
-        ++ (builtins.genList (i: "$mod SHIFT, ${toString (i + 1)}, movetoworkspace, ${toString (i + 1)}") 9);
+      bars = [ ];
     };
+
+    extraConfig = ''
+      set $gnome-schema org.gnome.desktop.interface
+      exec_always gsettings set $gnome-schema color-scheme prefer-dark
+    '';
   };
 
   tools = {
