@@ -68,6 +68,7 @@ in
       env = [
         "XDG_SESSION_TYPE,wayland"
         "XDG_CURRENT_DESKTOP,Hyprland"
+        "LIBGL_ALWAYS_SOFTWARE,1"
       ];
 
       exec-once = [ "ghostty" ];
