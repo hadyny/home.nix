@@ -50,6 +50,20 @@ in
 
   fonts.fontconfig.enable = true;
 
+  gtk = {
+    enable = true;
+    theme = {
+      name = "rose-pine";
+      package = pkgs.rose-pine-gtk-theme;
+    };
+    iconTheme = {
+      name = "rose-pine";
+      package = pkgs.rose-pine-gtk-theme;
+    };
+  };
+
+  dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+
   services = {
     emacs = {
       enable = true;
@@ -96,10 +110,6 @@ in
       bars = [ ];
     };
 
-    extraConfig = ''
-      set $gnome-schema org.gnome.desktop.interface
-      exec_always gsettings set $gnome-schema color-scheme prefer-dark
-    '';
   };
 
   tools = {
