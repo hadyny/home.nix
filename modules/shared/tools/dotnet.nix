@@ -69,10 +69,12 @@ in
       DOTNET_ROOT = "${pkgs.dotnet-sdk.outPath}/share/dotnet";
     };
 
-    home.file.".nuget/NuGet/NuGet.Config".source =
-      let
-        nugetConfig = buildNugetConfig cfg.nugetSources;
-      in
-      "${nugetConfig}/.nuget/NuGet/NuGet.Config";
+    home.file = lib.mkIf (cfg.nugetSources != { }) {
+      ".nuget/NuGet/NuGet.Config".source =
+        let
+          nugetConfig = buildNugetConfig cfg.nugetSources;
+        in
+        "${nugetConfig}/.nuget/NuGet/NuGet.Config";
+    };
   };
 }
