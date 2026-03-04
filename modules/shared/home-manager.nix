@@ -30,6 +30,8 @@
 
   jq.enable = true;
 
+  kitty.enable = true;
+
   lazydocker.enable = true;
 
   mcfly = {
