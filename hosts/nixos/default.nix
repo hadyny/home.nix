@@ -13,7 +13,18 @@
   };
 
   programs.zsh.enable = true;
-  programs.hyprland.enable = true;
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+  };
+  programs.uwsm = {
+    enable = true;
+    waylandCompositors.hyprland = {
+      prettyName = "Hyprland";
+      comment = "Hyprland compositor managed by UWSM";
+      binPath = "/run/current-system/sw/bin/Hyprland";
+    };
+  };
 
   environment = {
     shells = [ pkgs.zsh ];
@@ -24,11 +35,11 @@
   services.greetd = {
     enable = true;
     settings.default_session = {
-      command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${pkgs.hyprland}/bin/Hyprland";
+      command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd 'uwsm start hyprland-uwsm.desktop'";
       user = "greeter";
     };
     settings.initial_session = {
-      command = "env WLR_RENDERER=pixman LIBGL_ALWAYS_SOFTWARE=1 ${pkgs.hyprland}/bin/Hyprland";
+      command = "env WLR_RENDERER=pixman LIBGL_ALWAYS_SOFTWARE=1 uwsm start hyprland-uwsm.desktop";
       user = userConfig.name;
     };
   };
