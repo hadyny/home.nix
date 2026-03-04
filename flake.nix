@@ -64,7 +64,7 @@
         ];
       };
 
-      nixosConfigurations."nixos" = nixpkgs.lib.nixosSystem {
+      nixosConfigurations."nixos-vm" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs userConfig; };
         modules = [
           { nixpkgs.hostPlatform = "aarch64-linux"; }
