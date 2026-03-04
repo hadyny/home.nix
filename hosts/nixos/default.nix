@@ -21,9 +21,8 @@
     pathsToLink = [ "/share/zsh" ];
   };
 
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport = true;
   };
 
   services.greetd = {
@@ -45,7 +44,13 @@
     home = "/home/${userConfig.name}";
     shell = pkgs.zsh;
     initialPassword = "password123";
-    extraGroups = [ "wheel" "docker" "video" "input" "seat" ];
+    extraGroups = [
+      "wheel"
+      "docker"
+      "video"
+      "input"
+      "seat"
+    ];
   };
 
   nix = {
