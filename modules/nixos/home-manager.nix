@@ -29,7 +29,11 @@ in
     ];
   };
 
-  imports = [ ../shared ];
+  imports = [
+    ../shared
+    ../shared/secureEnv/onePassword.nix
+    ../shared/work.nix
+  ];
 
   home = {
     username = userConfig.name;
@@ -44,7 +48,10 @@ in
     packages =
       pkgs.callPackage ../shared/packages.nix { inherit pkgs; }
       ++ pkgs.callPackage ./packages.nix { inherit pkgs; }
-      ++ [ pkgs.ghostty pkgs.wofi ];
+      ++ [
+        pkgs.ghostty
+        pkgs.wofi
+      ];
   };
 
   programs = shared-programs // { };
@@ -89,21 +96,27 @@ in
       startup = [ { command = "ghostty"; } ];
 
       keybindings =
-        let mod = "Mod4";
-        in lib.mkOptionDefault (
+        let
+          mod = "Mod4";
+        in
+        lib.mkOptionDefault (
           {
             "${mod}+q" = "kill";
             "${mod}+f" = "fullscreen toggle";
             "${mod}+v" = "floating toggle";
           }
-          // builtins.listToAttrs (builtins.genList (i: {
-            name = "${mod}+${toString (i + 1)}";
-            value = "workspace number ${toString (i + 1)}";
-          }) 9)
-          // builtins.listToAttrs (builtins.genList (i: {
-            name = "${mod}+Shift+${toString (i + 1)}";
-            value = "move container to workspace number ${toString (i + 1)}";
-          }) 9)
+          // builtins.listToAttrs (
+            builtins.genList (i: {
+              name = "${mod}+${toString (i + 1)}";
+              value = "workspace number ${toString (i + 1)}";
+            }) 9
+          )
+          // builtins.listToAttrs (
+            builtins.genList (i: {
+              name = "${mod}+Shift+${toString (i + 1)}";
+              value = "move container to workspace number ${toString (i + 1)}";
+            }) 9
+          )
         );
 
       gaps = {
@@ -115,11 +128,6 @@ in
     };
 
   };
-
-  imports = [
-    ../shared/secureEnv/onePassword.nix
-    ../shared/work.nix
-  ];
 
   tools = {
     aws.enable = true;
