@@ -14,7 +14,6 @@
       "firefox"
       "postman"
       "slack"
-      "ghostty"
       "rider"
       "datagrip"
       "spotify"

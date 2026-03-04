@@ -2,4 +2,5 @@
 with pkgs;
 [
   utm
+  ghostty-bin
 ]
