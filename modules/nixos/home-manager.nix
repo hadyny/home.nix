@@ -65,8 +65,6 @@ in
       monitor = ",preferred,auto,1";
 
       env = [
-        "WLR_RENDERER,pixman"
-        "LIBGL_ALWAYS_SOFTWARE,1"
         "XDG_SESSION_TYPE,wayland"
         "XDG_CURRENT_DESKTOP,Hyprland"
       ];

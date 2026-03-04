@@ -24,11 +24,11 @@
   services.greetd = {
     enable = true;
     settings.default_session = {
-      command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+      command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${pkgs.hyprland}/bin/Hyprland";
       user = "greeter";
     };
     settings.initial_session = {
-      command = "Hyprland";
+      command = "env WLR_RENDERER=pixman LIBGL_ALWAYS_SOFTWARE=1 ${pkgs.hyprland}/bin/Hyprland";
       user = userConfig.name;
     };
   };
@@ -39,7 +39,8 @@
     isNormalUser = true;
     home = "/home/${userConfig.name}";
     shell = pkgs.zsh;
-    extraGroups = [ "wheel" "docker" ];
+    initialPassword = "password123";
+    extraGroups = [ "wheel" "docker" "video" "input" ];
   };
 
   nix = {
