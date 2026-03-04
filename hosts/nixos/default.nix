@@ -13,11 +13,24 @@
   };
 
   programs.zsh.enable = true;
+  programs.hyprland.enable = true;
 
   environment = {
     shells = [ pkgs.zsh ];
     systemPackages = [ pkgs.nixpkgs-fmt ];
     pathsToLink = [ "/share/zsh" ];
+  };
+
+  services.greetd = {
+    enable = true;
+    settings.default_session = {
+      command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+      user = "greeter";
+    };
+    settings.initial_session = {
+      command = "Hyprland";
+      user = userConfig.name;
+    };
   };
 
   fonts.packages = import ../../modules/shared/fonts.nix { inherit pkgs; };
