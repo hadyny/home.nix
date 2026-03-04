@@ -57,5 +57,23 @@
     };
   };
 
+  fileSystems."/boot" = {
+    device = "/dev/vda1";
+    fsType = "vfat";
+    options = [ "umask=0077" ];
+  };
+
+  fileSystems."/" = {
+    device = "/dev/vda2";
+    fsType = "ext4";
+  };
+
+  swapDevices = [ { device = "/dev/vda3"; } ];
+
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+  };
+
   system.stateVersion = "24.11";
 }
