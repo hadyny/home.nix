@@ -15,6 +15,9 @@
   programs.zsh.enable = true;
   programs.sway.enable = true;
 
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.greetd.enableGnomeKeyring = true;
+
   environment = {
     shells = [ pkgs.zsh ];
     systemPackages = [ pkgs.nixpkgs-fmt ];

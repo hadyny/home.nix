@@ -38,6 +38,7 @@ in
     sessionVariables = {
       EDITOR = "nvim";
       TERM = "xterm-256color";
+      AWS_PROFILE = "dev";
     };
 
     packages =
@@ -71,7 +72,10 @@ in
     };
   };
 
-  settings.ghostty.enable = true;
+  settings.ghostty = {
+    enable = true;
+    fontSize = 12;
+  };
 
   wayland.windowManager.sway = {
     enable = true;
@@ -111,6 +115,11 @@ in
     };
 
   };
+
+  imports = [
+    ../shared/secureEnv/onePassword.nix
+    ../shared/work.nix
+  ];
 
   tools = {
     aws.enable = true;
