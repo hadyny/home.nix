@@ -24,7 +24,7 @@
 
   users.users.${userConfig.name} = {
     isNormalUser = true;
-    home = userConfig.home;
+    home = "/home/${userConfig.name}";
     shell = pkgs.zsh;
     extraGroups = [ "wheel" "docker" ];
   };

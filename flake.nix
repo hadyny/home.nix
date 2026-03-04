@@ -67,7 +67,7 @@
       nixosConfigurations."nixos" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs userConfig; };
         modules = [
-          { nixpkgs.hostPlatform = "x86_64-linux"; }
+          { nixpkgs.hostPlatform = "aarch64-linux"; }
           home-manager.nixosModules.home-manager
           {
             home-manager = {
