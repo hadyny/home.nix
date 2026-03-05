@@ -1,7 +1,6 @@
 # Base NixOS system configuration
 {
   pkgs,
-  lib,
   userConfig,
   ...
 }:

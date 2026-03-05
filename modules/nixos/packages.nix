@@ -2,5 +2,5 @@
 with pkgs;
 [
   claude-code
-  dstask
+  _1password-gui
 ]

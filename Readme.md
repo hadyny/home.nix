@@ -1,6 +1,13 @@
 # Nix Darwin Configuration
 
-A declarative system configuration using [nix-darwin](https://github.com/LnL7/nix-darwin) and [home-manager](https://github.com/nix-community/home-manager) for macOS, with NixOS support.
+A flake-based declarative system configuration using [nix-darwin](https://github.com/LnL7/nix-darwin) and [home-manager](https://github.com/nix-community/home-manager) for macOS, with NixOS support.
+
+This configuration provides a complete development environment with:
+- Cross-platform support (macOS and NixOS)
+- Modular structure for shared, darwin-specific, and nixos-specific configurations
+- Work profile support with separate configurations and certificates
+- Custom modules for Git, AWS, Docker, .NET, 1Password integration, and more
+- Comprehensive development tools including Neovim (via nix-nvim), Emacs, and Ghostty terminal
 
 ## Repository Structure
 
@@ -11,31 +18,40 @@ A declarative system configuration using [nix-darwin](https://github.com/LnL7/ni
 │   ├── darwin/               # macOS system configuration
 │   │   ├── default.nix       # Base darwin config
 │   │   └── work/             # Work machine overrides
-│   └── nixos/                # NixOS system configuration
+│   │       ├── certificates.nix # Work certificates
+│   │       └── default.nix   # Work-specific config
+│   └── nixos/                # NixOS system configuration (Sway WM)
 ├── modules/
 │   ├── shared/               # Cross-platform modules
 │   │   ├── home-manager.nix  # Program configurations
 │   │   ├── packages.nix      # System packages
 │   │   ├── fonts.nix         # Font packages
-│   │   ├── neovim/           # Neovim IDE setup (nixCats)
 │   │   ├── ghostty/          # Terminal configuration
 │   │   ├── services/
-│   │   │   └── colima.nix    # Docker virtualization
+│   │   │   └── colima.nix    # Docker virtualisation
 │   │   ├── settings/
 │   │   │   └── wallpaper.nix # Desktop wallpaper
 │   │   ├── secureEnv/
 │   │   │   └── onePassword.nix # 1Password integration
-│   │   └── tools/
-│   │       ├── aws.nix       # AWS CLI & profiles
-│   │       ├── docker.nix    # Docker utilities
-│   │       ├── dotnet.nix    # .NET SDK & NuGet
-│   │       └── git.nix       # Git configuration
+│   │   ├── tools/
+│   │   │   ├── aws.nix       # AWS CLI & profiles
+│   │   │   ├── docker.nix    # Docker utilities
+│   │   │   ├── dotnet.nix    # .NET SDK & NuGet
+│   │   │   ├── git.nix       # Git configuration
+│   │   │   └── koji.nix      # Conventional commit tool
+│   │   └── work.nix          # Work-specific settings
 │   ├── darwin/               # macOS-specific modules
 │   │   ├── apps.nix          # Homebrew packages
+│   │   ├── home-manager.nix  # Darwin home-manager config
+│   │   ├── packages.nix      # Darwin-specific packages
 │   │   ├── dock-apps.nix     # Dock configuration
 │   │   ├── plists.nix        # Plist modifications
-│   │   └── raycast.nix       # Raycast launcher
+│   │   ├── raycast.nix       # Raycast launcher
+│   │   └── work/             # Work-specific darwin modules
+│   │       └── aws.nix       # Work AWS configuration
 │   └── nixos/                # NixOS-specific modules
+│       ├── home-manager.nix  # NixOS home-manager config
+│       └── packages.nix      # NixOS-specific packages
 └── overlays/
     └── pinned.nix            # Version-pinned packages
 ```
@@ -71,6 +87,19 @@ A declarative system configuration using [nix-darwin](https://github.com/LnL7/ni
      email = "your@email.com";
      home = "/Users/your-username";
      githubUser = "your-github";
+     
+     # Optional: Git workspace-specific settings
+     gitWorkspaces = {
+       "src/work" = {
+         user = {
+           email = "work@company.com";
+           name = userConfig.fullName;
+         };
+         core = {
+           autocrlf = "input";
+         };
+       };
+     };
    };
    ```
 
@@ -89,11 +118,36 @@ A declarative system configuration using [nix-darwin](https://github.com/LnL7/ni
 # Update flake inputs
 nix flake update
 
-# Rebuild
+# Rebuild (macOS)
 darwin-rebuild switch --flake /etc/nix-darwin
+
+# Rebuild (NixOS)
+sudo nixos-rebuild switch --flake /etc/nix-darwin
 ```
 
 ## Modules
+
+### Koji (`tools.koji`)
+
+Configures Koji, a conventional commit message tool with emoji support and interactive prompts.
+
+```nix
+tools.koji = {
+  enable = true;
+  emoji = true;                # Prepend commits with emoji
+  autocomplete = true;         # Scope autocomplete from history
+  breakingChanges = true;      # Prompt for breaking changes
+  issues = true;               # Prompt for issue references
+  sign = false;                # GPG sign commits
+  
+  # Customise commit types
+  commitTypes = [
+    { name = "feat"; emoji = "✨"; description = "A new feature"; }
+    { name = "fix"; emoji = "🐛"; description = "A bug fix"; }
+    # ... more types
+  ];
+};
+```
 
 ### Git (`tools.git`)
 
@@ -109,8 +163,13 @@ tools.git = {
   # Per-directory git config overrides
   workspaces = {
     "src/work" = {
-      user.email = "work@company.com";
-      core.autocrlf = "input";
+      user = {
+        email = "work@company.com";
+        name = "Your Name";
+      };
+      core = {
+        autocrlf = "input";
+      };
     };
   };
 };
@@ -164,7 +223,7 @@ tools.aws = {
 
 ### .NET (`tools.dotnet`)
 
-Installs .NET SDKs (8.0, 9.0, 10.0) and configures private NuGet sources.
+Installs .NET SDKs (8.0, 9.0, 10.0) and configures private NuGet sources with environment variable support.
 
 ```nix
 tools.dotnet = {
@@ -178,6 +237,8 @@ tools.dotnet = {
   };
 };
 ```
+
+The module also includes `easydotnet`, a JSON-RPC server for Neovim .NET development.
 
 ### 1Password (`secureEnv.onePassword`)
 
@@ -207,6 +268,16 @@ secureEnv.onePassword = {
 ```
 
 Secrets are stored in macOS Keychain (or libsecret on Linux) and retrieved at shell startup, avoiding repeated 1Password authentication prompts.
+
+### Docker (`tools.docker`)
+
+Provides Docker utilities including docker-compose, lazydocker, and dive for image analysis.
+
+```nix
+tools.docker = {
+  enable = true;
+};
+```
 
 ### Colima (`services.colima`)
 
@@ -278,21 +349,21 @@ targets.darwin.plists = {
 Homebrew packages are managed via `modules/darwin/apps.nix`:
 
 ```nix
-homebrew = {
-  enable = true;
-  casks = [
-    "1password"
-    "firefox"
-    "slack"
-    "ghostty"
-    "rider"
-    "datagrip"
-    "spotify"
-    "emacs-plus-app@master"
-    "claude-code"
-  ];
-  brews = [ "libvterm" "dstask" ];
-  taps = [ "d12frosted/emacs-plus" ];
+  homebrew = {
+    enable = true;
+    casks = [
+      "1password"
+      "firefox"
+      "postman"
+      "slack"
+      "rider"
+      "datagrip"
+      "spotify"
+      "emacs-plus-app@master"
+      "claude-code"
+    ];
+    brews = [ "libvterm" "dstask" ];
+    taps = [ "d12frosted/emacs-plus" ];
 
   onActivation = {
     cleanup = "zap";      # Remove unlisted packages
@@ -307,15 +378,43 @@ homebrew = {
 The configuration includes numerous CLI tools and programs:
 
 - **Shells**: zsh with pure prompt, fzf-tab, mcfly history search
-- **Editors**: Neovim (nixCats), Emacs (emacs-plus on macOS)
-- **Terminals**: Ghostty
-- **Dev Tools**: direnv, devenv, lazygit, lazydocker, gh-dash, opencode
-- **File Management**: yazi, broot, eza, fd, ripgrep, bat
-- **Multiplexers**: zellij with custom layouts
-- **Utilities**: btop, jq, zoxide, posting, tabiew, kew
+- **Editors**: Neovim (nix-nvim), Emacs (emacs-plus on macOS), Helix
+- **Terminals**: Ghostty (primary via Nix), Zellij multiplexer
+- **Dev Tools**: direnv, devenv, lazygit, lazydocker, gh (GitHub CLI), gh-dash, opencode, koji
+- **File Management**: yazi, broot, eza, fd, ripgrep, bat, television
+- **Languages**: .NET 8/9/10, Node.js, Haskell, Roslyn LSP
+- **Containers**: Docker, docker-compose, Podman (NixOS), dive
+- **Utilities**: btop, jq, zoxide, posting (API client), tabiew (CSV viewer), kew (music player)
+- **Databases**: DataGrip (via Homebrew), DBeaver
+- **API Tools**: Posting (HTTP client), Postman (via Homebrew)
+- **Browsers**: Firefox (primary on NixOS), Helium
 
 ## Key Bindings
 
-- **Caps Lock** is remapped to **Control**
+- **Caps Lock** is remapped to **Control** (macOS)
 - Zellij: `Ctrl+e` for session mode (instead of `Ctrl+o`)
 - Zellij: pane frames disabled, startup tips off
+
+## Flake Inputs
+
+- **nixpkgs**: NixOS/nixpkgs nixos-unstable
+- **nix-darwin**: LnL7/nix-darwin for macOS configuration
+- **home-manager**: nix-community/home-manager for user environment
+- **emacs-overlay**: nix-community/emacs-overlay for latest Emacs builds
+- **nix-nvim**: hadyny/nix-nvim for custom Neovim configuration
+- **nur**: nix-community/NUR for additional packages
+
+## Platform-Specific Features
+
+### macOS (Darwin)
+- Homebrew integration with automatic cleanup
+- Dock configuration
+- Raycast launcher setup
+- Plist modification support
+- Work profile with certificates
+
+### NixOS
+- Sway window manager with themed configuration
+- Podman container runtime
+- Wayland display server
+- Custom filesystems and boot configuration
