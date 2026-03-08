@@ -36,6 +36,7 @@ with pkgs;
   scooter
   koji
   claude-code
+  fnm
 
   # ─────────────────────────────────────────────────────────────
   # Language Servers & LSPs

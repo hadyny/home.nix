@@ -71,6 +71,7 @@
 
   direnv = {
     enable = true;
+    enableZshIntegration = false;
     nix-direnv.enable = true;
     config.global.log_filter = "^(loading|using nix|error|deny|allow).*$";
   };
@@ -242,6 +243,18 @@
     initContent = ''
       autoload -U promptinit; promptinit
       prompt pure
+      eval "$(fnm env --use-on-cd --shell zsh)"
+
+      # direnv hook — skip activation in Node projects
+      _direnv_hook() {
+        if [[ ! -f "$PWD/package.json" ]]; then
+          eval "$(direnv export zsh)"
+        fi
+      }
+      typeset -ag precmd_functions
+      if (( ! ''${precmd_functions[(I)_direnv_hook]} )); then
+        precmd_functions=(_direnv_hook $precmd_functions)
+      fi
     '';
 
     plugins = [
