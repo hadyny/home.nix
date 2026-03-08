@@ -56,6 +56,7 @@
         "https://nix-tools.cachix.org"
         "https://nix-community.cachix.org"
         "https://devenv.cachix.org"
+        "https://claude-code.cachix.org"
       ];
 
       trusted-public-keys = [
@@ -63,6 +64,7 @@
         "nix-tools.cachix.org-1:ebBEBZLogLxcCvipq2MTvuHlP7ZRdkazFSQsbs0Px1A="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
+        "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
       ];
     };
   };

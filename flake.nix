@@ -13,6 +13,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
     nix-nvim.url = "github:hadyny/nix-nvim";
+    claude-code.url = "github:sadjow/claude-code-nix";
   };
 
   outputs =
@@ -24,6 +25,7 @@
       nur,
       emacs-overlay,
       nix-nvim,
+      claude-code,
     }:
     let
       # User configuration - define your user details here

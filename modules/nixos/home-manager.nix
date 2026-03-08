@@ -25,6 +25,7 @@ in
       inputs.nur.overlays.default
       inputs.emacs-overlay.overlays.default
       inputs.nix-nvim.overlays.default
+      inputs.claude-code.overlays.default
       (import ../../overlays/pinned.nix)
     ];
   };

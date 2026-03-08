@@ -25,6 +25,7 @@ in
       inputs.nur.overlays.default
       inputs.emacs-overlay.overlays.default
       inputs.nix-nvim.overlays.default
+      inputs.claude-code.overlays.default
       (import ../../overlays/pinned.nix)
     ];
   };
@@ -66,7 +67,10 @@ in
   };
 
   settings = {
-    ghostty.enable = true;
+    ghostty = {
+      enable = true;
+      adjustCellHeight = "10%";
+    };
     wallpaper = {
       enable = true;
       file = ../shared/config/wallpaper/nord.jpg;

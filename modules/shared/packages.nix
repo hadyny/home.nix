@@ -35,6 +35,7 @@ with pkgs;
   nvim-pkg
   scooter
   koji
+  claude-code
 
   # ─────────────────────────────────────────────────────────────
   # Language Servers & LSPs
