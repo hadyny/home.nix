@@ -1,10 +1,10 @@
-# Nix Darwin Configuration
+# Nix Configuration
 
-A flake-based declarative system configuration using [nix-darwin](https://github.com/LnL7/nix-darwin) and [home-manager](https://github.com/nix-community/home-manager) for macOS, with NixOS support.
+A flake-based declarative system configuration using [nix-darwin](https://github.com/LnL7/nix-darwin) and [home-manager](https://github.com/nix-community/home-manager) for macOS and Linux. Only requires nix to be installed — home-manager is bootstrapped from the flake.
 
 This configuration provides a complete development environment with:
-- Cross-platform support (macOS and NixOS)
-- Modular structure for shared, darwin-specific, and nixos-specific configurations
+- Cross-platform support (macOS via nix-darwin, any Linux via standalone home-manager)
+- Modular structure for shared, darwin-specific, and linux-specific configurations
 - Work profile support with separate configurations and certificates
 - Custom modules for Git, AWS, Docker, .NET, 1Password integration, and more
 - Comprehensive development tools including Neovim (via nix-nvim), Emacs, and Ghostty terminal
@@ -15,12 +15,11 @@ This configuration provides a complete development environment with:
 .
 ├── flake.nix                 # Main entry point
 ├── hosts/
-│   ├── darwin/               # macOS system configuration
-│   │   ├── default.nix       # Base darwin config
-│   │   └── work/             # Work machine overrides
-│   │       ├── certificates.nix # Work certificates
-│   │       └── default.nix   # Work-specific config
-│   └── nixos/                # NixOS system configuration (Sway WM)
+│   └── darwin/               # macOS system configuration
+│       ├── default.nix       # Base darwin config
+│       └── work/             # Work machine overrides
+│           ├── certificates.nix # Work certificates
+│           └── default.nix   # Work-specific config
 ├── modules/
 │   ├── shared/               # Cross-platform modules
 │   │   ├── home-manager.nix  # Program configurations
@@ -49,9 +48,9 @@ This configuration provides a complete development environment with:
 │   │   ├── raycast.nix       # Raycast launcher
 │   │   └── work/             # Work-specific darwin modules
 │   │       └── aws.nix       # Work AWS configuration
-│   └── nixos/                # NixOS-specific modules
-│       ├── home-manager.nix  # NixOS home-manager config
-│       └── packages.nix      # NixOS-specific packages
+│   └── linux/                # Linux-specific modules
+│       ├── home-manager.nix  # Linux home-manager config
+│       └── packages.nix      # Linux-specific packages
 └── overlays/
     └── pinned.nix            # Version-pinned packages
 ```
@@ -87,7 +86,7 @@ This configuration provides a complete development environment with:
      email = "your@email.com";
      home = "/Users/your-username";
      githubUser = "your-github";
-     
+
      # Optional: Git workspace-specific settings
      gitWorkspaces = {
        "src/work" = {
@@ -108,8 +107,8 @@ This configuration provides a complete development environment with:
    # macOS
    nix run nix-darwin/master#darwin-rebuild -- switch --flake /etc/nix-darwin
 
-   # NixOS
-   sudo nixos-rebuild switch --flake /etc/nix-darwin
+   # Linux (any distro — only nix required)
+   nix run home-manager/master -- switch --flake /etc/nix-darwin#your-username
    ```
 
 ## Updating
@@ -121,8 +120,8 @@ nix flake update
 # Rebuild (macOS)
 darwin-rebuild switch --flake /etc/nix-darwin
 
-# Rebuild (NixOS)
-sudo nixos-rebuild switch --flake /etc/nix-darwin
+# Rebuild (Linux)
+home-manager switch --flake /etc/nix-darwin#your-username
 ```
 
 ## Modules
@@ -139,7 +138,7 @@ tools.koji = {
   breakingChanges = true;      # Prompt for breaking changes
   issues = true;               # Prompt for issue references
   sign = false;                # GPG sign commits
-  
+
   # Customise commit types
   commitTypes = [
     { name = "feat"; emoji = "✨"; description = "A new feature"; }
@@ -281,7 +280,7 @@ tools.docker = {
 
 ### Colima (`services.colima`)
 
-Docker virtualization for macOS using Colima with Apple Virtualization framework.
+Docker virtualisation for macOS using Colima with Apple Virtualisation framework.
 
 ```nix
 services.colima = {
@@ -383,11 +382,11 @@ The configuration includes numerous CLI tools and programs:
 - **Dev Tools**: direnv, devenv, lazygit, lazydocker, gh (GitHub CLI), gh-dash, opencode, koji
 - **File Management**: yazi, broot, eza, fd, ripgrep, bat, television
 - **Languages**: .NET 8/9/10, Node.js, Haskell, Roslyn LSP
-- **Containers**: Docker, docker-compose, Podman (NixOS), dive
+- **Containers**: Docker, docker-compose, dive
 - **Utilities**: btop, jq, zoxide, posting (API client), tabiew (CSV viewer), kew (music player)
 - **Databases**: DataGrip (via Homebrew), DBeaver
 - **API Tools**: Posting (HTTP client), Postman (via Homebrew)
-- **Browsers**: Firefox (primary on NixOS), Helium
+- **Browsers**: Firefox, Helium
 
 ## Key Bindings
 
@@ -412,9 +411,11 @@ The configuration includes numerous CLI tools and programs:
 - Raycast launcher setup
 - Plist modification support
 - Work profile with certificates
+- Colima Docker virtualisation
 
-### NixOS
+### Linux
 - Sway window manager with themed configuration
-- Podman container runtime
 - Wayland display server
-- Custom filesystems and boot configuration
+- GTK theming (Rose Pine)
+- Emacs daemon service
+- Works on any Linux distribution — only requires nix and home-manager

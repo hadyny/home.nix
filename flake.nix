@@ -1,5 +1,5 @@
 {
-  description = "Home-manager darwin config";
+  description = "Nix home-manager config";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -66,20 +66,14 @@
         ];
       };
 
-      nixosConfigurations."nixos-vm" = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs userConfig; };
+      # Standalone home-manager for any Linux system (no NixOS required)
+      homeConfigurations.${userConfig.name} = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.aarch64-linux;
+        extraSpecialArgs = { inherit inputs userConfig; };
         modules = [
-          { nixpkgs.hostPlatform = "aarch64-linux"; }
-          home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useUserPackages = true;
-              users.${userConfig.name} = ./modules/nixos/home-manager.nix;
-              extraSpecialArgs = { inherit inputs userConfig; };
-            };
-          }
-          ./hosts/nixos
+          ./modules/linux/home-manager.nix
         ];
       };
+
     };
 }

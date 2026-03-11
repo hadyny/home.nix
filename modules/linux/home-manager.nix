@@ -1,4 +1,5 @@
-# NixOS home-manager configuration using only shared modules
+# Linux home-manager configuration using only shared modules
+# Works standalone (any Linux distro with nix + home-manager) or within NixOS
 {
   pkgs,
   lib,
