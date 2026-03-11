@@ -69,7 +69,7 @@ in
   settings = {
     ghostty = {
       enable = true;
-      adjustCellHeight = "10%";
+      adjustCellHeight = "15%";
     };
     wallpaper = {
       enable = true;
