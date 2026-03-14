@@ -10,11 +10,6 @@
     ];
   };
 
-  broot = {
-    enable = true;
-    enableZshIntegration = true;
-  };
-
   btop = {
     enable = true;
     settings = {
@@ -29,8 +24,6 @@
   };
 
   jq.enable = true;
-
-  kitty.enable = true;
 
   lazydocker.enable = true;
 
