@@ -71,6 +71,7 @@ in
       enable = true;
       adjustCellHeight = "15%";
     };
+    zed.enable = true;
     wallpaper = {
       enable = true;
       file = ../shared/config/wallpaper/nord.jpg;

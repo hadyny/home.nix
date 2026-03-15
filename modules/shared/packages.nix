@@ -44,6 +44,7 @@ with pkgs;
   typescript-language-server
   tailwindcss-language-server
   vscode-langservers-extracted
+  lua-language-server
   nil
   roslyn-ls
 

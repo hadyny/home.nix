@@ -18,6 +18,7 @@
       "datagrip"
       "spotify"
       "emacs-plus-app@master"
+      "zed"
     ];
 
     global.brewfile = true;
