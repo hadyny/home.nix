@@ -93,16 +93,22 @@
     ];
     shellWrapperName = "y";
     initLua = ''
-      require('starship'):setup()
       require('git'):setup()
-      if not os.getenv 'NVIM' then
-        require('full-border'):setup()
-      end
     '';
     plugins = {
-      "full-border" = pkgs.yaziPlugins.full-border;
-      "starship" = pkgs.yaziPlugins.starship;
       "git" = pkgs.yaziPlugins.git;
+      "rich-preview" = pkgs.yaziPlugins.rich-preview;
+    };
+    settings = {
+      plugin = {
+        prepend_previewers = [
+          { url = "*.csv"; run = "rich-preview"; }
+          { url = "*.md"; run = "rich-preview"; }
+          { url = "*.rst"; run = "rich-preview"; }
+          { url = "*.ipynb"; run = "rich-preview"; }
+          { url = "*.json"; run = "rich-preview"; }
+        ];
+      };
     };
   };
 
