@@ -72,6 +72,7 @@ in
       adjustCellHeight = "15%";
       command = "zsh -c nu";
     };
+    helix.enable = true;
     zed.enable = true;
     wallpaper = {
       enable = true;

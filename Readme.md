@@ -27,6 +27,7 @@ This configuration provides a complete development environment with:
 │   │   ├── packages.nix      # System packages
 │   │   ├── fonts.nix         # Font packages
 │   │   ├── ghostty/          # Terminal configuration
+│   │   ├── helix/            # Helix editor configuration
 │   │   ├── zed/              # Zed editor configuration
 │   │   ├── config/           # Static config files & assets
 │   │   │   └── wallpaper/    # Wallpaper images
@@ -401,7 +402,7 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
 The configuration includes numerous CLI tools and programs:
 
 - **Shells**: Nushell (with starship prompt, fnm/direnv hooks), zsh (with pure prompt, fzf-tab, syntax highlighting), mcfly history search
-- **Editors**: Neovim (nix-nvim), Zed (declarative config with LSP & extensions), Emacs (emacs-plus on macOS, emacs-unstable on Linux)
+- **Editors**: Neovim (nix-nvim), Helix (Rose Pine theme, LSP for Nix/Lua/Markdown/C#/TypeScript/ESLint/Tailwind), Zed (declarative config with LSP & extensions), Emacs (emacs-plus on macOS, emacs-unstable on Linux)
 - **Terminals**: Ghostty (Rose Pine theme, Maple Mono NF font), tmux (Rose Pine dark/dawn themes, tmux-which-key, dev session with Claude, Project, Git, Files, Shell windows)
 - **Dev Tools**: direnv, devenv, lazygit, lazydocker, gh (GitHub CLI), gh-dash, opencode, claude-code, koji, scooter
 - **File Management**: yazi (with git + rich-preview plugins for CSV/MD/JSON/IPYNB), broot, eza, fd, ripgrep, bat (with extras)

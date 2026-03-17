@@ -9,6 +9,7 @@
 
   imports = [
     # Editors
+    ./helix
     ./zed
 
     # Terminal
