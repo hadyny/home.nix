@@ -70,6 +70,7 @@ in
     ghostty = {
       enable = true;
       adjustCellHeight = "15%";
+      command = "zsh -c nu";
     };
     zed.enable = true;
     wallpaper = {

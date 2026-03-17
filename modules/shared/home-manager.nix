@@ -25,6 +25,39 @@
 
   jq.enable = true;
 
+  nushell = {
+    enable = true;
+    configFile = {
+      text = ''
+        $env.config.buffer_editor = "nvim"
+        $env.config.hooks.env_change.PWD = [
+          {|before, after|
+            if ([".node-version" ".nvmrc"] | any {|f| ($after | path join $f | path exists)}) {
+              fnm use
+            }
+          }
+          {|before, after|
+            if not ($after | path join "package.json" | path exists) {
+              ^direnv export json | from json | default {} | load-env
+            }
+          }
+        ]
+      '';
+    };
+    envFile = {
+      text = ''
+        fnm env --json | from json | load-env
+        $env.PATH = ($env.PATH | prepend $"($env.FNM_MULTISHELL_PATH)/bin")
+      '';
+    };
+    settings = {
+      completions.external = {
+        enable = true;
+        max_results = 200;
+      };
+    };
+  };
+
   lazydocker.enable = true;
 
   mcfly = {
@@ -64,6 +97,7 @@
 
   direnv = {
     enable = true;
+    enableNushellIntegration = false;
     enableZshIntegration = false;
     nix-direnv.enable = true;
     config.global.log_filter = "^(loading|using nix|error|deny|allow).*$";
@@ -102,14 +136,38 @@
     settings = {
       plugin = {
         prepend_previewers = [
-          { url = "*.csv"; run = "rich-preview"; }
-          { url = "*.md"; run = "rich-preview"; }
-          { url = "*.rst"; run = "rich-preview"; }
-          { url = "*.ipynb"; run = "rich-preview"; }
-          { url = "*.json"; run = "rich-preview"; }
+          {
+            url = "*.csv";
+            run = "rich-preview";
+          }
+          {
+            url = "*.md";
+            run = "rich-preview";
+          }
+          {
+            url = "*.rst";
+            run = "rich-preview";
+          }
+          {
+            url = "*.ipynb";
+            run = "rich-preview";
+          }
+          {
+            url = "*.json";
+            run = "rich-preview";
+          }
         ];
       };
     };
+  };
+
+  starship = {
+    enable = true;
+    enableNushellIntegration = true;
+    enableZshIntegration = false;
+    settings = builtins.fromTOML (
+      builtins.readFile "${pkgs.starship}/share/starship/presets/pure-preset.toml"
+    );
   };
 
   zellij = {

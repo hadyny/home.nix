@@ -65,6 +65,12 @@ in
       default = true;
       description = "Use Option key as Alt on macOS";
     };
+
+    command = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Command to run instead of the default shell";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -78,6 +84,7 @@ in
       window-padding-x = ${toString cfg.windowPaddingX}
       window-padding-y = ${toString cfg.windowPaddingY}
       macos-option-as-alt = ${boolToString cfg.macosOptionAsAlt}
+      ${optionalString (cfg.command != null) "command = ${cfg.command}"}
       keybind = alt+left=unbind
       keybind = alt+right=unbind
     '';
