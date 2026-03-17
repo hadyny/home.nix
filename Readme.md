@@ -7,7 +7,7 @@ This configuration provides a complete development environment with:
 - Modular structure for shared, darwin-specific, and linux-specific configurations
 - Work profile support with separate configurations and certificates
 - Custom modules for Git, AWS, Docker, .NET, 1Password integration, and more
-- Comprehensive development tools including Neovim (via nix-nvim), Emacs, and Ghostty terminal
+- Comprehensive development tools including Neovim (via nix-nvim), Zed, Emacs, and Ghostty terminal
 
 ## Repository Structure
 
@@ -22,10 +22,14 @@ This configuration provides a complete development environment with:
 │           └── default.nix   # Work-specific config
 ├── modules/
 │   ├── shared/               # Cross-platform modules
+│   │   ├── default.nix       # Shared module entrypoint
 │   │   ├── home-manager.nix  # Program configurations
 │   │   ├── packages.nix      # System packages
 │   │   ├── fonts.nix         # Font packages
 │   │   ├── ghostty/          # Terminal configuration
+│   │   ├── zed/              # Zed editor configuration
+│   │   ├── config/           # Static config files & assets
+│   │   │   └── wallpaper/    # Wallpaper images
 │   │   ├── services/
 │   │   │   └── colima.nix    # Docker virtualisation
 │   │   ├── settings/
@@ -47,7 +51,8 @@ This configuration provides a complete development environment with:
 │   │   ├── plists.nix        # Plist modifications
 │   │   ├── raycast.nix       # Raycast launcher
 │   │   └── work/             # Work-specific darwin modules
-│   │       └── aws.nix       # Work AWS configuration
+│   │       ├── aws.nix       # Work AWS configuration
+│   │       └── default.nix   # Work darwin entrypoint
 │   └── linux/                # Linux-specific modules
 │       ├── home-manager.nix  # Linux home-manager config
 │       └── packages.nix      # Linux-specific packages
@@ -301,6 +306,25 @@ services.colima = {
 };
 ```
 
+### Zed (`zed-editor`)
+
+Declarative Zed editor configuration with LSP support, extensions, and theming.
+
+```nix
+zed-editor = {
+  enable = true;
+  extensions = [ "nix" "lua" "csharp" "eslint" "tailwindcss" "rose-pine" ];
+  userSettings = {
+    theme = {
+      mode = "system";
+      light = "Rosé Pine Dawn";
+      dark = "Rosé Pine";
+    };
+    # LSP configuration for nil, roslyn, tailwindcss, typescript, eslint
+  };
+};
+```
+
 ### Dock (`targets.darwin.dock`)
 
 Declaratively configure macOS Dock applications.
@@ -359,9 +383,9 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
       "datagrip"
       "spotify"
       "emacs-plus-app@master"
-      "claude-code"
+      "zed"
     ];
-    brews = [ "libvterm" "dstask" ];
+    brews = [ "libvterm" ];
     taps = [ "d12frosted/emacs-plus" ];
 
   onActivation = {
@@ -376,16 +400,18 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
 
 The configuration includes numerous CLI tools and programs:
 
-- **Shells**: zsh with pure prompt, fzf-tab, mcfly history search
-- **Editors**: Neovim (nix-nvim), Emacs (emacs-plus on macOS), Helix
-- **Terminals**: Ghostty (primary via Nix), Zellij multiplexer
-- **Dev Tools**: direnv, devenv, lazygit, lazydocker, gh (GitHub CLI), gh-dash, opencode, koji
-- **File Management**: yazi, broot, eza, fd, ripgrep, bat, television
-- **Languages**: .NET 8/9/10, Node.js, Haskell, Roslyn LSP
-- **Containers**: Docker, docker-compose, dive
-- **Utilities**: btop, jq, zoxide, posting (API client), tabiew (CSV viewer), kew (music player)
+- **Shells**: Nushell (with starship prompt, fnm/direnv hooks), zsh (with pure prompt, fzf-tab, syntax highlighting), mcfly history search
+- **Editors**: Neovim (nix-nvim), Zed (declarative config with LSP & extensions), Emacs (emacs-plus on macOS, emacs-unstable on Linux)
+- **Terminals**: Ghostty (Rose Pine theme, Maple Mono NF font), Zellij multiplexer (dev layout with Claude, Project, Git, Files, Shell tabs)
+- **Dev Tools**: direnv, devenv, lazygit, lazydocker, gh (GitHub CLI), gh-dash, opencode, claude-code, koji, scooter
+- **File Management**: yazi (with git + rich-preview plugins for CSV/MD/JSON/IPYNB), broot, eza, fd, ripgrep, bat (with extras)
+- **Languages**: .NET 8/9/10, Bun, fnm (Node version manager), Roslyn LSP
+- **LSPs**: typescript-language-server, tailwindcss-language-server, lua-language-server, nil (Nix), roslyn-ls (.NET)
+- **Containers**: Docker, docker-compose, dive, Colima
+- **Infrastructure**: Terraform, SpiceDB
+- **Kafka**: redpanda-client, kafkactl, kcat
+- **Utilities**: btop, jq, zoxide, posting (API client), tabiew (CSV viewer), kew (music player), mitmproxy
 - **Databases**: DataGrip (via Homebrew), DBeaver
-- **API Tools**: Posting (HTTP client), Postman (via Homebrew)
 - **Browsers**: Firefox, Helium
 
 ## Key Bindings
@@ -402,6 +428,7 @@ The configuration includes numerous CLI tools and programs:
 - **emacs-overlay**: nix-community/emacs-overlay for latest Emacs builds
 - **nix-nvim**: hadyny/nix-nvim for custom Neovim configuration
 - **nur**: nix-community/NUR for additional packages
+- **claude-code**: sadjow/claude-code-nix for Claude Code CLI
 
 ## Platform-Specific Features
 
@@ -412,6 +439,7 @@ The configuration includes numerous CLI tools and programs:
 - Plist modification support
 - Work profile with certificates
 - Colima Docker virtualisation
+- Ghostty launches Nushell via `zsh -c nu`
 
 ### Linux
 - Sway window manager with themed configuration

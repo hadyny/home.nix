@@ -253,8 +253,7 @@
                 _children = [
                   {
                     pane = {
-                      command = "broot";
-                      args = [ "-sdpg" ];
+                      command = "yazi";
                     };
                   }
                 ];
