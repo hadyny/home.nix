@@ -29,6 +29,17 @@
     enable = true;
     configFile = {
       text = ''
+        # tmux dev session mirroring the zellij dev layout
+        def tdev [] {
+          tmux new-session -d -s dev -n Claude claude
+          tmux new-window -t dev -n Project nvim
+          tmux new-window -t dev -n Git lazygit
+          tmux new-window -t dev -n Files yazi
+          tmux new-window -t dev -n Shell nu
+          tmux select-window -t dev:Project
+          tmux attach-session -t dev
+        }
+
         $env.config.buffer_editor = "nvim"
         $env.config.hooks.env_change.PWD = [
           {|before, after|
@@ -170,125 +181,69 @@
     );
   };
 
-  zellij = {
+  tmux = {
     enable = true;
-    layouts = {
-      dev = {
-        layout = {
-          _children = [
-            {
-              default_tab_template = {
-                _children = [
-                  {
-                    pane = {
-                      size = 1;
-                      borderless = true;
-                      plugin = {
-                        location = "zellij:tab-bar";
-                      };
-                    };
-                  }
-                  { "children" = { }; }
-                  {
-                    pane = {
-                      size = 2;
-                      borderless = true;
-                      plugin = {
-                        location = "zellij:status-bar";
-                      };
-                    };
-                  }
-                ];
-              };
-            }
-            {
-              tab = {
-                _props = {
-                  name = "Claude";
-                };
-                _children = [
-                  {
-                    pane = {
-                      command = "claude";
-                    };
-                  }
-                ];
-              };
-            }
-
-            {
-              tab = {
-                _props = {
-                  name = "Project";
-                  focus = true;
-                };
-                _children = [
-                  {
-                    pane = {
-                      command = "nvim";
-                    };
-                  }
-                ];
-              };
-            }
-            {
-              tab = {
-                _props = {
-                  name = "Git";
-                };
-                _children = [
-                  {
-                    pane = {
-                      command = "lazygit";
-                    };
-                  }
-                ];
-              };
-            }
-            {
-              tab = {
-                _props = {
-                  name = "Files";
-                };
-                _children = [
-                  {
-                    pane = {
-                      command = "yazi";
-                    };
-                  }
-                ];
-              };
-            }
-            {
-              tab = {
-                _props = {
-                  name = "Shell";
-                };
-                _children = [
-                  {
-                    pane = {
-                      command = "zsh";
-                    };
-                  }
-                ];
-              };
-            }
-          ];
-        };
-      };
-    };
-    extraConfig = ''
-      keybinds {
-          normal {
-              unbind "Ctrl o"
-              bind "Ctrl e" { SwitchToMode "Session"; }
-          }
+    prefix = "C-a";
+    terminal = "tmux-256color";
+    mouse = true;
+    keyMode = "vi";
+    baseIndex = 1;
+    escapeTime = 0;
+    historyLimit = 10000;
+    plugins = with pkgs.tmuxPlugins; [
+      sensible
+      {
+        plugin = rose-pine;
+        extraConfig = ''
+          set -g @rose_pine_variant 'main'
+          set -g @rose_pine_host 'on'
+          set -g @rose_pine_directory 'on'
+          set -g @rose_pine_show_current_program 'on'
+          set -g @rose_pine_show_pane_directory 'on'
+          set -g @rose_pine_bar_bg_disable 'on'
+          set -g @rose_pine_bar_bg_disabled_color_option 'default'
+        '';
       }
+      {
+        plugin = tmux-which-key;
+        extraConfig = ''
+          set -g @tmux-which-key-xdg-enable 1
+        '';
+      }
+    ];
+    extraConfig = ''
+      # True colour support
+      set -ag terminal-overrides ",xterm-256color:RGB"
+
+      # Rose Pine dark/light toggle
+      # Prefix + D for dark (main), Prefix + L for light (dawn)
+      bind D run-shell "tmux set -g @rose_pine_variant 'main'; tmux source ~/.config/tmux/tmux.conf"
+      bind L run-shell "tmux set -g @rose_pine_variant 'dawn'; tmux source ~/.config/tmux/tmux.conf"
+
+      # Pane splitting (keep cwd)
+      bind | split-window -h -c "#{pane_current_path}"
+      bind - split-window -v -c "#{pane_current_path}"
+
+      # Pane navigation (vim-style)
+      bind h select-pane -L
+      bind j select-pane -D
+      bind k select-pane -U
+      bind l select-pane -R
+
+      # Pane resizing
+      bind -r H resize-pane -L 5
+      bind -r J resize-pane -D 5
+      bind -r K resize-pane -U 5
+      bind -r L resize-pane -R 5
+
+      # Window renumbering
+      set -g renumber-windows on
+
+      # Subtle pane borders
+      set -g pane-border-lines simple
+      set -g pane-border-style "fg=#26233a"
+      set -g pane-active-border-style "fg=#31748f"
     '';
-    settings = {
-      show_startup_tips = false;
-      pane_frames = false;
-    };
   };
 
   zsh = {
@@ -327,6 +282,18 @@
         src = pkgs.pure-prompt.src;
       }
     ];
+    shellAliases = {
+      # tmux dev session mirroring the zellij dev layout
+      tdev = ''
+        tmux new-session -d -s dev -n Claude claude \; \
+          new-window -t dev -n Project nvim \; \
+          new-window -t dev -n Git lazygit \; \
+          new-window -t dev -n Files yazi \; \
+          new-window -t dev -n Shell nu \; \
+          select-window -t dev:Project \; \
+          attach-session -t dev
+      '';
+    };
     syntaxHighlighting.enable = true;
   };
 

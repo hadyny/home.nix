@@ -402,7 +402,7 @@ The configuration includes numerous CLI tools and programs:
 
 - **Shells**: Nushell (with starship prompt, fnm/direnv hooks), zsh (with pure prompt, fzf-tab, syntax highlighting), mcfly history search
 - **Editors**: Neovim (nix-nvim), Zed (declarative config with LSP & extensions), Emacs (emacs-plus on macOS, emacs-unstable on Linux)
-- **Terminals**: Ghostty (Rose Pine theme, Maple Mono NF font), Zellij multiplexer (dev layout with Claude, Project, Git, Files, Shell tabs)
+- **Terminals**: Ghostty (Rose Pine theme, Maple Mono NF font), tmux (Rose Pine dark/dawn themes, tmux-which-key, dev session with Claude, Project, Git, Files, Shell windows)
 - **Dev Tools**: direnv, devenv, lazygit, lazydocker, gh (GitHub CLI), gh-dash, opencode, claude-code, koji, scooter
 - **File Management**: yazi (with git + rich-preview plugins for CSV/MD/JSON/IPYNB), broot, eza, fd, ripgrep, bat (with extras)
 - **Languages**: .NET 8/9/10, Bun, fnm (Node version manager), Roslyn LSP
@@ -417,8 +417,10 @@ The configuration includes numerous CLI tools and programs:
 ## Key Bindings
 
 - **Caps Lock** is remapped to **Control** (macOS)
-- Zellij: `Ctrl+e` for session mode (instead of `Ctrl+o`)
-- Zellij: pane frames disabled, startup tips off
+- tmux prefix: `Ctrl+a`
+- tmux: `Prefix + D` for dark theme, `Prefix + L` for light (dawn) theme
+- tmux: `Prefix + Space` for which-key menu, `Ctrl+Space` for root which-key
+- tmux: vim-style pane navigation (`h/j/k/l`), splitting (`|` / `-`)
 
 ## Flake Inputs
 
