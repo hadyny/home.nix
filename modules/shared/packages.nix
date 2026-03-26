@@ -59,9 +59,9 @@ with pkgs;
   # ─────────────────────────────────────────────────────────────
   (buildDotnetGlobalTool {
     pname = "EasyDotnet";
-    version = "2.9.8";
+    version = "3.0.12";
     executables = "dotnet-easydotnet";
-    nugetHash = "sha256-OImdt9dkK+9qV85yTHRBLDeFs+jEgjdsku+zjjK2gcs=";
+    nugetHash = "sha256-Qb65Isr0B6C63KrJrgx2Eed1KN3br0NdC82t2rX+wUI=";
     meta = with lib; {
       description = "C# JSON-RPC server powering the easy-dotnet.nvim Neovim plugin";
       homepage = "https://github.com/GustavEikaas/easy-dotnet.nvim";
