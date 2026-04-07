@@ -34,6 +34,7 @@ in {
             "log --pretty=format:'%C(auto)%h%C(reset) %C(cyan)%ad%C(auto)%d%C(reset) %s %C(blue)[%cn]%C(reset)' --date=short-local --graph --all";
           uncommit = "reset --mixed HEAD~1";
         };
+        signing.format = null;
         lfs.enable = true;
         settings.user.name = cfg.userName;
         settings.user.email = cfg.userEmail;

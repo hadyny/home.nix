@@ -39,6 +39,8 @@ in
         dark = "Rosé Pine";
       };
 
+      vim_mode = true;
+
       buffer_font_family = cfg.fontFamily;
       buffer_font_size = cfg.fontSize;
 
