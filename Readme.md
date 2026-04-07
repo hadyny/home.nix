@@ -414,6 +414,7 @@ The configuration includes numerous CLI tools and programs:
 - **Kafka**: redpanda-client, kafkactl, kcat
 - **Utilities**: btop, jq, zoxide, posting (API client), tabiew (CSV viewer), kew (music player), mitmproxy
 - **Databases**: DataGrip (via Homebrew), DBeaver
+- **Knowledge Management**: Obsidian
 - **Browsers**: Firefox, Helium
 
 ## Key Bindings

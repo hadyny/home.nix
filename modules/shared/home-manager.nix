@@ -127,6 +127,80 @@
 
   gh-dash.enable = true;
 
+  obsidian = {
+    enable = true;
+    cli.enable = true;
+    defaultSettings = {
+      themes = [
+        {
+          enable = true;
+          pkg = pkgs.stdenvNoCC.mkDerivation {
+            pname = "obsidian-theme-rose-pine";
+            version = "0.1.19";
+            src = pkgs.fetchFromGitHub {
+              owner = "rose-pine";
+              repo = "obsidian";
+              rev = "e2b47ad4ff24626b597d0b2a36250e22073760e7";
+              hash = "sha256-HSGFmmQcH2WlJBpPv2yek16iiz92leQbIspCN6oB1AA=";
+            };
+            installPhase = ''
+              runHook preInstall
+              mkdir -p $out
+              cp manifest.json theme.css $out/
+              runHook postInstall
+            '';
+          };
+        }
+      ];
+    };
+    defaultSettings.cssSnippets = [
+      {
+        name = "maple-mono-font";
+        text = ''
+          body {
+            --font-text: "Maple Mono NF";
+            --font-monospace: "Maple Mono NF";
+            --font-interface: "Maple Mono NF";
+            font-size: 12px !important;
+          }
+
+          .markdown-preview-view,
+          .markdown-rendered,
+          .markdown-reading-view,
+          .markdown-preview-section {
+            font-family: "Maple Mono NF" !important;
+          }
+
+          .workspace,
+          .sidebar-toggle-button,
+          .nav-folder-title,
+          .nav-file-title,
+          .view-header-title,
+          .menu,
+          .prompt,
+          .suggestion-item,
+          .setting-item,
+          .modal {
+            font-family: "Maple Mono NF" !important;
+          }
+
+          .cm-editor .cm-content,
+          .cm-editor .cm-line {
+            font-family: "Maple Mono NF" !important;
+          }
+
+          code, pre, .HyperMD-codeblock {
+            font-family: "Maple Mono NF" !important;
+          }
+        '';
+      }
+    ];
+    vaults.notes = {
+      enable = true;
+      target = "notes";
+    };
+  };
+
   opencode.enable = true;
 
   ripgrep.enable = true;
