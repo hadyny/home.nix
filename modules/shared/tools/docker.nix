@@ -1,4 +1,9 @@
-{ pkgs, config, lib, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 
 with lib;
 
@@ -45,6 +50,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [ awscli2 docker dockerLoginScript ];
+    home.packages = with pkgs; [
+      awscli2
+      docker
+      dockerLoginScript
+    ];
   };
 }

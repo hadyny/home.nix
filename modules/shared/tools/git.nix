@@ -1,9 +1,16 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
-let cfg = config.tools.git;
-in {
+let
+  cfg = config.tools.git;
+in
+{
   options.tools.git = {
     enable = mkEnableOption "Enable GIT";
 
@@ -18,20 +25,20 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.file = lib.mapAttrs' (k: v:
+    home.file = lib.mapAttrs' (
+      k: v:
       lib.nameValuePair "${k}/.gitconfig" {
         text = lib.generators.toINI { } v;
-      }) cfg.workspaces;
+      }
+    ) cfg.workspaces;
 
     programs = {
       git = {
         enable = true;
         settings.aliases = {
           aliases = "config --get-regexp ^alias.";
-          branches =
-            "branch -a --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:blue)(%(committerdate:short)) [%(authorname)]' --sort=-committerdate";
-          logs =
-            "log --pretty=format:'%C(auto)%h%C(reset) %C(cyan)%ad%C(auto)%d%C(reset) %s %C(blue)[%cn]%C(reset)' --date=short-local --graph --all";
+          branches = "branch -a --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:blue)(%(committerdate:short)) [%(authorname)]' --sort=-committerdate";
+          logs = "log --pretty=format:'%C(auto)%h%C(reset) %C(cyan)%ad%C(auto)%d%C(reset) %s %C(blue)[%cn]%C(reset)' --date=short-local --graph --all";
           uncommit = "reset --mixed HEAD~1";
         };
         signing.format = null;
@@ -78,7 +85,7 @@ in {
             showRandomTip = false;
           };
           git = {
-            pagers = [{ pager = "delta --features 'default lazygit'"; }];
+            pagers = [ { pager = "delta --features 'default lazygit'"; } ];
             parseEmoji = true;
           };
           customCommands = [
@@ -92,8 +99,7 @@ in {
             }
             {
               key = "t";
-              command =
-                "tig {{.SelectedSubCommit.Sha}} -- {{.SelectedCommitFile.Name}}";
+              command = "tig {{.SelectedSubCommit.Sha}} -- {{.SelectedCommitFile.Name}}";
               context = "commitFiles";
               description = "tig file (history of commits affecting file)";
               output = "terminal";
@@ -153,8 +159,14 @@ in {
       };
     };
 
-    home.packages = with pkgs; [ git-crypt gh tig ];
+    home.packages = with pkgs; [
+      git-crypt
+      gh
+      tig
+    ];
 
-    home.sessionVariables = { GH_PAGER = "delta"; };
+    home.sessionVariables = {
+      GH_PAGER = "delta";
+    };
   };
 }

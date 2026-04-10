@@ -1,4 +1,9 @@
-{ pkgs, config, lib, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 
 with lib;
 
@@ -52,8 +57,14 @@ in
           indent-guides.render = true;
 
           statusline = {
-            left = [ "mode" "spinner" ];
-            center = [ "file-name" "file-modification-indicator" ];
+            left = [
+              "mode"
+              "spinner"
+            ];
+            center = [
+              "file-name"
+              "file-modification-indicator"
+            ];
             right = [
               "version-control"
               "diagnostics"
@@ -70,13 +81,34 @@ in
         };
 
         keys.normal = {
-          "{" = [ "goto_prev_paragraph" "collapse_selection" ];
-          "}" = [ "goto_next_paragraph" "collapse_selection" ];
-          "C-h" = [ "jump_view_left" "normal_mode" ];
-          "C-l" = [ "jump_view_right" "normal_mode" ];
-          "C-k" = [ "jump_view_up" "normal_mode" ];
-          "C-j" = [ "jump_view_down" "normal_mode" ];
-          "V" = [ "select_mode" "extend_to_line_bounds" ];
+          "{" = [
+            "goto_prev_paragraph"
+            "collapse_selection"
+          ];
+          "}" = [
+            "goto_next_paragraph"
+            "collapse_selection"
+          ];
+          "C-h" = [
+            "jump_view_left"
+            "normal_mode"
+          ];
+          "C-l" = [
+            "jump_view_right"
+            "normal_mode"
+          ];
+          "C-k" = [
+            "jump_view_up"
+            "normal_mode"
+          ];
+          "C-j" = [
+            "jump_view_down"
+            "normal_mode"
+          ];
+          "V" = [
+            "select_mode"
+            "extend_to_line_bounds"
+          ];
           "K" = [ "hover" ];
         };
       };
@@ -98,7 +130,11 @@ in
 
           roslyn-ls = {
             command = "Microsoft.CodeAnalysis.LanguageServer";
-            args = [ "--logLevel" "Information" "--stdio" ];
+            args = [
+              "--logLevel"
+              "Information"
+              "--stdio"
+            ];
           };
 
           typescript-language-server = {
@@ -154,41 +190,77 @@ in
             name = "typescript";
             auto-format = true;
             language-servers = [
-              { name = "typescript-language-server"; except-features = [ "format" ]; }
+              {
+                name = "typescript-language-server";
+                except-features = [ "format" ];
+              }
               "tailwindcss"
               "eslint"
             ];
-            formatter = { command = "prettierd"; args = [ "--stdin-filepath" "x.ts" ]; };
+            formatter = {
+              command = "prettierd";
+              args = [
+                "--stdin-filepath"
+                "x.ts"
+              ];
+            };
           }
           {
             name = "tsx";
             auto-format = true;
             language-servers = [
-              { name = "typescript-language-server"; except-features = [ "format" ]; }
+              {
+                name = "typescript-language-server";
+                except-features = [ "format" ];
+              }
               "tailwindcss"
               "eslint"
             ];
-            formatter = { command = "prettierd"; args = [ "--stdin-filepath" "x.tsx" ]; };
+            formatter = {
+              command = "prettierd";
+              args = [
+                "--stdin-filepath"
+                "x.tsx"
+              ];
+            };
           }
           {
             name = "javascript";
             auto-format = true;
             language-servers = [
-              { name = "typescript-language-server"; except-features = [ "format" ]; }
+              {
+                name = "typescript-language-server";
+                except-features = [ "format" ];
+              }
               "tailwindcss"
               "eslint"
             ];
-            formatter = { command = "prettierd"; args = [ "--stdin-filepath" "x.js" ]; };
+            formatter = {
+              command = "prettierd";
+              args = [
+                "--stdin-filepath"
+                "x.js"
+              ];
+            };
           }
           {
             name = "jsx";
             auto-format = true;
             language-servers = [
-              { name = "typescript-language-server"; except-features = [ "format" ]; }
+              {
+                name = "typescript-language-server";
+                except-features = [ "format" ];
+              }
               "tailwindcss"
               "eslint"
             ];
-            formatter = { command = "prettierd"; args = [ "--stdin-filepath" "x.jsx" ]; };
+            formatter = {
+              command = "prettierd";
+              args = [
+                "--stdin-filepath"
+                "x.jsx"
+              ];
+            };
           }
         ];
       };

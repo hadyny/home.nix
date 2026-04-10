@@ -34,7 +34,7 @@ in
 
   home = {
     username = userConfig.name;
-    homeDirectory = userConfig.home;
+    homeDirectory = "/Users/${userConfig.name}";
 
     sessionVariables = {
       EDITOR = "nvim";

@@ -1,45 +1,56 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
 let
   cfg = config.settings.colima;
-  requiredPackages = with pkgs; [ colima docker ];
+  requiredPackages = with pkgs; [
+    colima
+    docker
+  ];
 
-  colimaWatcher = cfg:
+  colimaWatcher =
+    cfg:
     let
       colimaBin = "${pkgs.colima}/bin/colima";
       extraDns = lib.concatMapStringsSep " " (x: "--dns='${x}'") cfg.config.network.dns;
-      extraDnsHosts = lib.concatStringsSep " " (lib.mapAttrsToList (k: v: "--dns-host='${k}=${v}'") cfg.config.network.dnsHosts);
+      extraDnsHosts = lib.concatStringsSep " " (
+        lib.mapAttrsToList (k: v: "--dns-host='${k}=${v}'") cfg.config.network.dnsHosts
+      );
     in
-      pkgs.writeShellScript "colima-watcher" ''
-        function cleanup {
-          echo "stopping Colima"
-          ${colimaBin} stop --force
-        }
+    pkgs.writeShellScript "colima-watcher" ''
+      function cleanup {
+        echo "stopping Colima"
+        ${colimaBin} stop --force
+      }
 
-        trap cleanup EXIT
+      trap cleanup EXIT
 
-        ${colimaBin} start \
-        --arch aarch64 \
-        --vm-type=vz \
-        --vz-rosetta \
-        --activate=${boolToString cfg.config.autoActivate} \
-        --cpu=${toString cfg.config.cpu} \
-        --memory=${toString cfg.config.memory} \
-        --network-address=${boolToString cfg.config.network.address} \
-        ${extraDns} \
-        ${extraDnsHosts} \
-        --ssh-agent=${boolToString cfg.config.forwardAgent} \
-        --ssh-config=${boolToString cfg.config.sshConfig} \
-        --verbose
+      ${colimaBin} start \
+      --arch aarch64 \
+      --vm-type=vz \
+      --vz-rosetta \
+      --activate=${boolToString cfg.config.autoActivate} \
+      --cpu=${toString cfg.config.cpu} \
+      --memory=${toString cfg.config.memory} \
+      --network-address=${boolToString cfg.config.network.address} \
+      ${extraDns} \
+      ${extraDnsHosts} \
+      --ssh-agent=${boolToString cfg.config.forwardAgent} \
+      --ssh-config=${boolToString cfg.config.sshConfig} \
+      --verbose
 
-        set -e
-        while true; do
-          ${colimaBin} status > /dev/null 2>&1
-          sleep 5
-        done
-      '';
+      set -e
+      while true; do
+        ${colimaBin} status > /dev/null 2>&1
+        sleep 5
+      done
+    '';
 
   networkOpts = types.submodule {
     options = {
@@ -51,13 +62,13 @@ let
 
       dns = mkOption {
         type = types.listOf (types.strMatching "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+");
-        default = [];
+        default = [ ];
         description = "Custom DNS resolvers for the virtual machine";
       };
 
       dnsHosts = mkOption {
         type = types.attrsOf types.str;
-        default = {};
+        default = { };
         description = "DNS hostnames to resolve to custom targets using the internal resolver";
       };
     };
@@ -86,7 +97,7 @@ let
 
       network = mkOption {
         type = networkOpts;
-        default = {};
+        default = { };
         description = "Network configurations for the virtual machine";
       };
 
@@ -110,7 +121,7 @@ let
 
       env = mkOption {
         type = types.attrsOf types.str;
-        default = {};
+        default = { };
         description = "Environment variables for the virtual machine";
       };
 
@@ -123,7 +134,7 @@ in
 
     config = mkOption {
       type = colimaOpts;
-      default = {};
+      default = { };
     };
   };
 
@@ -142,10 +153,7 @@ in
             "${colimaWatcher cfg}"
           ];
           EnvironmentVariables = {
-            PATH =
-              (lib.makeBinPath requiredPackages)
-              + ":/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"
-            ;
+            PATH = (lib.makeBinPath requiredPackages) + ":/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin";
           };
         };
       };

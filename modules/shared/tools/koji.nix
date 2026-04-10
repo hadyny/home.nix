@@ -1,4 +1,9 @@
-{ pkgs, config, lib, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 
 with lib;
 
@@ -25,17 +30,61 @@ let
   };
 
   defaultCommitTypes = [
-    { name = "feat"; emoji = "✨"; description = "A new feature"; }
-    { name = "fix"; emoji = "🐛"; description = "A bug fix"; }
-    { name = "docs"; emoji = "📚"; description = "Documentation only changes"; }
-    { name = "style"; emoji = "💄"; description = "Changes that do not affect the meaning of the code"; }
-    { name = "refactor"; emoji = "♻️"; description = "A code change that neither fixes a bug nor adds a feature"; }
-    { name = "perf"; emoji = "⚡"; description = "A code change that improves performance"; }
-    { name = "test"; emoji = "✅"; description = "Adding missing tests or correcting existing tests"; }
-    { name = "build"; emoji = "📦"; description = "Changes that affect the build system or external dependencies"; }
-    { name = "ci"; emoji = "🤖"; description = "Changes to CI configuration files and scripts"; }
-    { name = "chore"; emoji = "🔧"; description = "Other changes that don't modify src or test files"; }
-    { name = "revert"; emoji = "⏪"; description = "Reverts a previous commit"; }
+    {
+      name = "feat";
+      emoji = "✨";
+      description = "A new feature";
+    }
+    {
+      name = "fix";
+      emoji = "🐛";
+      description = "A bug fix";
+    }
+    {
+      name = "docs";
+      emoji = "📚";
+      description = "Documentation only changes";
+    }
+    {
+      name = "style";
+      emoji = "💄";
+      description = "Changes that do not affect the meaning of the code";
+    }
+    {
+      name = "refactor";
+      emoji = "♻️";
+      description = "A code change that neither fixes a bug nor adds a feature";
+    }
+    {
+      name = "perf";
+      emoji = "⚡";
+      description = "A code change that improves performance";
+    }
+    {
+      name = "test";
+      emoji = "✅";
+      description = "Adding missing tests or correcting existing tests";
+    }
+    {
+      name = "build";
+      emoji = "📦";
+      description = "Changes that affect the build system or external dependencies";
+    }
+    {
+      name = "ci";
+      emoji = "🤖";
+      description = "Changes to CI configuration files and scripts";
+    }
+    {
+      name = "chore";
+      emoji = "🔧";
+      description = "Other changes that don't modify src or test files";
+    }
+    {
+      name = "revert";
+      emoji = "⏪";
+      description = "Reverts a previous commit";
+    }
   ];
 
 in

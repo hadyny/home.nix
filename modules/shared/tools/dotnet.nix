@@ -66,7 +66,7 @@ in
     home.sessionPath = [ "$HOME/.dotnet/tools" ];
 
     home.sessionVariables = {
-      DOTNET_ROOT = "${pkgs.dotnet-sdk.outPath}/share/dotnet";
+      DOTNET_ROOT = "${dotnet-env}/share/dotnet";
     };
 
     home.file = lib.mkIf (cfg.nugetSources != { }) {

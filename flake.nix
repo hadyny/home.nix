@@ -33,7 +33,6 @@
         name = "hadyn";
         fullName = "Hadyn Youens";
         email = "hadyn@youens.nz"; # Replace with your actual email
-        home = "/Users/hadyn";
 
         # Git-specific configurations
         githubUser = "hadyny";
@@ -74,6 +73,11 @@
           ./modules/linux/home-manager.nix
         ];
       };
+
+      formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-tree;
+      formatter.aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.nixfmt-tree;
+      formatter.x86_64-darwin = nixpkgs.legacyPackages.x86_64-darwin.nixfmt-tree;
+      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-tree;
 
     };
 }

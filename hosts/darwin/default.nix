@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   userConfig,
   ...
 }:
@@ -35,7 +34,7 @@
   # set up current user
   users.users.${userConfig.name} = {
     name = userConfig.name;
-    home = userConfig.home;
+    home = "/Users/${userConfig.name}";
   };
 
   nix = {
@@ -117,7 +116,7 @@
 
     others = [
       {
-        path = "${userConfig.home}/Downloads";
+        path = "/Users/${userConfig.name}/Downloads";
         sort = "dateadded";
         view = "grid";
       }

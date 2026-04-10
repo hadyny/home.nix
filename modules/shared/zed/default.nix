@@ -1,4 +1,9 @@
-{ pkgs, config, lib, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 
 with lib;
 
@@ -39,6 +44,10 @@ in
         dark = "Rosé Pine";
       };
 
+      project_panel = {
+        dock = "right";
+      };
+
       vim_mode = true;
 
       buffer_font_family = cfg.fontFamily;
@@ -46,28 +55,44 @@ in
 
       languages = {
         Nix = {
-          language_servers = [ "nil" "!nixd" ];
+          language_servers = [
+            "nil"
+            "!nixd"
+          ];
         };
         "C#" = {
-          language_servers = [ "roslyn" "!omnisharp" ];
+          language_servers = [
+            "roslyn"
+            "!omnisharp"
+          ];
         };
       };
 
       lsp = {
         nil = {
-          binary = { path_lookup = true; };
+          binary = {
+            path_lookup = true;
+          };
         };
         roslyn = {
-          binary = { path_lookup = true; };
+          binary = {
+            path_lookup = true;
+          };
         };
         tailwindcss-language-server = {
-          binary = { path_lookup = true; };
+          binary = {
+            path_lookup = true;
+          };
         };
         typescript-language-server = {
-          binary = { path_lookup = true; };
+          binary = {
+            path_lookup = true;
+          };
         };
         eslint = {
-          binary = { path_lookup = true; };
+          binary = {
+            path_lookup = true;
+          };
         };
       };
     };
