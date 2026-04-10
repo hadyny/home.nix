@@ -307,7 +307,6 @@
 
       autoload -U promptinit; promptinit
       prompt pure
-      eval "$(fnm env --use-on-cd --shell zsh)"
 
       # direnv hook — skip activation in Node projects
       _direnv_hook() {
@@ -319,6 +318,8 @@
       if (( ! ''${precmd_functions[(I)_direnv_hook]} )); then
         precmd_functions=(_direnv_hook $precmd_functions)
       fi
+
+      eval "$(fnm env --use-on-cd --shell zsh)"
     '';
 
     plugins = [
@@ -350,5 +351,13 @@
     syntaxHighlighting.enable = true;
   };
 
-  zoxide.enable = true;
+  z-lua = {
+    enable = true;
+    enableZshIntegration = true;
+    options = [
+      "enhanced"
+      "once"
+      "fzf"
+    ];
+  };
 }
