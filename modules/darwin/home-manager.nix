@@ -70,7 +70,6 @@ in
     ghostty = {
       enable = true;
       adjustCellHeight = "15%";
-      command = "zsh -c nu";
     };
     helix.enable = true;
     zed.enable = true;

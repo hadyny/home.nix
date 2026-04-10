@@ -42,8 +42,7 @@ This configuration provides a complete development environment with:
 │   │   │   ├── docker.nix    # Docker utilities
 │   │   │   ├── dotnet.nix    # .NET SDK & NuGet
 │   │   │   ├── git.nix       # Git configuration
-│   │   │   ├── koji.nix      # Conventional commit tool
-│   │   │   └── television.nix # Fuzzy finder TUI with channels
+│   │   │   └── koji.nix      # Conventional commit tool
 │   │   └── work.nix          # Work-specific settings
 │   ├── darwin/               # macOS-specific modules
 │   │   ├── apps.nix          # Homebrew packages
@@ -91,7 +90,6 @@ This configuration provides a complete development environment with:
      name = "your-username";
      fullName = "Your Name";
      email = "your@email.com";
-     home = "/Users/your-username";
      githubUser = "your-github";
 
      # Optional: Git workspace-specific settings
@@ -273,7 +271,7 @@ secureEnv.onePassword = {
 };
 ```
 
-Secrets are stored in macOS Keychain (or libsecret on Linux) and retrieved at shell startup, avoiding repeated 1Password authentication prompts.
+Secrets are stored in macOS Keychain (or libsecret on Linux) and cached in `~/.zshenv.local` during activation. This allows secrets to be retrieved at shell startup without repeated 1Password authentication prompts or slow keychain lookups.
 
 ### Docker (`tools.docker`)
 
@@ -402,10 +400,10 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
 
 The configuration includes numerous CLI tools and programs:
 
-- **Shells**: Nushell (with starship prompt, fnm/direnv hooks), zsh (with pure prompt, fzf-tab, syntax highlighting), mcfly history search
+- **Shells**: zsh (with pure prompt, fzf-tab, syntax highlighting), mcfly history search
 - **Editors**: Neovim (nix-nvim), Helix (Rose Pine theme, LSP for Nix/Lua/Markdown/C#/TypeScript/ESLint/Tailwind), Zed (declarative config with LSP & extensions), Emacs (emacs-plus on macOS, emacs-unstable on Linux)
 - **Terminals**: Ghostty (Rose Pine theme, Maple Mono NF font), tmux (Rose Pine dark/dawn themes, tmux-which-key, dev session with Claude, Project, Git, Files, Shell windows)
-- **Dev Tools**: direnv, devenv, lazygit, lazydocker, gh (GitHub CLI), gh-dash, opencode, claude-code, koji, scooter, television (fuzzy finder TUI with nushell integration)
+- **Dev Tools**: direnv, devenv, lazygit, lazydocker, gh (GitHub CLI), gh-dash, opencode, claude-code, koji, scooter
 - **File Management**: yazi (with git + rich-preview plugins for CSV/MD/JSON/IPYNB), broot, eza, fd, ripgrep, bat (with extras)
 - **Languages**: .NET 8/9/10, Bun, fnm (Node version manager), Roslyn LSP
 - **LSPs**: typescript-language-server, tailwindcss-language-server, lua-language-server, nil (Nix), roslyn-ls (.NET)
@@ -444,7 +442,6 @@ The configuration includes numerous CLI tools and programs:
 - Plist modification support
 - Work profile with certificates
 - Colima Docker virtualisation
-- Ghostty launches Nushell via `zsh -c nu`
 
 ### Linux
 - Sway window manager with themed configuration

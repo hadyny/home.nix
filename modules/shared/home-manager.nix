@@ -25,55 +25,6 @@
 
   jq.enable = true;
 
-  nushell = {
-    enable = true;
-    configFile = {
-      text = ''
-        # Source secrets if they exist
-        if ("~/.config/nushell/secrets.nu" | path exists) {
-          source ~/.config/nushell/secrets.nu
-        }
-
-        # tmux dev session mirroring the zellij dev layout
-        def tdev [] {
-          tmux new-session -d -s dev -n Claude claude
-          tmux new-window -t dev -n Project nvim
-          tmux new-window -t dev -n Git lazygit
-          tmux new-window -t dev -n Files yazi
-          tmux new-window -t dev -n Shell nu
-          tmux select-window -t dev:Project
-          tmux attach-session -t dev
-        }
-
-        $env.config.buffer_editor = "nvim"
-        $env.config.hooks.env_change.PWD = [
-          {|before, after|
-            if ([".node-version" ".nvmrc"] | any {|f| ($after | path join $f | path exists)}) {
-              fnm use
-            }
-          }
-          {|before, after|
-            if not ($after | path join "package.json" | path exists) {
-              ^direnv export json | from json | default {} | load-env
-            }
-          }
-        ]
-      '';
-    };
-    envFile = {
-      text = ''
-        fnm env --json | from json | load-env
-        $env.PATH = ($env.PATH | prepend $"($env.FNM_MULTISHELL_PATH)/bin")
-      '';
-    };
-    settings = {
-      completions.external = {
-        enable = true;
-        max_results = 200;
-      };
-    };
-  };
-
   lazydocker.enable = true;
 
   mcfly = {
@@ -113,7 +64,6 @@
 
   direnv = {
     enable = true;
-    enableNushellIntegration = false;
     enableZshIntegration = false;
     nix-direnv.enable = true;
     config.global.log_filter = "^(loading|using nix|error|deny|allow).*$";
@@ -128,6 +78,9 @@
       spinner = "#f6c177,info:#9ccfd8";
       pointer = "#c4a7e7,marker:#eb6f92,prompt:#908caa";
     };
+    defaultOptions = [
+      "--style minimal"
+    ];
   };
 
   gh-dash.enable = true;
@@ -272,7 +225,6 @@
 
   starship = {
     enable = true;
-    enableNushellIntegration = true;
     enableZshIntegration = false;
     settings = builtins.fromTOML (
       builtins.readFile "${pkgs.starship}/share/starship/presets/pure-preset.toml"
@@ -390,7 +342,7 @@
           new-window -t dev -n Project nvim \; \
           new-window -t dev -n Git lazygit \; \
           new-window -t dev -n Files yazi \; \
-          new-window -t dev -n Shell nu \; \
+          new-window -t dev -n Shell zsh \; \
           select-window -t dev:Project \; \
           attach-session -t dev
       '';
