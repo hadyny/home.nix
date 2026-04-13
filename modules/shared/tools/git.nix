@@ -25,28 +25,39 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.file = lib.mapAttrs' (
-      k: v:
-      lib.nameValuePair "${k}/.gitconfig" {
-        text = lib.generators.toINI { } v;
-      }
-    ) cfg.workspaces;
+    home = {
+      file = lib.mapAttrs' (
+        k: v:
+        lib.nameValuePair "${k}/.gitconfig" {
+          text = lib.generators.toINI { } v;
+        }
+      ) cfg.workspaces;
+
+      packages = with pkgs; [
+        git-crypt
+        gh
+        tig
+      ];
+
+      sessionVariables = {
+        GH_PAGER = "delta";
+      };
+    };
 
     programs = {
       git = {
         enable = true;
-        settings.aliases = {
-          aliases = "config --get-regexp ^alias.";
-          branches = "branch -a --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:blue)(%(committerdate:short)) [%(authorname)]' --sort=-committerdate";
-          logs = "log --pretty=format:'%C(auto)%h%C(reset) %C(cyan)%ad%C(auto)%d%C(reset) %s %C(blue)[%cn]%C(reset)' --date=short-local --graph --all";
-          uncommit = "reset --mixed HEAD~1";
-        };
         signing.format = null;
         lfs.enable = true;
-        settings.user.name = cfg.userName;
-        settings.user.email = cfg.userEmail;
-
         settings = {
+          aliases = {
+            aliases = "config --get-regexp ^alias.";
+            branches = "branch -a --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:blue)(%(committerdate:short)) [%(authorname)]' --sort=-committerdate";
+            logs = "log --pretty=format:'%C(auto)%h%C(reset) %C(cyan)%ad%C(auto)%d%C(reset) %s %C(blue)[%cn]%C(reset)' --date=short-local --graph --all";
+            uncommit = "reset --mixed HEAD~1";
+          };
+          user.name = cfg.userName;
+          user.email = cfg.userEmail;
           github.user = cfg.githubUser;
           init.defaultBranch = "main";
           diff.colorMoved = "default";
@@ -159,14 +170,5 @@ in
       };
     };
 
-    home.packages = with pkgs; [
-      git-crypt
-      gh
-      tig
-    ];
-
-    home.sessionVariables = {
-      GH_PAGER = "delta";
-    };
   };
 }

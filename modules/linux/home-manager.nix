@@ -81,13 +81,14 @@ in
     };
   };
 
-  settings.ghostty = {
-    enable = true;
-    fontSize = 12;
+  settings = {
+    ghostty = {
+      enable = true;
+      fontSize = 12;
+    };
+    helix.enable = true;
+    zed.enable = true;
   };
-
-  settings.helix.enable = true;
-  settings.zed.enable = true;
 
   wayland.windowManager.sway = {
     enable = true;
