@@ -1,4 +1,4 @@
-{ ... }:
+_:
 let
   awsRdsBundle = builtins.fetchurl {
     name = "aws-rds-pki-bundle.pem";

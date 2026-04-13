@@ -1,4 +1,4 @@
-{ ... }:
+_:
 {
   tools.dotnet.nugetSources = {
     "ep-github" = {

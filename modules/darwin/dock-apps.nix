@@ -14,7 +14,7 @@ let
     default: values:
     mkOption {
       type = enum values;
-      default = default;
+      inherit default;
     };
   mkNullableEnum =
     values:

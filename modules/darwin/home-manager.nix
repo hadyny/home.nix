@@ -94,7 +94,7 @@ in
       enable = true;
       userName = userConfig.fullName;
       userEmail = userConfig.email;
-      githubUser = userConfig.githubUser;
+      inherit (userConfig) githubUser;
       workspaces = userConfig.gitWorkspaces;
     };
     koji.enable = true;

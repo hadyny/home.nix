@@ -33,7 +33,7 @@
 
   # set up current user
   users.users.${userConfig.name} = {
-    name = userConfig.name;
+    inherit (userConfig) name;
     home = "/Users/${userConfig.name}";
   };
 

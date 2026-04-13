@@ -329,11 +329,11 @@
       }
       {
         name = pkgs.zsh-nix-shell.pname;
-        src = pkgs.zsh-nix-shell.src;
+        inherit (pkgs.zsh-nix-shell) src;
       }
       {
         name = pkgs.pure-prompt.pname;
-        src = pkgs.pure-prompt.src;
+        inherit (pkgs.pure-prompt) src;
       }
     ];
     shellAliases = {

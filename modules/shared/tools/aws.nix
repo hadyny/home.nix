@@ -113,7 +113,7 @@ in
     };
 
     externalCredentials = mkOption {
-      type = types.attrsOf (types.str);
+      type = types.attrsOf types.str;
       default = { };
     };
   };
@@ -143,7 +143,7 @@ in
           name: value:
           let
             header = "sso-session ${name}";
-            session = (rmAttr "profiles" value);
+            session = rmAttr "profiles" value;
             profiles = mkProfile { sso_session = name; } value.profiles;
           in
           { ${header} = session; } // profiles
