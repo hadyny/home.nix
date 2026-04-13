@@ -1,0 +1,19 @@
+name: "Update flake inputs"
+on:
+  schedule:
+    - cron: "0 21 * * 0" # Weekly Monday 9am NZST
+  workflow_dispatch:
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: DeterminateSystems/nix-installer-action@main
+    - uses: DeterminateSystems/magic-nix-cache-action@main
+    - run: nix flake update
+    - uses: peter-evans/create-pull-request@v7
+      with:
+        commit-message: "chore: update flake inputs"
+        title: "chore: update flake inputs"
+        branch: flake-update
+        delete-branch: true
