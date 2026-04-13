@@ -1,5 +1,4 @@
-_:
-{
+_: {
   tools.dotnet.nugetSources = {
     "ep-github" = {
       url = "%EP_NUGET_SOURCE_URL%";
