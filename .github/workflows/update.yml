@@ -3,6 +3,9 @@ on:
   schedule:
     - cron: "0 21 * * 0" # Weekly Monday 9am NZST
   workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   update:
     runs-on: ubuntu-latest
