@@ -115,47 +115,47 @@
         }
       ];
       cssSnippets = [
-      {
-        name = "maple-mono-font";
-        text = ''
-          body {
-            --font-text: "Maple Mono NF";
-            --font-monospace: "Maple Mono NF";
-            --font-interface: "Maple Mono NF";
-            font-size: 12px !important;
-          }
+        {
+          name = "maple-mono-font";
+          text = ''
+            body {
+              --font-text: "Maple Mono NF";
+              --font-monospace: "Maple Mono NF";
+              --font-interface: "Maple Mono NF";
+              font-size: 12px !important;
+            }
 
-          .markdown-preview-view,
-          .markdown-rendered,
-          .markdown-reading-view,
-          .markdown-preview-section {
-            font-family: "Maple Mono NF" !important;
-          }
+            .markdown-preview-view,
+            .markdown-rendered,
+            .markdown-reading-view,
+            .markdown-preview-section {
+              font-family: "Maple Mono NF" !important;
+            }
 
-          .workspace,
-          .sidebar-toggle-button,
-          .nav-folder-title,
-          .nav-file-title,
-          .view-header-title,
-          .menu,
-          .prompt,
-          .suggestion-item,
-          .setting-item,
-          .modal {
-            font-family: "Maple Mono NF" !important;
-          }
+            .workspace,
+            .sidebar-toggle-button,
+            .nav-folder-title,
+            .nav-file-title,
+            .view-header-title,
+            .menu,
+            .prompt,
+            .suggestion-item,
+            .setting-item,
+            .modal {
+              font-family: "Maple Mono NF" !important;
+            }
 
-          .cm-editor .cm-content,
-          .cm-editor .cm-line {
-            font-family: "Maple Mono NF" !important;
-          }
+            .cm-editor .cm-content,
+            .cm-editor .cm-line {
+              font-family: "Maple Mono NF" !important;
+            }
 
-          code, pre, .HyperMD-codeblock {
-            font-family: "Maple Mono NF" !important;
-          }
-        '';
-      }
-    ];
+            code, pre, .HyperMD-codeblock {
+              font-family: "Maple Mono NF" !important;
+            }
+          '';
+        }
+      ];
       communityPlugins = [
         {
           pkg = pkgs.fetchzip {
