@@ -18,14 +18,10 @@
 
   outputs =
     inputs@{
-      self,
       nix-darwin,
       home-manager,
       nixpkgs,
-      nur,
-      emacs-overlay,
-      nix-nvim,
-      claude-code,
+      ...
     }:
     let
       # User configuration - define your user details here

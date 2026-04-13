@@ -126,7 +126,7 @@ in
 
     home.file.".aws/config".text =
       let
-        rmAttr = name: attrs: lib.attrsets.filterAttrs (n: v: n != name) attrs;
+        rmAttr = name: attrs: lib.attrsets.filterAttrs (n: _v: n != name) attrs;
         mkProfile =
           extra: profile:
           lib.mapAttrs' (name: value: {

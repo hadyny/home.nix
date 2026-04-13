@@ -1,4 +1,4 @@
-self: super:
+_self: super:
 
 let
   pinnedAt =
@@ -11,7 +11,6 @@ let
       rev = hash;
     }) { localSystem = super.stdenv.hostPlatform.system; };
 
-  pinned = name: hash: pinnedAt name "refs/heads/nixpkgs-unstable" hash;
   pinnedMaster = name: hash: pinnedAt name "refs/heads/master" hash;
 
 in
