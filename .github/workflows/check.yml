@@ -10,7 +10,7 @@ jobs:
     - uses: DeterminateSystems/nix-installer-action@main
     - uses: DeterminateSystems/magic-nix-cache-action@main
     - name: Check flake
-      run: nix flake check
+      run: nix flake check --all-systems=false
     - name: Check formatting
       run: nix fmt -- --ci
     - name: Lint with statix
