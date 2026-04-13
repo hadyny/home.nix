@@ -131,11 +131,11 @@ in
 
   config = mkIf cfg.enable {
     home.file.".config/koji/config.toml".source = tomlFormat.generate "koji-config" {
-      emoji = cfg.emoji;
-      autocomplete = cfg.autocomplete;
+      inherit (cfg) emoji;
+      inherit (cfg) autocomplete;
       breaking_changes = cfg.breakingChanges;
-      issues = cfg.issues;
-      sign = cfg.sign;
+      inherit (cfg) issues;
+      inherit (cfg) sign;
       commit_types = cfg.commitTypes;
     };
   };

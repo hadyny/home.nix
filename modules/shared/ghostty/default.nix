@@ -1,5 +1,4 @@
 {
-  pkgs,
   config,
   lib,
   ...
@@ -8,8 +7,6 @@
 with lib;
 
 let
-  isDarwin = pkgs.stdenv.isDarwin;
-
   # Use a custom namespace for cross-platform ghostty config
   cfg = config.settings.ghostty;
 in

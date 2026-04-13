@@ -88,11 +88,11 @@
   obsidian = {
     enable = true;
     cli.enable = true;
-    defaultSettings.app = {
-      vimMode = true;
-      useMarkdownLinks = true;
-    };
     defaultSettings = {
+      app = {
+        vimMode = true;
+        useMarkdownLinks = true;
+      };
       themes = [
         {
           enable = true;
@@ -114,63 +114,63 @@
           };
         }
       ];
+      cssSnippets = [
+        {
+          name = "maple-mono-font";
+          text = ''
+            body {
+              --font-text: "Maple Mono NF";
+              --font-monospace: "Maple Mono NF";
+              --font-interface: "Maple Mono NF";
+              font-size: 12px !important;
+            }
+
+            .markdown-preview-view,
+            .markdown-rendered,
+            .markdown-reading-view,
+            .markdown-preview-section {
+              font-family: "Maple Mono NF" !important;
+            }
+
+            .workspace,
+            .sidebar-toggle-button,
+            .nav-folder-title,
+            .nav-file-title,
+            .view-header-title,
+            .menu,
+            .prompt,
+            .suggestion-item,
+            .setting-item,
+            .modal {
+              font-family: "Maple Mono NF" !important;
+            }
+
+            .cm-editor .cm-content,
+            .cm-editor .cm-line {
+              font-family: "Maple Mono NF" !important;
+            }
+
+            code, pre, .HyperMD-codeblock {
+              font-family: "Maple Mono NF" !important;
+            }
+          '';
+        }
+      ];
+      communityPlugins = [
+        {
+          pkg = pkgs.fetchzip {
+            url = "https://github.com/obsidian-tasks-group/obsidian-tasks/releases/download/7.23.1/obsidian-tasks-7.23.1.zip";
+            hash = "sha256-/iHHTVzN3Cv7w4kwlfHUghnSsT8VFt3G75aetdk0OGE=";
+          };
+        }
+        {
+          pkg = pkgs.fetchzip {
+            url = "https://github.com/Vinzent03/obsidian-git/releases/download/2.38.0/obsidian-git-2.38.0.zip";
+            hash = "sha256-GaSsWmIeBOI7bT8wt+0Y1HkU47puiqdsQOpps7Ue++8=";
+          };
+        }
+      ];
     };
-    defaultSettings.cssSnippets = [
-      {
-        name = "maple-mono-font";
-        text = ''
-          body {
-            --font-text: "Maple Mono NF";
-            --font-monospace: "Maple Mono NF";
-            --font-interface: "Maple Mono NF";
-            font-size: 12px !important;
-          }
-
-          .markdown-preview-view,
-          .markdown-rendered,
-          .markdown-reading-view,
-          .markdown-preview-section {
-            font-family: "Maple Mono NF" !important;
-          }
-
-          .workspace,
-          .sidebar-toggle-button,
-          .nav-folder-title,
-          .nav-file-title,
-          .view-header-title,
-          .menu,
-          .prompt,
-          .suggestion-item,
-          .setting-item,
-          .modal {
-            font-family: "Maple Mono NF" !important;
-          }
-
-          .cm-editor .cm-content,
-          .cm-editor .cm-line {
-            font-family: "Maple Mono NF" !important;
-          }
-
-          code, pre, .HyperMD-codeblock {
-            font-family: "Maple Mono NF" !important;
-          }
-        '';
-      }
-    ];
-    defaultSettings.communityPlugins = [
-      {
-        pkg = pkgs.fetchzip {
-          url = "https://github.com/obsidian-tasks-group/obsidian-tasks/releases/download/7.23.1/obsidian-tasks-7.23.1.zip";
-          hash = "sha256-/iHHTVzN3Cv7w4kwlfHUghnSsT8VFt3G75aetdk0OGE=";
-        };
-      }
-      {
-        pkg = pkgs.fetchzip {
-          url = "https://github.com/Vinzent03/obsidian-git/releases/download/2.38.0/obsidian-git-2.38.0.zip";
-          hash = "sha256-GaSsWmIeBOI7bT8wt+0Y1HkU47puiqdsQOpps7Ue++8=";
-        };
-      }
-    ];
 
     vaults.notes = {
       enable = true;
@@ -329,11 +329,11 @@
       }
       {
         name = pkgs.zsh-nix-shell.pname;
-        src = pkgs.zsh-nix-shell.src;
+        inherit (pkgs.zsh-nix-shell) src;
       }
       {
         name = pkgs.pure-prompt.pname;
-        src = pkgs.pure-prompt.src;
+        inherit (pkgs.pure-prompt) src;
       }
     ];
     shellAliases = {

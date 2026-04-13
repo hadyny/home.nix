@@ -58,23 +58,22 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [
-      dotnet-env
-      pkgs.csharprepl
-    ];
-
-    home.sessionPath = [ "$HOME/.dotnet/tools" ];
-
-    home.sessionVariables = {
-      DOTNET_ROOT = "${dotnet-env}/share/dotnet";
-    };
-
-    home.file = lib.mkIf (cfg.nugetSources != { }) {
-      ".nuget/NuGet/NuGet.Config".source =
-        let
-          nugetConfig = buildNugetConfig cfg.nugetSources;
-        in
-        "${nugetConfig}/.nuget/NuGet/NuGet.Config";
+    home = {
+      packages = [
+        dotnet-env
+        pkgs.csharprepl
+      ];
+      sessionPath = [ "$HOME/.dotnet/tools" ];
+      sessionVariables = {
+        DOTNET_ROOT = "${dotnet-env}/share/dotnet";
+      };
+      file = lib.mkIf (cfg.nugetSources != { }) {
+        ".nuget/NuGet/NuGet.Config".source =
+          let
+            nugetConfig = buildNugetConfig cfg.nugetSources;
+          in
+          "${nugetConfig}/.nuget/NuGet/NuGet.Config";
+      };
     };
   };
 }

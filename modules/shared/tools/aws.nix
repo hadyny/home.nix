@@ -113,7 +113,7 @@ in
     };
 
     externalCredentials = mkOption {
-      type = types.attrsOf (types.str);
+      type = types.attrsOf types.str;
       default = { };
     };
   };
@@ -126,7 +126,7 @@ in
 
     home.file.".aws/config".text =
       let
-        rmAttr = name: attrs: lib.attrsets.filterAttrs (n: v: n != name) attrs;
+        rmAttr = name: attrs: lib.attrsets.filterAttrs (n: _v: n != name) attrs;
         mkProfile =
           extra: profile:
           lib.mapAttrs' (name: value: {
@@ -143,7 +143,7 @@ in
           name: value:
           let
             header = "sso-session ${name}";
-            session = (rmAttr "profiles" value);
+            session = rmAttr "profiles" value;
             profiles = mkProfile { sso_session = name; } value.profiles;
           in
           { ${header} = session; } // profiles

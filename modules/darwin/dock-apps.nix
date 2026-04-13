@@ -14,15 +14,8 @@ let
     default: values:
     mkOption {
       type = enum values;
-      default = default;
+      inherit default;
     };
-  mkNullableEnum =
-    values:
-    mkOption {
-      type = nullOr (enum values);
-      default = null;
-    };
-
   itemType = submodule {
     options = {
       path = mkOption { type = str; };

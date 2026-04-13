@@ -17,13 +17,6 @@ let
     else
       ''echo "${value}" | ${pkgs.libsecret}/bin/secret-tool store --label='${comment}' namespace '${namespace}' key '${key}' '';
 
-  lookupPasswordCmd =
-    namespace: key:
-    if pkgs.stdenv.hostPlatform.isDarwin then
-      "/usr/bin/security find-generic-password -w -s '${key}' -a '${namespace}' "
-    else
-      "${pkgs.libsecret}/bin/secret-tool lookup namespace '${namespace}' key '${key}' ";
-
   storeSshKeyCmd = value: ''
     echo "${value}" | ${pkgs.openssl}/bin/openssl pkcs8 -topk8 -nocrypt | ssh-add -
   '';
