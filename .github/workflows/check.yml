@@ -13,10 +13,10 @@ jobs:
       run: nix flake check
     - name: Check formatting
       run: nix fmt -- --ci
-    - name: Build darwin config
-      run: nix build .#darwinConfigurations.Hadyns-MacBook-Pro.system --dry-run
-    - name: Build home-manager config
-      run: nix build .#homeConfigurations.hadyn.activationPackage --dry-run
+    - name: Evaluate darwin config
+      run: nix eval .#darwinConfigurations.Hadyns-MacBook-Pro.system --raw
+    - name: Evaluate home-manager config
+      run: nix eval .#homeConfigurations.hadyn.activationPackage --raw
     - name: Lint with statix
       run: nix run nixpkgs#statix -- check .
     - name: Check for dead code
