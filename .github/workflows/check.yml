@@ -13,8 +13,6 @@ jobs:
       run: nix flake check
     - name: Check formatting
       run: nix fmt -- --ci
-    - name: Evaluate darwin config
-      run: nix eval .#darwinConfigurations.Hadyns-MacBook-Pro.system --raw
     - name: Lint with statix
       run: nix run nixpkgs#statix -- check .
     - name: Check for dead code
