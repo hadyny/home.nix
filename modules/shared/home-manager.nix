@@ -190,10 +190,12 @@
     shellWrapperName = "y";
     initLua = ''
       require('git'):setup()
+      require('starship'):setup()
     '';
     plugins = {
       "git" = pkgs.yaziPlugins.git;
       "rich-preview" = pkgs.yaziPlugins.rich-preview;
+      "starship" = pkgs.yaziPlugins.starship;
     };
     settings = {
       plugin = {
