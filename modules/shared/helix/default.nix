@@ -194,8 +194,8 @@ in
                 name = "typescript-language-server";
                 except-features = [ "format" ];
               }
-              "tailwindcss"
-              "eslint"
+              { name = "tailwindcss"; }
+              { name = "eslint"; }
             ];
             formatter = {
               command = "prettierd";
@@ -213,8 +213,8 @@ in
                 name = "typescript-language-server";
                 except-features = [ "format" ];
               }
-              "tailwindcss"
-              "eslint"
+              { name = "tailwindcss"; }
+              { name = "eslint"; }
             ];
             formatter = {
               command = "prettierd";
@@ -232,8 +232,8 @@ in
                 name = "typescript-language-server";
                 except-features = [ "format" ];
               }
-              "tailwindcss"
-              "eslint"
+              { name = "tailwindcss"; }
+              { name = "eslint"; }
             ];
             formatter = {
               command = "prettierd";
@@ -251,8 +251,8 @@ in
                 name = "typescript-language-server";
                 except-features = [ "format" ];
               }
-              "tailwindcss"
-              "eslint"
+              { name = "tailwindcss"; }
+              { name = "eslint"; }
             ];
             formatter = {
               command = "prettierd";
