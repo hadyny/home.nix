@@ -7,6 +7,8 @@ with (import <nixpkgs> { config.allowUnfree = true; });
       nixfmt
     ];
 
-    shellHook = "";
+    shellHook = ''
+      git config --local core.hooksPath .githooks
+    '';
   };
 }
