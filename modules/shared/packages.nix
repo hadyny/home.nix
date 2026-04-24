@@ -69,6 +69,7 @@ with pkgs;
     build-system = [ pkgs.python3.pkgs.setuptools ];
   })
   multimarkdown
+  marksman
   # prettier
 
   # ─────────────────────────────────────────────────────────────
