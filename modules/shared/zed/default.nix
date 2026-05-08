@@ -35,6 +35,11 @@ in
         eslint = true;
         tailwindcss = true;
         rose-pine = true;
+        authzed-zed = true;
+        catppuccin-icons = true;
+        terraform = true;
+        editorconfig = true;
+        ghostty = true;
       };
 
       theme = {
@@ -64,6 +69,9 @@ in
             "roslyn"
             "!omnisharp"
           ];
+        };
+        SpiceDB = {
+          format_on_save = "off";
         };
       };
 
