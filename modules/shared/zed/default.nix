@@ -40,6 +40,7 @@ in
         terraform = true;
         editorconfig = true;
         ghostty = true;
+        graphql = true;
       };
 
       theme = {
