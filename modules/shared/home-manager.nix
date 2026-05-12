@@ -159,12 +159,6 @@
       communityPlugins = [
         {
           pkg = pkgs.fetchzip {
-            url = "https://github.com/obsidian-tasks-group/obsidian-tasks/releases/download/7.23.1/obsidian-tasks-7.23.1.zip";
-            hash = "sha256-/iHHTVzN3Cv7w4kwlfHUghnSsT8VFt3G75aetdk0OGE=";
-          };
-        }
-        {
-          pkg = pkgs.fetchzip {
             url = "https://github.com/Vinzent03/obsidian-git/releases/download/2.38.0/obsidian-git-2.38.0.zip";
             hash = "sha256-GaSsWmIeBOI7bT8wt+0Y1HkU47puiqdsQOpps7Ue++8=";
           };
