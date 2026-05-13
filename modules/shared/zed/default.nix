@@ -41,6 +41,7 @@ in
         editorconfig = true;
         ghostty = true;
         graphql = true;
+        astro = true;
       };
 
       theme = {
