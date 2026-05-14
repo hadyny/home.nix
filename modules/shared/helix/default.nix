@@ -31,7 +31,7 @@ in
       ];
 
       settings = {
-        theme = "rose_pine";
+        theme = "catppuccin_mocha";
 
         editor = {
           line-number = "relative";

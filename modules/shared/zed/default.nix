@@ -34,7 +34,7 @@ in
         csharp = true;
         eslint = true;
         tailwindcss = true;
-        rose-pine = true;
+        catppuccin = true;
         authzed-zed = true;
         catppuccin-icons = true;
         terraform = true;
@@ -46,8 +46,8 @@ in
 
       theme = {
         mode = "system";
-        light = "Rosé Pine Dawn";
-        dark = "Rosé Pine";
+        light = "Catppuccin Latte";
+        dark = "Catppuccin Mocha";
       };
 
       project_panel = {

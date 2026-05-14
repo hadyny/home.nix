@@ -63,12 +63,19 @@ in
   gtk = {
     enable = true;
     theme = {
-      name = "rose-pine";
-      package = pkgs.rose-pine-gtk-theme;
+      name = "catppuccin-mocha-blue-standard";
+      package = pkgs.catppuccin-gtk.override {
+        accents = [ "blue" ];
+        size = "standard";
+        variant = "mocha";
+      };
     };
     iconTheme = {
-      name = "rose-pine";
-      package = pkgs.rose-pine-gtk-theme;
+      name = "Papirus-Dark";
+      package = pkgs.catppuccin-papirus-folders.override {
+        flavor = "mocha";
+        accent = "blue";
+      };
     };
   };
 

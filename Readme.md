@@ -313,12 +313,12 @@ Declarative Zed editor configuration with LSP support, extensions, and theming.
 ```nix
 zed-editor = {
   enable = true;
-  extensions = [ "nix" "lua" "csharp" "eslint" "tailwindcss" "rose-pine" ];
+  extensions = [ "nix" "lua" "csharp" "eslint" "tailwindcss" "catppuccin" ];
   userSettings = {
     theme = {
       mode = "system";
-      light = "Rosé Pine Dawn";
-      dark = "Rosé Pine";
+      light = "Catppuccin Latte";
+      dark = "Catppuccin Mocha";
     };
     # LSP configuration for nil, roslyn, tailwindcss, typescript, eslint
   };
@@ -401,8 +401,8 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
 The configuration includes numerous CLI tools and programs:
 
 - **Shells**: zsh (with pure prompt, fzf-tab, syntax highlighting), mcfly history search
-- **Editors**: Neovim (nix-nvim), Helix (Rose Pine theme, LSP for Nix/Lua/Markdown/C#/TypeScript/ESLint/Tailwind), Zed (declarative config with LSP & extensions), Emacs (emacs-plus on macOS, emacs-unstable on Linux)
-- **Terminals**: Ghostty (Rose Pine theme, Maple Mono NF font), tmux (Rose Pine dark/dawn themes, tmux-which-key, dev session with Claude, Project, Git, Files, Shell windows)
+- **Editors**: Neovim (nix-nvim), Helix (Catppuccin Mocha theme, LSP for Nix/Lua/Markdown/C#/TypeScript/ESLint/Tailwind), Zed (declarative config with LSP & extensions), Emacs (emacs-plus on macOS, emacs-unstable on Linux)
+- **Terminals**: Ghostty (Catppuccin Latte/Mocha theme, Maple Mono NF font), tmux (Catppuccin Latte/Mocha themes, tmux-which-key, dev session with Claude, Project, Git, Files, Shell windows)
 - **Dev Tools**: direnv, devenv, lazygit, lazydocker, gh (GitHub CLI), gh-dash, opencode, claude-code, koji, scooter
 - **File Management**: yazi (with git + rich-preview plugins for CSV/MD/JSON/IPYNB), broot, eza, fd, ripgrep, bat (with extras)
 - **Languages**: .NET 8/9/10, Bun, fnm (Node version manager), Roslyn LSP
@@ -446,6 +446,6 @@ The configuration includes numerous CLI tools and programs:
 ### Linux
 - Sway window manager with themed configuration
 - Wayland display server
-- GTK theming (Rose Pine)
+- GTK theming (Catppuccin Mocha)
 - Emacs daemon service
 - Works on any Linux distribution — only requires nix and home-manager

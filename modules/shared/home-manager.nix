@@ -97,13 +97,13 @@
         {
           enable = true;
           pkg = pkgs.stdenvNoCC.mkDerivation {
-            pname = "obsidian-theme-rose-pine";
-            version = "0.1.19";
+            pname = "obsidian-theme-catppuccin";
+            version = "2.0.4";
             src = pkgs.fetchFromGitHub {
-              owner = "rose-pine";
+              owner = "catppuccin";
               repo = "obsidian";
-              rev = "e2b47ad4ff24626b597d0b2a36250e22073760e7";
-              hash = "sha256-HSGFmmQcH2WlJBpPv2yek16iiz92leQbIspCN6oB1AA=";
+              rev = "667e1a893086bc8dec1db32b97ed6b23fdfd5d83";
+              hash = "sha256-fbPkZXlk+TTcVwSrt6ljpmvRL+hxB74NIEygl4ICm2U=";
             };
             installPhase = ''
               runHook preInstall
@@ -239,15 +239,13 @@
     plugins = with pkgs.tmuxPlugins; [
       sensible
       {
-        plugin = rose-pine;
+        plugin = catppuccin;
         extraConfig = ''
-          set -g @rose_pine_variant 'main'
-          set -g @rose_pine_host 'on'
-          set -g @rose_pine_directory 'on'
-          set -g @rose_pine_show_current_program 'on'
-          set -g @rose_pine_show_pane_directory 'on'
-          set -g @rose_pine_bar_bg_disable 'on'
-          set -g @rose_pine_bar_bg_disabled_color_option 'default'
+          set -g @catppuccin_flavor 'mocha'
+          set -g @catppuccin_status_background 'none'
+          set -g @catppuccin_window_status_style 'rounded'
+          set -g status-right-length 100
+          set -g status-right "#{E:@catppuccin_status_application}#{E:@catppuccin_status_directory}#{E:@catppuccin_status_host}"
         '';
       }
       {
@@ -261,10 +259,10 @@
       # True colour support
       set -ag terminal-overrides ",xterm-256color:RGB"
 
-      # Rose Pine dark/light toggle
-      # Prefix + D for dark (main), Prefix + L for light (dawn)
-      bind D run-shell "tmux set -g @rose_pine_variant 'main'; tmux source ~/.config/tmux/tmux.conf"
-      bind L run-shell "tmux set -g @rose_pine_variant 'dawn'; tmux source ~/.config/tmux/tmux.conf"
+      # Catppuccin dark/light toggle
+      # Prefix + D for dark (mocha), Prefix + L for light (latte)
+      bind D run-shell "tmux set -g @catppuccin_flavor 'mocha'; tmux source ~/.config/tmux/tmux.conf"
+      bind L run-shell "tmux set -g @catppuccin_flavor 'latte'; tmux source ~/.config/tmux/tmux.conf"
 
       # Pane splitting (keep cwd)
       bind | split-window -h -c "#{pane_current_path}"
@@ -287,8 +285,8 @@
 
       # Subtle pane borders
       set -g pane-border-lines simple
-      set -g pane-border-style "fg=#26233a"
-      set -g pane-active-border-style "fg=#31748f"
+      set -g pane-border-style "fg=#313244"
+      set -g pane-active-border-style "fg=#89b4fa"
     '';
   };
 

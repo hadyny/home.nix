@@ -46,7 +46,7 @@ in
 
     theme = mkOption {
       type = types.str;
-      default = "light:\"Rose Pine Dawn\",dark:\"Rose Pine\"";
+      default = "light:\"Catppuccin Latte\",dark:\"Catppuccin Mocha\"";
       description = "Theme configuration";
     };
 
