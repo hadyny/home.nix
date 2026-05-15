@@ -12,6 +12,7 @@
     casks = [
       "1password"
       "firefox"
+      "microsoft-edge"
       "postman"
       "slack"
       "rider"
