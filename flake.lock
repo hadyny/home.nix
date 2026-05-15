@@ -314,11 +314,11 @@
         "nixpkgs-neovim": "nixpkgs-neovim"
       },
       "locked": {
-        "lastModified": 1778734722,
-        "narHash": "sha256-71tO2GdJmKKXvRnDYJ4qyqB/QW1Eec0LpbdgdAG0OI4=",
+        "lastModified": 1778806184,
+        "narHash": "sha256-LGkH+8AC64FkwmMv6UMleF1iv1WOBK9STFDQJyh3+qs=",
         "owner": "hadyny",
         "repo": "nix-nvim",
-        "rev": "2350d600465314ac6d3f0dc3fb8e11d29a0925fc",
+        "rev": "f8d753ba1258cfe32cc14b086f6390040533fbc2",
         "type": "github"
       },
       "original": {
