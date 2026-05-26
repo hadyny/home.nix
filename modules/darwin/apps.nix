@@ -16,7 +16,6 @@
       "postman"
       "slack"
       "rider"
-      "datagrip"
       "spotify"
       "emacs-plus-app@master"
       "zed"
