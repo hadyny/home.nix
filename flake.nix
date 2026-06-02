@@ -14,6 +14,18 @@
     emacs-overlay.url = "github:nix-community/emacs-overlay";
     nix-nvim.url = "github:hadyny/nix-nvim";
     claude-code.url = "github:sadjow/claude-code-nix";
+    # Helix from git for LSP pull-diagnostics support (helix#11315), not yet in
+    # a tagged release (25.07.1). Required for C# diagnostics via Roslyn.
+    helix = {
+      url = "github:helix-editor/helix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # Wrapper that patches Roslyn's initialize response so Helix is offered pull
+    # diagnostics (works around dotnet/roslyn#76624).
+    csharp-language-server = {
+      url = "github:SofusA/csharp-language-server";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

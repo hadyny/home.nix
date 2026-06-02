@@ -21,7 +21,7 @@ in
       extraPackages = with pkgs; [
         nil
         lua-language-server
-        roslyn-ls
+        csharp-language-server
         typescript-language-server
         vscode-langservers-extracted
         tailwindcss-language-server
@@ -128,13 +128,12 @@ in
             args = [ "server" ];
           };
 
-          roslyn-ls = {
-            command = "Microsoft.CodeAnalysis.LanguageServer";
-            args = [
-              "--logLevel"
-              "Information"
-              "--stdio"
-            ];
+          # Wrapper around Microsoft.CodeAnalysis.LanguageServer (Roslyn) that
+          # patches its initialize response to advertise pull diagnostics, which
+          # Helix otherwise never receives (dotnet/roslyn#76624). The wrapper
+          # fetches and manages its own Roslyn build on first launch.
+          csharp-language-server = {
+            command = "csharp-language-server";
           };
 
           typescript-language-server = {
@@ -184,7 +183,7 @@ in
           {
             name = "c-sharp";
             auto-format = true;
-            language-servers = [ "roslyn-ls" ];
+            language-servers = [ "csharp-language-server" ];
           }
           {
             name = "typescript";
