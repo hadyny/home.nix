@@ -27,6 +27,7 @@
       cleanup = "zap";
       autoUpdate = true;
       upgrade = true;
+      extraFlags = [ "--force" ];
     };
 
     taps = [ "d12frosted/emacs-plus" ];

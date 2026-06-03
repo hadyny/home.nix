@@ -47,7 +47,7 @@ with pkgs;
   vscode-langservers-extracted
   lua-language-server
   nil
-  roslyn-ls
+  csharp-language-server
 
   # ─────────────────────────────────────────────────────────────
   # JavaScript / TypeScript

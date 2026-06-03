@@ -68,7 +68,8 @@ in
         };
         "C#" = {
           language_servers = [
-            "roslyn"
+            "csharp-language-server"
+            "!roslyn"
             "!omnisharp"
           ];
         };
@@ -83,7 +84,7 @@ in
             path_lookup = true;
           };
         };
-        roslyn = {
+        csharp-language-server = {
           binary = {
             path_lookup = true;
           };
