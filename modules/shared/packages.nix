@@ -48,6 +48,7 @@ with pkgs;
   lua-language-server
   nil
   csharp-language-server
+  roslyn-ls
 
   # ─────────────────────────────────────────────────────────────
   # JavaScript / TypeScript
