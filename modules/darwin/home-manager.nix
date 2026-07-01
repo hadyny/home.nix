@@ -24,6 +24,7 @@ in
     overlays = [
       inputs.nur.overlays.default
       inputs.emacs-overlay.overlays.default
+      inputs.dotemacs.overlays.default
       inputs.nix-nvim.overlays.default
       inputs.claude-code.overlays.default
       inputs.helix.overlays.default

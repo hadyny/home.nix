@@ -13,6 +13,10 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
     nix-nvim.url = "github:hadyny/nix-nvim";
+    dotemacs = {
+      url = "github:hadyny/.emacs.d";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     claude-code.url = "github:sadjow/claude-code-nix";
     # Helix from git for LSP pull-diagnostics support (helix#11315), not yet in
     # a tagged release (25.07.1). Required for C# diagnostics via Roslyn.

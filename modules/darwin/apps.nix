@@ -18,7 +18,6 @@
       "slack"
       "rider"
       "spotify"
-      "emacs-plus-app@master"
       "zed"
     ];
 
@@ -30,7 +29,8 @@
       extraFlags = [ "--force" ];
     };
 
-    taps = [ "d12frosted/emacs-plus" ];
+    # libvterm is kept for straight.el's vterm module compilation under the
+    # nix Emacs; the d12frosted/emacs-plus tap is gone with the cask.
     brews = [
       "libvterm"
     ];

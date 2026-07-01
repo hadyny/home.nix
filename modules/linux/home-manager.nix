@@ -25,6 +25,7 @@ in
     overlays = [
       inputs.nur.overlays.default
       inputs.emacs-overlay.overlays.default
+      inputs.dotemacs.overlays.default
       inputs.nix-nvim.overlays.default
       inputs.claude-code.overlays.default
       inputs.helix.overlays.default
@@ -86,7 +87,8 @@ in
   services = {
     emacs = {
       enable = true;
-      package = pkgs.emacs-unstable;
+      # Match the interactive Emacs from the dotemacs module (Nix-managed packages).
+      package = pkgs.emacs-dotemacs;
     };
   };
 

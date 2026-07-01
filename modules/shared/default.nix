@@ -3,7 +3,7 @@
 # Import this single file to get all shared functionality:
 #   imports = [ ../shared ];
 #
-{ ... }:
+{ inputs, ... }:
 {
   home.file.".config/rassumfrassum/tslint.py".source = ./config/rassumfrassum/tslint.py;
 
@@ -11,6 +11,7 @@
     # Editors
     ./helix
     ./zed
+    inputs.dotemacs.homeManagerModules.default
 
     # Terminal
     ./ghostty

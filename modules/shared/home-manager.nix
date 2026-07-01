@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   bat = {
     enable = true;
@@ -17,10 +17,22 @@
     };
   };
 
-  emacs = {
-    enable = !pkgs.stdenv.isDarwin;
-    package = pkgs.emacs-unstable;
-    extraPackages = epkgs: [ epkgs.vterm ];
+  # Emacs is provided by the dotemacs module below (nixpkgs emacs + emacs-plus
+  # system-appearance patch on Darwin), so the built-in programs.emacs is off.
+  emacs.enable = false;
+
+  dotemacs = {
+    enable = true;
+    # Language servers already come from shared/packages.nix (shared with
+    # helix/nvim), so don't restate the closure here.
+    tools = [ ];
+    # Live, writable checkout: ~/.emacs.d out-of-store symlink so straight.el
+    # can write to ~/.emacs.d/straight and config.org edits need no rebuild.
+    configPath = "${config.home.homeDirectory}/src/dotemacs.d";
+    # Cross-platform Emacs from the dotemacs flake: patched on Darwin plus every
+    # config package on load-path (Nix-managed, not straight.el). Provided by the
+    # dotemacs overlay added in each platform's nixpkgs.overlays.
+    package = pkgs.emacs-dotemacs;
   };
 
   jq.enable = true;
