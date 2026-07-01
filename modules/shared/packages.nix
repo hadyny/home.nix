@@ -40,38 +40,9 @@ with pkgs;
   fnm
 
   # ─────────────────────────────────────────────────────────────
-  # Language Servers & LSPs
-  # ─────────────────────────────────────────────────────────────
-  typescript-language-server
-  tailwindcss-language-server
-  vscode-langservers-extracted
-  lua-language-server
-  nil
-  csharp-language-server
-  roslyn-ls
-
-  # ─────────────────────────────────────────────────────────────
   # JavaScript / TypeScript
   # ─────────────────────────────────────────────────────────────
   bun
-  # rustywind # tailwind class sorter
-
-  # ─────────────────────────────────────────────────────────────
-  # Emacs Dependencies
-  # ─────────────────────────────────────────────────────────────
-  (python3Packages.buildPythonPackage rec {
-    pname = "rassumfrassum";
-    version = "0.3.3";
-    src = pkgs.fetchPypi {
-      inherit pname version;
-      sha256 = "sha256-Gs2Qgwafj9m1tdVcw1k4UXTbxgbS5awTCINBkb5HIhc=";
-    };
-    pyproject = true;
-    build-system = [ pkgs.python3.pkgs.setuptools ];
-  })
-  multimarkdown
-  marksman
-  # prettier
 
   # ─────────────────────────────────────────────────────────────
   # Infrastructure & DevOps
