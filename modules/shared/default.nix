@@ -5,8 +5,6 @@
 #
 { inputs, ... }:
 {
-  home.file.".config/rassumfrassum/tslint.py".source = ./config/rassumfrassum/tslint.py;
-
   imports = [
     # Editors
     ./helix

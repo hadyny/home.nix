@@ -7,25 +7,27 @@ This configuration provides a complete development environment with:
 - Modular structure for shared, darwin-specific, and linux-specific configurations
 - Work profile support with separate configurations and certificates
 - Custom modules for Git, AWS, Docker, .NET, 1Password integration, and more
-- Comprehensive development tools including Neovim (via nix-nvim), Zed, Emacs, and Ghostty terminal
+- Comprehensive development tools including Neovim (via nix-nvim), Helix, Zed, Emacs (via the dotemacs flake), and Ghostty terminal
 
 ## Repository Structure
 
 ```
 .
-├── flake.nix                 # Main entry point
+├── flake.nix                 # Main entry point, inputs & user config
+├── shell.nix                 # Dev shell (nodejs, nixd, nixfmt) + .githooks path
 ├── hosts/
 │   └── darwin/               # macOS system configuration
-│       ├── default.nix       # Base darwin config
-│       └── work/             # Work machine overrides
+│       ├── default.nix       # Base darwin config (nix settings, system defaults, dock)
+│       └── work/             # Work machine build target
 │           ├── certificates.nix # Work certificates
-│           └── default.nix   # Work-specific config
+│           └── default.nix   # Work-specific config (ep flake registry)
 ├── modules/
 │   ├── shared/               # Cross-platform modules
 │   │   ├── default.nix       # Shared module entrypoint
 │   │   ├── home-manager.nix  # Program configurations
-│   │   ├── packages.nix      # System packages
+│   │   ├── packages.nix      # Shared packages
 │   │   ├── fonts.nix         # Font packages
+│   │   ├── work.nix          # Work-specific settings
 │   │   ├── ghostty/          # Terminal configuration
 │   │   ├── helix/            # Helix editor configuration
 │   │   ├── zed/              # Zed editor configuration
@@ -37,13 +39,12 @@ This configuration provides a complete development environment with:
 │   │   │   └── wallpaper.nix # Desktop wallpaper
 │   │   ├── secureEnv/
 │   │   │   └── onePassword.nix # 1Password integration
-│   │   ├── tools/
-│   │   │   ├── aws.nix       # AWS CLI & profiles
-│   │   │   ├── docker.nix    # Docker utilities
-│   │   │   ├── dotnet.nix    # .NET SDK & NuGet
-│   │   │   ├── git.nix       # Git configuration
-│   │   │   └── koji.nix      # Conventional commit tool
-│   │   └── work.nix          # Work-specific settings
+│   │   └── tools/
+│   │       ├── aws.nix       # AWS CLI & profiles
+│   │       ├── docker.nix    # Docker + ECR login helper
+│   │       ├── dotnet.nix    # .NET SDKs & NuGet
+│   │       ├── git.nix       # Git configuration
+│   │       └── koji.nix      # Conventional commit tool
 │   ├── darwin/               # macOS-specific modules
 │   │   ├── apps.nix          # Homebrew packages
 │   │   ├── home-manager.nix  # Darwin home-manager config
@@ -55,10 +56,10 @@ This configuration provides a complete development environment with:
 │   │       ├── aws.nix       # Work AWS configuration
 │   │       └── default.nix   # Work darwin entrypoint
 │   └── linux/                # Linux-specific modules
-│       ├── home-manager.nix  # Linux home-manager config
+│       ├── home-manager.nix  # Linux home-manager config (Sway, GTK)
 │       └── packages.nix      # Linux-specific packages
 └── overlays/
-    └── pinned.nix            # Version-pinned packages
+    └── pinned.nix            # Version-pinned packages (kcat, mitmproxy)
 ```
 
 ## Installation
@@ -242,7 +243,7 @@ tools.dotnet = {
 };
 ```
 
-The module also includes `easydotnet`, a JSON-RPC server for Neovim .NET development.
+The module also installs `csharprepl`, an interactive C# REPL, and sets `DOTNET_ROOT` plus `~/.dotnet/tools` on the path.
 
 ### 1Password (`secureEnv.onePassword`)
 
@@ -275,7 +276,8 @@ Secrets are stored in macOS Keychain (or libsecret on Linux) and cached in `~/.z
 
 ### Docker (`tools.docker`)
 
-Provides Docker utilities including docker-compose, lazydocker, and dive for image analysis.
+Installs `docker` and `awscli2`, plus a `docker-login` helper script that
+verifies AWS SSO authentication and logs Docker into the EP ECR registry.
 
 ```nix
 tools.docker = {
@@ -311,19 +313,20 @@ services.colima = {
 Declarative Zed editor configuration with LSP support, extensions, and theming.
 
 ```nix
-zed-editor = {
+settings.zed = {
   enable = true;
-  extensions = [ "nix" "lua" "csharp" "eslint" "tailwindcss" "catppuccin" ];
-  userSettings = {
-    theme = {
-      mode = "system";
-      light = "Catppuccin Latte";
-      dark = "Catppuccin Mocha";
-    };
-    # LSP configuration for nil, roslyn, tailwindcss, typescript, eslint
-  };
+  fontFamily = "Maple Mono NF";  # default
+  fontSize = 15;                 # default
 };
 ```
+
+Auto-installs the `nix`, `lua`, `csharp`, `eslint`, `tailwindcss`, `catppuccin`,
+`catppuccin-icons`, `authzed-zed`, `terraform`, `editorconfig`, `ghostty`,
+`graphql`, and `astro` extensions, applies the system-aware Catppuccin
+Latte/Mocha theme, enables vim mode, and wires up path-lookup LSPs for `nil`
+(Nix, with `nixd` disabled), `csharp-language-server` (C#, with `roslyn` and
+`omnisharp` disabled), `tailwindcss-language-server`,
+`typescript-language-server`, and `eslint`.
 
 ### Dock (`targets.darwin.dock`)
 
@@ -377,43 +380,46 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
     casks = [
       "1password"
       "firefox"
+      "vivaldi"
+      "microsoft-edge"
       "postman"
       "slack"
       "rider"
-      "datagrip"
       "spotify"
-      "emacs-plus-app@master"
       "zed"
     ];
-    brews = [ "libvterm" ];
-    taps = [ "d12frosted/emacs-plus" ];
 
-  onActivation = {
-    cleanup = "zap";      # Remove unlisted packages
-    autoUpdate = true;
-    upgrade = true;
+    # libvterm is kept for straight.el's vterm module compilation under the nix Emacs.
+    brews = [ "libvterm" ];
+
+    global.brewfile = true;
+    onActivation = {
+      cleanup = "zap";      # Remove unlisted packages
+      autoUpdate = true;
+      upgrade = true;
+      extraFlags = [ "--force" ];
+    };
   };
-};
 ```
 
 ## Included Programs
 
 The configuration includes numerous CLI tools and programs:
 
-- **Shells**: zsh (with pure prompt, fzf-tab, syntax highlighting), mcfly history search
-- **Editors**: Neovim (nix-nvim), Helix (Catppuccin Mocha theme, LSP for Nix/Lua/Markdown/C#/TypeScript/ESLint/Tailwind), Zed (declarative config with LSP & extensions), Emacs (emacs-plus on macOS, emacs-unstable on Linux)
-- **Terminals**: Ghostty (Catppuccin Latte/Mocha theme, Maple Mono NF font), tmux (Catppuccin Latte/Mocha themes, tmux-which-key, dev session with Claude, Project, Git, Files, Shell windows)
-- **Dev Tools**: direnv, devenv, lazygit, lazydocker, gh (GitHub CLI), gh-dash, opencode, claude-code, koji, scooter
-- **File Management**: yazi (with git + rich-preview plugins for CSV/MD/JSON/IPYNB), broot, eza, fd, ripgrep, bat (with extras)
-- **Languages**: .NET 8/9/10, Bun, fnm (Node version manager), Roslyn LSP
-- **LSPs**: typescript-language-server, tailwindcss-language-server, lua-language-server, nil (Nix), roslyn-ls (.NET)
-- **Containers**: Docker, docker-compose, dive, Colima
-- **Infrastructure**: Terraform, SpiceDB
+- **Shells**: zsh (with pure prompt, fzf-tab, syntax highlighting, autosuggestions), mcfly history search
+- **Editors**: Neovim (nix-nvim), Helix (Catppuccin Mocha theme, LSP for Nix/Lua/Markdown/C#/TypeScript/ESLint/Tailwind), Zed (declarative config with LSP & extensions), Emacs (via the dotemacs flake — `emacs-dotemacs`, with a live `~/src/dotemacs.d` checkout)
+- **Terminals**: Ghostty (Catppuccin Latte/Mocha theme, Maple Mono NF font), tmux (Catppuccin Mocha theme, tmux-which-key, dev session with Claude, Project, Git, Files, Shell windows)
+- **Dev Tools**: direnv, devenv, lazygit, tig, lazydocker, gh (GitHub CLI), gh-dash, github-mcp-server, opencode, claude-code, gemini-cli, koji, scooter, cmake, gcc, shfmt, shellcheck, stylelint
+- **File Management**: yazi (with git, starship + rich-preview plugins for CSV/MD/RST/JSON/IPYNB), eza, fd, ripgrep, bat (with extras), duf, gdu, moreutils
+- **Languages**: .NET 8/9/10 (with csharprepl), Bun, fnm (Node version manager)
+- **LSPs**: typescript-language-server, tailwindcss-language-server, lua-language-server, nil (Nix), csharp-language-server (Roslyn wrapper for C#), marksman (Markdown), prettierd, vscode-langservers-extracted (ESLint)
+- **Containers**: Docker, Colima
+- **Infrastructure**: Terraform, SpiceDB (spicedb + zed CLI)
 - **Kafka**: redpanda-client, kafkactl, kcat
-- **Utilities**: btop, jq, zoxide, posting (API client), tabiew (CSV viewer), kew (music player), mitmproxy
-- **Databases**: DataGrip (via Homebrew), DBeaver
-- **Knowledge Management**: Obsidian
-- **Browsers**: Firefox, Helium
+- **Utilities**: btop, jq, zoxide, posting (API client), tabiew (CSV viewer), kew (music player), mitmproxy, rich-cli
+- **Databases**: DBeaver (`dbeaver-bin`)
+- **Knowledge Management**: Obsidian (Catppuccin theme, git plugin)
+- **Browsers**: Firefox, Vivaldi, Microsoft Edge, Helium (via NUR)
 
 ## Key Bindings
 
@@ -429,9 +435,12 @@ The configuration includes numerous CLI tools and programs:
 - **nix-darwin**: LnL7/nix-darwin for macOS configuration
 - **home-manager**: nix-community/home-manager for user environment
 - **emacs-overlay**: nix-community/emacs-overlay for latest Emacs builds
+- **dotemacs**: hadyny/.emacs.d — the Emacs configuration flake (provides the `emacs-dotemacs` package and home-manager module)
 - **nix-nvim**: hadyny/nix-nvim for custom Neovim configuration
 - **nur**: nix-community/NUR for additional packages
 - **claude-code**: sadjow/claude-code-nix for Claude Code CLI
+- **helix**: helix-editor/helix built from git, for LSP pull-diagnostics support (required for C# diagnostics via Roslyn)
+- **csharp-language-server**: SofusA/csharp-language-server — wraps Roslyn so Helix is offered pull diagnostics
 
 ## Platform-Specific Features
 
@@ -444,8 +453,8 @@ The configuration includes numerous CLI tools and programs:
 - Colima Docker virtualisation
 
 ### Linux
-- Sway window manager with themed configuration
-- Wayland display server
-- GTK theming (Catppuccin Mocha)
-- Emacs daemon service
+- Sway window manager with themed configuration (Super modifier, ghostty terminal)
+- Wayland display server with wofi application launcher
+- GTK theming (Catppuccin Mocha, Papirus-Dark icons)
+- Emacs daemon service (`emacs-dotemacs`)
 - Works on any Linux distribution — only requires nix and home-manager
