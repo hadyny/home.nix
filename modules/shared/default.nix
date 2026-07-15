@@ -9,7 +9,7 @@
     # Editors
     ./helix
     ./zed
-    inputs.dotemacs.homeManagerModules.default
+    inputs.dotemacs.homeModules.default
 
     # Terminal
     ./ghostty
