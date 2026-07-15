@@ -47,18 +47,18 @@
   ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks = {
+    settings = {
       "*" = {
-        forwardAgent = false;
-        serverAliveInterval = 0;
-        serverAliveCountMax = 3;
-        compression = false;
-        addKeysToAgent = "no";
-        hashKnownHosts = false;
-        userKnownHostsFile = "~/.ssh/known_hosts";
-        controlMaster = "no";
-        controlPath = "~/.ssh/master-%r@%n:%p";
-        controlPersist = "no";
+        ForwardAgent = false;
+        ServerAliveInterval = 0;
+        ServerAliveCountMax = 3;
+        Compression = false;
+        AddKeysToAgent = "no";
+        HashKnownHosts = false;
+        UserKnownHostsFile = "~/.ssh/known_hosts";
+        ControlMaster = "no";
+        ControlPath = "~/.ssh/master-%r@%n:%p";
+        ControlPersist = "no";
       };
     };
   };
@@ -83,6 +83,9 @@
 
   fzf = {
     enable = true;
+    # mcfly owns Ctrl-R (sourced after fzf); cede fzf's history widget to it.
+    # Per-shell form avoids the fzf >=0.66.0 guard on the global option.
+    historyWidget.zsh.command = "";
     colors = {
       fg = "#908caa,bg:#191724,hl:#ebbcba";
       "fg+" = "#e0def4,bg+:#26233a,hl+:#ebbcba";
