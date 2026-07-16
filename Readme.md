@@ -14,7 +14,7 @@ This configuration provides a complete development environment with:
 ```
 .
 ├── flake.nix                 # Main entry point, inputs & user config
-├── shell.nix                 # Dev shell (nodejs, nixd, nixfmt) + .githooks path
+├── devenv.nix                # Dev shell via devenv (nodejs, nixd, nixfmt) + git-hooks
 ├── hosts/
 │   └── darwin/               # macOS system configuration
 │       ├── default.nix       # Base darwin config (nix settings, system defaults, dock)

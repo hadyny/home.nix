@@ -18,6 +18,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     claude-code.url = "github:sadjow/claude-code-nix";
+    devenv.url = "github:cachix/devenv";
     # Helix from git for LSP pull-diagnostics support (helix#11315), not yet in
     # a tagged release (25.07.1). Required for C# diagnostics via Roslyn.
     helix = {
@@ -92,6 +93,14 @@
         x86_64-darwin = nixpkgs.legacyPackages.x86_64-darwin.nixfmt-tree;
         x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-tree;
       };
+
+      devShells = nixpkgs.lib.genAttrs [ "aarch64-darwin" "aarch64-linux" ] (system: {
+        default = inputs.devenv.lib.mkShell {
+          inherit inputs;
+          pkgs = nixpkgs.legacyPackages.${system};
+          modules = [ ./devenv.nix ];
+        };
+      });
 
     };
 }
