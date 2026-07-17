@@ -18,6 +18,14 @@ let
       sdk_10_0
     ];
 
+  lazydotnet = pkgs.buildDotnetGlobalTool {
+    pname = "lazydotnet";
+    version = "0.9.1";
+    nugetHash = "sha256-n9mI5K6/lB+un1pF//uq9lblvgyeaSP9gkIPIavloA8=";
+    dotnet-sdk = pkgs.dotnetCorePackages.sdk_10_0;
+    dotnet-runtime = pkgs.dotnetCorePackages.runtime_10_0;
+  };
+
   buildNugetConfig =
     nugetSources:
     pkgs.stdenv.mkDerivation {
@@ -62,6 +70,7 @@ in
       packages = [
         dotnet-env
         pkgs.csharprepl
+        lazydotnet
       ];
       sessionPath = [ "$HOME/.dotnet/tools" ];
       sessionVariables = {
