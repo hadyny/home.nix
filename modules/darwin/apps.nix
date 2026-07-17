@@ -11,6 +11,7 @@
 
     casks = [
       "1password"
+      "brave-browser"
       "firefox"
       "vivaldi"
       "microsoft-edge"
