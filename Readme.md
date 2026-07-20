@@ -14,7 +14,10 @@ This configuration provides a complete development environment with:
 ```
 .
 ├── flake.nix                 # Main entry point, inputs & user config
+├── install.sh                # Bootstrap script (nix, nix-darwin, homebrew, rosetta)
 ├── devenv.nix                # Dev shell via devenv (nodejs, nixd, nixfmt) + git-hooks
+├── .github/
+│   └── workflows/            # CI: fmt/statix/deadnix checks + weekly flake update
 ├── hosts/
 │   └── darwin/               # macOS system configuration
 │       ├── default.nix       # Base darwin config (nix settings, system defaults, dock)
@@ -78,6 +81,10 @@ This configuration provides a complete development environment with:
 
 ### Setup
 
+> On a fresh macOS machine, `install.sh` bootstraps the whole flow (sudo check,
+> Homebrew, Nix, repo clone, nix-darwin, Rosetta). The manual steps below are
+> the equivalent if you'd rather run them yourself.
+
 1. Create and clone the configuration:
    ```bash
    sudo mkdir -p /etc/nix-darwin
@@ -130,6 +137,17 @@ darwin-rebuild switch --flake /etc/nix-darwin
 home-manager switch --flake /etc/nix-darwin#your-username
 ```
 
+## Continuous Integration
+
+GitHub Actions workflows live in `.github/workflows/`:
+
+- **`check.yml`** — runs on every push and pull request. Checks formatting
+  (`nix fmt -- --ci`), lints with `statix`, and fails on dead code via
+  `deadnix`.
+- **`update.yml`** — scheduled weekly (Monday 9am NZST) and manually
+  dispatchable. Runs `nix flake update` and opens a `chore: update flake inputs`
+  pull request from the `flake-update` branch.
+
 ## Modules
 
 ### Koji (`tools.koji`)
@@ -156,7 +174,7 @@ tools.koji = {
 
 ### Git (`tools.git`)
 
-Configures Git with aliases, delta diff viewer, lazygit, and workspace-specific settings.
+Configures Git with aliases, delta diff viewer, lazygit, tig, git-crypt, and workspace-specific settings.
 
 ```nix
 tools.git = {
@@ -243,7 +261,7 @@ tools.dotnet = {
 };
 ```
 
-The module also installs `csharprepl`, an interactive C# REPL, and sets `DOTNET_ROOT` plus `~/.dotnet/tools` on the path.
+The module also installs `csharprepl` (an interactive C# REPL) and `lazydotnet` (a TUI for driving .NET projects), and sets `DOTNET_ROOT` plus `~/.dotnet/tools` on the path.
 
 ### 1Password (`secureEnv.onePassword`)
 
@@ -379,6 +397,7 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
     enable = true;
     casks = [
       "1password"
+      "brave-browser"
       "firefox"
       "vivaldi"
       "microsoft-edge"
@@ -406,20 +425,21 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
 
 The configuration includes numerous CLI tools and programs:
 
-- **Shells**: zsh (with pure prompt, fzf-tab, syntax highlighting, autosuggestions), mcfly history search
+- **Shells**: zsh (with starship using the pure preset, fzf-tab, syntax highlighting, autosuggestions), mcfly history search
 - **Editors**: Neovim (nix-nvim), Helix (Catppuccin Mocha theme, LSP for Nix/Lua/Markdown/C#/TypeScript/ESLint/Tailwind), Zed (declarative config with LSP & extensions), Emacs (via the dotemacs flake — `emacs-dotemacs`, with a live `~/src/dotemacs.d` checkout)
 - **Terminals**: Ghostty (Catppuccin Latte/Mocha theme, Maple Mono NF font), tmux (Catppuccin Mocha theme, tmux-which-key, dev session with Claude, Project, Git, Files, Shell windows)
-- **Dev Tools**: direnv, devenv, lazygit, tig, lazydocker, gh (GitHub CLI), gh-dash, github-mcp-server, opencode, claude-code, gemini-cli, koji, scooter, cmake, gcc, shfmt, shellcheck, stylelint
+- **Dev Tools**: direnv, devenv, lazygit, tig, lazydocker, gh (GitHub CLI), gh-dash, github-mcp-server, opencode, claude-code, gemini-cli, koji, scooter, cmake, gcc, shfmt, shellcheck, stylelint, dockfmt
 - **File Management**: yazi (with git, starship + rich-preview plugins for CSV/MD/RST/JSON/IPYNB), eza, fd, ripgrep, bat (with extras), duf, gdu, moreutils
-- **Languages**: .NET 8/9/10 (with csharprepl), Bun, fnm (Node version manager)
+- **Languages**: .NET 8/9/10 (with csharprepl and lazydotnet), Bun, fnm (Node version manager)
 - **LSPs**: typescript-language-server, tailwindcss-language-server, lua-language-server, nil (Nix), csharp-language-server (Roslyn wrapper for C#), marksman (Markdown), prettierd, vscode-langservers-extracted (ESLint)
-- **Containers**: Docker, Colima
+- **Containers**: Docker (with docker-credential-helpers), Colima
+- **Virtualisation**: UTM (macOS)
 - **Infrastructure**: Terraform, SpiceDB (spicedb + zed CLI)
 - **Kafka**: redpanda-client, kafkactl, kcat
-- **Utilities**: btop, jq, zoxide, posting (API client), tabiew (CSV viewer), kew (music player), mitmproxy, rich-cli
+- **Utilities**: btop, jq, z-lua (directory jumping), posting (API client), tabiew (CSV viewer), kew (music player), mitmproxy, rich-cli
 - **Databases**: DBeaver (`dbeaver-bin`)
 - **Knowledge Management**: Obsidian (Catppuccin theme, git plugin)
-- **Browsers**: Firefox, Vivaldi, Microsoft Edge, Helium (via NUR)
+- **Browsers**: Brave, Firefox, Vivaldi, Microsoft Edge, Helium (via NUR)
 
 ## Key Bindings
 
@@ -457,4 +477,5 @@ The configuration includes numerous CLI tools and programs:
 - Wayland display server with wofi application launcher
 - GTK theming (Catppuccin Mocha, Papirus-Dark icons)
 - Emacs daemon service (`emacs-dotemacs`)
+- 1Password GUI, Brave, and Microsoft Edge
 - Works on any Linux distribution — only requires nix and home-manager
