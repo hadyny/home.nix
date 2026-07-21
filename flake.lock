@@ -126,22 +126,6 @@
         "type": "github"
       }
     },
-    "claudecode": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1782149501,
-        "narHash": "sha256-zWIdeSn0t+bJfCLHQz4JCg7T5Tam70uWoqGvYl/yPqQ=",
-        "owner": "coder",
-        "repo": "claudecode.nvim",
-        "rev": "298a3e6cbe784ed9c0cc5ff85aab6be6d704d2cd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "coder",
-        "repo": "claudecode.nvim",
-        "type": "github"
-      }
-    },
     "crate2nix": {
       "flake": false,
       "locked": {
@@ -1006,7 +990,6 @@
     },
     "nix-nvim": {
       "inputs": {
-        "claudecode": "claudecode",
         "csharp-explorer": "csharp-explorer",
         "devenv": "devenv_3",
         "flake-utils": "flake-utils_4",
@@ -1019,11 +1002,11 @@
         "org-modern": "org-modern"
       },
       "locked": {
-        "lastModified": 1784513406,
-        "narHash": "sha256-1h2JFUCuIaipP+dyVceKhY7Je3aR+cXAHgN7e+CKIp8=",
+        "lastModified": 1784593441,
+        "narHash": "sha256-mlqlfN4eBYEDnfZHxSjAZsNw65wYfBQS4uZ5u5OBc54=",
         "owner": "hadyny",
         "repo": "nix-nvim",
-        "rev": "732e8ebf79b733658abfdfe48e93d60653e0d8b2",
+        "rev": "f53e16a7ca57d2a408d22a92b79e07e3361a8241",
         "type": "github"
       },
       "original": {
