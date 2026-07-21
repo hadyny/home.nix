@@ -191,6 +191,48 @@
 
   ripgrep.enable = true;
 
+  # Note-taking. fzf is already enabled above, so zk's interactive mode
+  # (`zk edit -i` / `zk list -i`) shells out to fzf automatically; the
+  # settings below give it a bat-powered preview and open notes in nvim.
+  zk = {
+    enable = true;
+    settings = {
+      note = {
+        language = "en";
+        default-title = "Untitled";
+        # Slug the title so new notes read like `guitar-lessons.md` and are
+        # safe against `:` `/` `?` in titles. Random IDs are still used as a
+        # fallback via id-* below when a note has no title.
+        filename = "{{slug title}}";
+        extension = "md";
+        id-charset = "alphanum";
+        id-length = 4;
+        id-case = "lower";
+        # Keep zk's index clean: these dirs hold non-notes (templates,
+        # deleted notes, attachments). Globs are relative to the notebook root.
+        exclude = [
+          "templates"
+          ".trash"
+          "assets"
+        ];
+      };
+      # `[[wiki-links]]` instead of Markdown links, and `#hashtag` indexing.
+      # Kept here (not in the notebook's .zk/config.toml) so the whole zk
+      # config is declarative and survives re-init of the notebook.
+      format.markdown = {
+        link-format = "wiki";
+        hashtags = true;
+      };
+      tool = {
+        editor = "nvim";
+        pager = "less -FIRX";
+        fzf-preview = "bat -p --color always {-1}";
+      };
+      # Treat links to non-existent notes as errors in LSP-aware editors.
+      lsp.diagnostics.dead-link = "error";
+    };
+  };
+
   yazi = {
     enable = true;
     extraPackages = with pkgs; [
