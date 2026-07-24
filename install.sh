@@ -2,7 +2,7 @@
 
 { # Prevent script running if partially downloaded
 
-set -eo pipefail
+set -euo pipefail
 
 NOCOLOR='\033[0m'
 RED='\033[0;31m'
@@ -11,19 +11,19 @@ ORANGE='\033[0;33m'
 CYAN='\033[0;36m'
 
 header() {
-  printf "${CYAN}%s${NOCOLOR}\n" "$@"
+  printf '%b%s%b\n' "$CYAN" "$*" "$NOCOLOR"
 }
 
 info() {
-  printf "${GREEN}%s${NOCOLOR}\n" "$@"
+  printf '%b%s%b\n' "$GREEN" "$*" "$NOCOLOR"
 }
 
 warn() {
-  printf "${ORANGE}%s${NOCOLOR}\n" "$@"
+  printf '%b%s%b\n' "$ORANGE" "$*" "$NOCOLOR"
 }
 
 error() {
-  printf "${RED}%s${NOCOLOR}\n" "$@"
+  printf '%b%s%b\n' "$RED" "$*" "$NOCOLOR"
 }
 
 sudo_prompt() {
@@ -31,7 +31,7 @@ sudo_prompt() {
   header "We are going to check if you have 'sudo' permissions."
   echo "Please enter your password for sudo authentication"
   sudo -k
-  sudo echo "sudo authenticaion successful!"
+  sudo echo "sudo authentication successful!"
   while true ; do sudo -n true ; sleep 60 ; kill -0 "$$" || exit ; done 2>/dev/null &
 }
 
@@ -44,7 +44,8 @@ install_nix() {
     #    - Would you like to see a more detailed list of what we will do? n
     #    - Can we use sudo? y
     #    - Ready to continue? y
-    printf "n\ny\ny" | bash -i <(curl -kL https://nixos.org/nix/install) --daemon
+    printf "n\ny\ny" | bash -i <(curl -fsSL https://nixos.org/nix/install) --daemon
+    # shellcheck source=/dev/null
     source /etc/bashrc
   }
   info "'Nix' is installed! Here is what we have:"
@@ -56,10 +57,18 @@ install_nix_darwin() {
   header "Installing Nix on macOS..."
   command -v darwin-rebuild >/dev/null || {
     warn "'nix-darwin' is not installed. Installing..."
-    sudo nix run nix-darwin/master#darwin-rebuild -- switch
- 
-    # nix-darwin controls nix.conf
-    sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.backup-before-nix-darwin
+
+    # nix-darwin controls nix.conf; move the stock one aside first so the
+    # initial switch can take it over (it refuses to clobber an existing file).
+    if [ -f /etc/nix/nix.conf ] && [ ! -L /etc/nix/nix.conf ]; then
+      sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.backup-before-nix-darwin
+    fi
+
+    # Flakes are not enabled by default on a stock nixos.org install, so enable
+    # them for this bootstrap invocation and point at this flake + host.
+    sudo nix --extra-experimental-features 'nix-command flakes' \
+      run nix-darwin/master#darwin-rebuild -- \
+      switch --flake /etc/nix-darwin#Hadyns-MacBook-Pro
   }
   info "'nix-darwin' is installed!"
 }
@@ -70,7 +79,8 @@ install_homebrew() {
   command -v brew >/dev/null || {
     warn "'Homebrew' is not installed. Installing..."
     printf "\n" | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ${HOME}/.zprofile
+    # shellcheck disable=SC2016  # the single-quoted eval line is written verbatim to .zprofile
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "${HOME}/.zprofile"
     eval "$(/opt/homebrew/bin/brew shellenv)"
   }
   
@@ -91,25 +101,24 @@ install_rosetta() {
 
 clone_repository() {
   echo
-  sudo mkdir -p /etc/nix-darwin
-  sudo chown $(id -nu):$(id -ng) /etc/nix-darwin
-  local repository="hadyny/home.nix"
-  local clone_target="${HOME}/.nixpkgs"
+  local repository="ephadyn/home.nix"
+  local clone_target="/etc/nix-darwin"
   header "Setting up the configuration from github.com:${repository}..."
 
-  if [[ ! $( cat "${clone_target}/.git/config" | grep "github.com" | grep "${repository}" ) ]]; then
-    if [ -d "${clone_target}" ]; then
-      warn "Looks like '${clone_target}' exists and it is not what we want. Backing up as '${clone_target}.backup-before-clone'..."
-      mv "${clone_target}" "${clone_target}.backup-before-clone"
-    fi
+  sudo mkdir -p "${clone_target}"
+  sudo chown "$(id -nu):$(id -ng)" "${clone_target}"
+
+  if [ ! -d "${clone_target}/.git" ]; then
     warn "Cloning 'github.com:${repository}' into '${clone_target}'..."
+    # git refuses to clone into a non-empty directory; the mkdir above only
+    # creates an empty one, so this is safe on a fresh machine.
     git clone "https://github.com/${repository}.git" "${clone_target}"
+  else
+    info "'${clone_target}' already contains a git checkout, skipping clone."
   fi
 
   info "'${clone_target}' is sourced from github.com:'${repository}'."
-  cd "${clone_target}"
-  git remote -v
-  cd - >/dev/null
+  git -C "${clone_target}" remote -v
 }
 
 darwin_build() {

@@ -20,20 +20,7 @@ let
   };
 in
 {
-  nixpkgs = {
-    config.allowUnfree = true;
-    overlays = [
-      inputs.nur.overlays.default
-      inputs.emacs-overlay.overlays.default
-      inputs.dotemacs.overlays.default
-      inputs.nix-nvim.overlays.default
-      inputs.claude-code.overlays.default
-      inputs.helix.overlays.default
-      inputs.csharp-language-server.overlays.default
-      (import ../../overlays/pinned.nix)
-    ];
-  };
-
+  # nixpkgs.overlays + allowUnfree live in ../shared (shared with the darwin config).
   imports = [
     ../shared
     ../shared/secureEnv/onePassword.nix

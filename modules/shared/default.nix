@@ -5,6 +5,22 @@
 #
 { inputs, ... }:
 {
+  # Shared across every home config (darwin + linux); kept here so the overlay
+  # list and allowUnfree stay defined once rather than per host.
+  nixpkgs = {
+    config.allowUnfree = true;
+    overlays = [
+      inputs.nur.overlays.default
+      inputs.emacs-overlay.overlays.default
+      inputs.dotemacs.overlays.default
+      inputs.nix-nvim.overlays.default
+      inputs.claude-code.overlays.default
+      inputs.helix.overlays.default
+      inputs.csharp-language-server.overlays.default
+      (import ../../overlays/pinned.nix)
+    ];
+  };
+
   imports = [
     # Editors
     ./helix

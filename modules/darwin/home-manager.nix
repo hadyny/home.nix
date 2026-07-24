@@ -19,20 +19,7 @@ let
   };
 in
 {
-  nixpkgs = {
-    config.allowUnfree = true;
-    overlays = [
-      inputs.nur.overlays.default
-      inputs.emacs-overlay.overlays.default
-      inputs.dotemacs.overlays.default
-      inputs.nix-nvim.overlays.default
-      inputs.claude-code.overlays.default
-      inputs.helix.overlays.default
-      inputs.csharp-language-server.overlays.default
-      (import ../../overlays/pinned.nix)
-    ];
-  };
-
+  # nixpkgs.overlays + allowUnfree live in ../shared (shared with the linux config).
   imports = [ ../shared ];
 
   home = {
@@ -58,7 +45,7 @@ in
     };
   };
 
-  programs = shared-programs // { };
+  programs = shared-programs;
 
   fonts.fontconfig.enable = true;
 

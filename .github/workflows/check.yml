@@ -2,15 +2,30 @@ name: "Check"
 on:
   pull_request:
   push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v4
-    - uses: DeterminateSystems/nix-installer-action@main
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+    - uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+    - uses: cachix/cachix-action@5f2d7c5294214f71b873db4b969586b980625e71 # v17
+      with:
+        name: nix-tools
+        authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
     - name: Check formatting
       run: nix fmt -- --ci
     - name: Lint with statix
       run: nix run nixpkgs#statix -- check .
     - name: Check for dead code
       run: nix run nixpkgs#deadnix -- --fail .
+    # --impure: the devenv devShells output reads the working directory, which
+    # pure eval disallows (mirrors the pre-push hook in devenv.nix).
+    - name: Flake check
+      run: nix flake check --impure

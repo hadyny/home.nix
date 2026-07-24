@@ -9,6 +9,30 @@ with lib;
 
 let
   cfg = config.settings.helix;
+
+  # ts/tsx/js/jsx share one language-server stack and the prettierd formatter,
+  # differing only by language name and the filename prettierd is told to use.
+  mkTsLang =
+    { lang, ext }:
+    {
+      name = lang;
+      auto-format = true;
+      language-servers = [
+        {
+          name = "typescript-language-server";
+          except-features = [ "format" ];
+        }
+        { name = "tailwindcss"; }
+        { name = "eslint"; }
+      ];
+      formatter = {
+        command = "prettierd";
+        args = [
+          "--stdin-filepath"
+          "x.${ext}"
+        ];
+      };
+    };
 in
 {
   options.settings.helix = {
@@ -27,7 +51,7 @@ in
         tailwindcss-language-server
         prettierd
         marksman
-        nixpkgs-fmt
+        nixfmt-rfc-style
       ];
 
       settings = {
@@ -168,7 +192,7 @@ in
             name = "nix";
             auto-format = true;
             language-servers = [ "nil" ];
-            formatter.command = "nixpkgs-fmt";
+            formatter.command = "nixfmt";
           }
           {
             name = "lua";
@@ -185,81 +209,23 @@ in
             auto-format = true;
             language-servers = [ "csharp-language-server" ];
           }
+        ]
+        ++ map mkTsLang [
           {
-            name = "typescript";
-            auto-format = true;
-            language-servers = [
-              {
-                name = "typescript-language-server";
-                except-features = [ "format" ];
-              }
-              { name = "tailwindcss"; }
-              { name = "eslint"; }
-            ];
-            formatter = {
-              command = "prettierd";
-              args = [
-                "--stdin-filepath"
-                "x.ts"
-              ];
-            };
+            lang = "typescript";
+            ext = "ts";
           }
           {
-            name = "tsx";
-            auto-format = true;
-            language-servers = [
-              {
-                name = "typescript-language-server";
-                except-features = [ "format" ];
-              }
-              { name = "tailwindcss"; }
-              { name = "eslint"; }
-            ];
-            formatter = {
-              command = "prettierd";
-              args = [
-                "--stdin-filepath"
-                "x.tsx"
-              ];
-            };
+            lang = "tsx";
+            ext = "tsx";
           }
           {
-            name = "javascript";
-            auto-format = true;
-            language-servers = [
-              {
-                name = "typescript-language-server";
-                except-features = [ "format" ];
-              }
-              { name = "tailwindcss"; }
-              { name = "eslint"; }
-            ];
-            formatter = {
-              command = "prettierd";
-              args = [
-                "--stdin-filepath"
-                "x.js"
-              ];
-            };
+            lang = "javascript";
+            ext = "js";
           }
           {
-            name = "jsx";
-            auto-format = true;
-            language-servers = [
-              {
-                name = "typescript-language-server";
-                except-features = [ "format" ];
-              }
-              { name = "tailwindcss"; }
-              { name = "eslint"; }
-            ];
-            formatter = {
-              command = "prettierd";
-              args = [
-                "--stdin-filepath"
-                "x.jsx"
-              ];
-            };
+            lang = "jsx";
+            ext = "jsx";
           }
         ];
       };
