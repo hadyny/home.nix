@@ -29,11 +29,5 @@
       upgrade = true;
       extraFlags = [ "--force" ];
     };
-
-    # libvterm is kept for straight.el's vterm module compilation under the
-    # nix Emacs; the d12frosted/emacs-plus tap is gone with the cask.
-    brews = [
-      "libvterm"
-    ];
   };
 }

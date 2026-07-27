@@ -408,9 +408,6 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
       "zed"
     ];
 
-    # libvterm is kept for straight.el's vterm module compilation under the nix Emacs.
-    brews = [ "libvterm" ];
-
     global.brewfile = true;
     onActivation = {
       cleanup = "zap";      # Remove unlisted packages
