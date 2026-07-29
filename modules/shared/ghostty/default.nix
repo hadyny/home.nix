@@ -16,8 +16,14 @@ in
 
     fontFamily = mkOption {
       type = types.str;
-      default = "Maple Mono NF";
+      default = "MonaspiceNe Nerd Font";
       description = "Font family to use in Ghostty";
+    };
+
+    fontFamilyItalic = mkOption {
+      type = types.str;
+      default = "MonaspiceRn Nerd Font";
+      description = "Italic font family to use in Ghostty (Monaspace Radon, a script face)";
     };
 
     fontSize = mkOption {
@@ -78,6 +84,7 @@ in
   config = mkIf cfg.enable {
     home.file.".config/ghostty/config".text = ''
       font-family = "${cfg.fontFamily}"
+      font-family-italic = "${cfg.fontFamilyItalic}"
       font-size = ${toString cfg.fontSize}
       font-thicken = ${boolToString cfg.fontThicken}
       font-thicken-strength = ${toString cfg.fontThickenStrength}

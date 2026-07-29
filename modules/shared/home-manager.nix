@@ -131,22 +131,29 @@
       ];
       cssSnippets = [
         {
-          name = "maple-mono-font";
+          name = "monaspace-font";
           text = ''
+            /* Monaspace typographic voice (mirrors the Emacs config):
+               Neon = code, Xenon = prose, Argon = interface,
+               Krypton = headings, Radon = italics. */
             body {
-              --font-text: "Maple Mono NF";
-              --font-monospace: "Maple Mono NF";
-              --font-interface: "Maple Mono NF";
+              --font-text: "MonaspiceXe Nerd Font";
+              --font-monospace: "MonaspiceNe Nerd Font";
+              --font-interface: "MonaspiceAr Nerd Font";
               font-size: 12px !important;
             }
 
+            /* Prose: reading view + the editor's text lines -> Xenon (slab serif) */
             .markdown-preview-view,
             .markdown-rendered,
             .markdown-reading-view,
-            .markdown-preview-section {
-              font-family: "Maple Mono NF" !important;
+            .markdown-preview-section,
+            .cm-editor .cm-content,
+            .cm-editor .cm-line {
+              font-family: "MonaspiceXe Nerd Font" !important;
             }
 
+            /* Interface chrome -> Argon (humanist sans) */
             .workspace,
             .sidebar-toggle-button,
             .nav-folder-title,
@@ -157,16 +164,26 @@
             .suggestion-item,
             .setting-item,
             .modal {
-              font-family: "Maple Mono NF" !important;
+              font-family: "MonaspiceAr Nerd Font" !important;
             }
 
-            .cm-editor .cm-content,
-            .cm-editor .cm-line {
-              font-family: "Maple Mono NF" !important;
+            /* Code -> Neon (kept mono; wins over the prose rule for code spans) */
+            code, pre, .HyperMD-codeblock,
+            .cm-editor .cm-line.HyperMD-codeblock {
+              font-family: "MonaspiceNe Nerd Font" !important;
             }
 
-            code, pre, .HyperMD-codeblock {
-              font-family: "Maple Mono NF" !important;
+            /* Headings -> Krypton (mechanical, for structure) */
+            .markdown-rendered :is(h1, h2, h3, h4, h5, h6),
+            .cm-editor :is(.HyperMD-header, .cm-header) {
+              font-family: "MonaspiceKr Nerd Font" !important;
+            }
+
+            /* Italics/emphasis -> Radon (script) */
+            .markdown-rendered em,
+            .cm-editor .cm-em {
+              font-family: "MonaspiceRn Nerd Font" !important;
+              font-style: italic;
             }
           '';
         }

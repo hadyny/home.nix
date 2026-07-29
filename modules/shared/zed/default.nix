@@ -15,8 +15,14 @@ in
 
     fontFamily = mkOption {
       type = types.str;
-      default = "Maple Mono NF";
-      description = "Font family to use in Zed";
+      default = "MonaspiceNe Nerd Font";
+      description = "Buffer (code) font family to use in Zed";
+    };
+
+    uiFontFamily = mkOption {
+      type = types.str;
+      default = "MonaspiceAr Nerd Font";
+      description = "UI font family to use in Zed (Monaspace Argon, a humanist sans)";
     };
 
     fontSize = mkOption {
@@ -58,6 +64,7 @@ in
 
       buffer_font_family = cfg.fontFamily;
       buffer_font_size = cfg.fontSize;
+      ui_font_family = cfg.uiFontFamily;
 
       languages = {
         Nix = {
