@@ -23,9 +23,6 @@
 
   dotemacs = {
     enable = true;
-    # Language servers already come from shared/packages.nix (shared with
-    # helix/nvim), so don't restate the closure here.
-    tools = [ ];
     # Live, writable checkout: ~/.emacs.d out-of-store symlink so straight.el
     # can write to ~/.emacs.d/straight and config.org edits need no rebuild.
     configPath = "${config.home.homeDirectory}/src/dotemacs.d";
