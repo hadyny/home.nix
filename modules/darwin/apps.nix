@@ -14,7 +14,6 @@
       "brave-browser"
       "firefox"
       "vivaldi"
-      "microsoft-edge"
       "postman"
       "slack"
       "rider"

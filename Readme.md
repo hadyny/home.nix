@@ -400,7 +400,6 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
       "brave-browser"
       "firefox"
       "vivaldi"
-      "microsoft-edge"
       "postman"
       "slack"
       "rider"
@@ -436,7 +435,7 @@ The configuration includes numerous CLI tools and programs:
 - **Utilities**: btop, jq, z-lua (directory jumping), posting (API client), tabiew (CSV viewer), kew (music player), mitmproxy, rich-cli
 - **Databases**: DBeaver (`dbeaver-bin`)
 - **Knowledge Management**: Obsidian (Catppuccin theme, git plugin)
-- **Browsers**: Brave, Firefox, Vivaldi, Microsoft Edge, Helium (via NUR)
+- **Browsers**: Brave, Firefox, Vivaldi, Helium (via NUR)
 
 ## Key Bindings
 
@@ -474,5 +473,5 @@ The configuration includes numerous CLI tools and programs:
 - Wayland display server with wofi application launcher
 - GTK theming (Catppuccin Mocha, Papirus-Dark icons)
 - Emacs daemon service (`emacs-dotemacs`)
-- 1Password GUI, Brave, and Microsoft Edge
+- 1Password GUI and Brave
 - Works on any Linux distribution — only requires nix and home-manager
