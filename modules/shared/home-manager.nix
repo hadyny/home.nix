@@ -30,6 +30,15 @@
     # config package on load-path (Nix-managed, not straight.el). Provided by the
     # dotemacs overlay added in each platform's nixpkgs.overlays.
     package = pkgs.emacs-dotemacs;
+    # magit-delta needs `delta` on PATH, and the dotemacs closure ships one.
+    # programs.git.delta (tools/git.nix) already installs a *wrapped* delta, and
+    # home.packages is a buildEnv: it dedupes an identical store path, but two
+    # different derivations owning bin/delta is a hard failure --
+    #   two given paths contain a conflicting subpath:
+    #     `…-delta-wrapped/bin/delta' and `…-delta-0.19.2/bin/delta'
+    # Drop the dotemacs copy; the wrapped one carries the git config and is what
+    # magit-delta should pick up.
+    excludeTools = [ "delta" ];
   };
 
   jq.enable = true;
