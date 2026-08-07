@@ -82,7 +82,6 @@ in
           true-color = "always";
           line-numbers = true;
           hyperlinks = true;
-          diff-so-fancy = true;
         };
       };
 
