@@ -1,0 +1,13 @@
+{
+  "nixpkgs": {
+    "expr": "import (builtins.getFlake \"/etc/nix-darwin\").inputs.nixpkgs { }"
+  },
+  "options": {
+    "nix-darwin": {
+      "expr": "(builtins.getFlake \"/etc/nix-darwin\").darwinConfigurations.Hadyns-MacBook-Pro.options"
+    },
+    "home-manager": {
+      "expr": "((builtins.getFlake \"/etc/nix-darwin\").darwinConfigurations.Hadyns-MacBook-Pro.options.home-manager.users.type.getSubOptions [ ])"
+    }
+  }
+}
