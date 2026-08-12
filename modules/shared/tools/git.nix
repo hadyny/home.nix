@@ -95,7 +95,12 @@ in
             showRandomTip = false;
           };
           git = {
-            pagers = [ { pager = "delta --features 'default lazygit'"; } ];
+            diffRenderers = [
+              {
+                type = "stdinFilter";
+                command = "delta --features 'default lazygit'";
+              }
+            ];
             parseEmoji = true;
           };
           customCommands = [
