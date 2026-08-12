@@ -51,8 +51,8 @@ in
 
   services = {
     emacs = {
-      enable = !pkgs.stdenv.isDarwin;
-      package = pkgs.emacs-unstable;
+      enable = true;
+      package = pkgs.emacs-dotemacs;
     };
   };
 
