@@ -50,7 +50,7 @@ in
         signing.format = null;
         lfs.enable = true;
         settings = {
-          aliases = {
+          alias = {
             aliases = "config --get-regexp ^alias.";
             branches = "branch -a --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:blue)(%(committerdate:short)) [%(authorname)]' --sort=-committerdate";
             logs = "log --pretty=format:'%C(auto)%h%C(reset) %C(cyan)%ad%C(auto)%d%C(reset) %s %C(blue)[%cn]%C(reset)' --date=short-local --graph --all";
@@ -71,6 +71,7 @@ in
 
       delta = {
         enable = true;
+        enableGitIntegration = true;
         options = {
           lazygit = {
             hyperlinks = false;
@@ -98,7 +99,7 @@ in
             diffRenderers = [
               {
                 type = "stdinFilter";
-                command = "delta --features 'default lazygit'";
+                command = "delta --paging=never --features 'default lazygit'";
               }
             ];
             parseEmoji = true;
