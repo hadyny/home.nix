@@ -16,14 +16,14 @@ in
 
     fontFamily = mkOption {
       type = types.str;
-      default = "MonaspiceNe Nerd Font";
+      default = "Maple Mono NF";
       description = "Font family to use in Ghostty";
     };
 
     fontFamilyItalic = mkOption {
       type = types.str;
-      default = "MonaspiceRn Nerd Font";
-      description = "Italic font family to use in Ghostty (Monaspace Radon, a script face)";
+      default = "Maple Mono NF";
+      description = "Italic font family to use in Ghostty (the italic faces of the same family)";
     };
 
     fontSize = mkOption {

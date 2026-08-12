@@ -137,58 +137,20 @@
       ];
       cssSnippets = [
         {
-          name = "monaspace-font";
+          name = "maple-mono-font";
           text = ''
-            /* Monaspace typographic voice (mirrors the Emacs config):
-               Neon = code, Xenon = prose, Argon = interface,
-               Krypton = headings, Radon = italics. */
+            /* Maple Mono NF for prose, code and interface. This family has one
+               face, thus the per-role families are not necessary. */
             body {
-              --font-text: "MonaspiceXe Nerd Font";
-              --font-monospace: "MonaspiceNe Nerd Font";
-              --font-interface: "MonaspiceAr Nerd Font";
+              --font-text: "Maple Mono NF";
+              --font-monospace: "Maple Mono NF";
+              --font-interface: "Maple Mono NF";
               font-size: 12px !important;
             }
 
-            /* Prose: reading view + the editor's text lines -> Xenon (slab serif) */
-            .markdown-preview-view,
-            .markdown-rendered,
-            .markdown-reading-view,
-            .markdown-preview-section,
-            .cm-editor .cm-content,
-            .cm-editor .cm-line {
-              font-family: "MonaspiceXe Nerd Font" !important;
-            }
-
-            /* Interface chrome -> Argon (humanist sans) */
-            .workspace,
-            .sidebar-toggle-button,
-            .nav-folder-title,
-            .nav-file-title,
-            .view-header-title,
-            .menu,
-            .prompt,
-            .suggestion-item,
-            .setting-item,
-            .modal {
-              font-family: "MonaspiceAr Nerd Font" !important;
-            }
-
-            /* Code -> Neon (kept mono; wins over the prose rule for code spans) */
-            code, pre, .HyperMD-codeblock,
-            .cm-editor .cm-line.HyperMD-codeblock {
-              font-family: "MonaspiceNe Nerd Font" !important;
-            }
-
-            /* Headings -> Krypton (mechanical, for structure) */
-            .markdown-rendered :is(h1, h2, h3, h4, h5, h6),
-            .cm-editor :is(.HyperMD-header, .cm-header) {
-              font-family: "MonaspiceKr Nerd Font" !important;
-            }
-
-            /* Italics/emphasis -> Radon (script) */
+            /* Emphasis uses the italic faces of the same family. */
             .markdown-rendered em,
             .cm-editor .cm-em {
-              font-family: "MonaspiceRn Nerd Font" !important;
               font-style: italic;
             }
           '';

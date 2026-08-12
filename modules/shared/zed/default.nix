@@ -15,14 +15,14 @@ in
 
     fontFamily = mkOption {
       type = types.str;
-      default = "MonaspiceNe Nerd Font";
+      default = "Maple Mono NF";
       description = "Buffer (code) font family to use in Zed";
     };
 
     uiFontFamily = mkOption {
       type = types.str;
-      default = "MonaspiceAr Nerd Font";
-      description = "UI font family to use in Zed (Monaspace Argon, a humanist sans)";
+      default = "Maple Mono NF";
+      description = "UI font family to use in Zed";
     };
 
     fontSize = mkOption {
