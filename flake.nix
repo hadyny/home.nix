@@ -25,16 +25,11 @@
       url = "github:helix-editor/helix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Wrapper that patches Roslyn's initialize response so Helix is offered pull
-    # diagnostics (works around dotnet/roslyn#76624).
-    csharp-language-server = {
-      url = "github:SofusA/csharp-language-server";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
     inputs@{
+      self,
       nix-darwin,
       home-manager,
       nixpkgs,
@@ -85,6 +80,16 @@
         modules = [
           ./modules/linux/home-manager.nix
         ];
+      };
+
+      # `nix flake check --impure` runs these. The pre-push hook in devenv.nix
+      # calls that command.
+      checks.aarch64-darwin = {
+        helix-config = import ./modules/shared/helix/tests/config.nix {
+          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+          helix =
+            self.darwinConfigurations."Hadyns-MacBook-Pro".config.home-manager.users.${userConfig.name}.programs.helix;
+        };
       };
 
       formatter = {

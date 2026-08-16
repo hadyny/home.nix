@@ -16,7 +16,6 @@
       inputs.nix-nvim.overlays.default
       inputs.claude-code.overlays.default
       inputs.helix.overlays.default
-      inputs.csharp-language-server.overlays.default
       (import ../../overlays/pinned.nix)
     ];
   };
