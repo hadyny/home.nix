@@ -138,8 +138,10 @@ in
         ]);
 
       settings = {
-        theme = "catppuccin_mocha";
-
+        theme = {
+          dark = "tokyonight";
+          light = "tokyonight_day";
+        };
         editor = {
           line-number = "relative";
           mouse = true;
