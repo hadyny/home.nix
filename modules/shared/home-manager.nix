@@ -109,13 +109,13 @@
         {
           enable = true;
           pkg = pkgs.stdenvNoCC.mkDerivation {
-            pname = "obsidian-theme-catppuccin";
-            version = "2.0.4";
+            pname = "obsidian-theme-tokyonight";
+            version = "1.1.7";
             src = pkgs.fetchFromGitHub {
-              owner = "catppuccin";
-              repo = "obsidian";
-              rev = "667e1a893086bc8dec1db32b97ed6b23fdfd5d83";
-              hash = "sha256-fbPkZXlk+TTcVwSrt6ljpmvRL+hxB74NIEygl4ICm2U=";
+              owner = "tcmmichaelb139";
+              repo = "obsidian-tokyonight";
+              rev = "a0dcf21666d8a7a1b178f7b8d01648a0fa72a633";
+              hash = "sha256-b6MSNSTzY169gM7TZchhikagT5ND7yKzuJ1KKBDO1is=";
             };
             installPhase = ''
               runHook preInstall
@@ -272,13 +272,15 @@
     plugins = with pkgs.tmuxPlugins; [
       sensible
       {
-        plugin = catppuccin;
+        plugin = tokyo-night-tmux;
+        # This plugin builds the right side of the status line from widgets, so
+        # a `status-right` of its own is not necessary.
         extraConfig = ''
-          set -g @catppuccin_flavor 'mocha'
-          set -g @catppuccin_status_background 'none'
-          set -g @catppuccin_window_status_style 'rounded'
+          set -g @tokyo-night-tmux_theme night
+          set -g @tokyo-night-tmux_transparent 1
+          set -g @tokyo-night-tmux_show_path 1
+          set -g @tokyo-night-tmux_show_hostname 1
           set -g status-right-length 100
-          set -g status-right "#{E:@catppuccin_status_application}#{E:@catppuccin_status_directory}#{E:@catppuccin_status_host}"
         '';
       }
       {
@@ -292,10 +294,10 @@
       # True colour support
       set -ag terminal-overrides ",xterm-256color:RGB"
 
-      # Catppuccin dark/light toggle
-      # Prefix + D for dark (mocha), Prefix + L for light (latte)
-      bind D run-shell "tmux set -g @catppuccin_flavor 'mocha'; tmux source ~/.config/tmux/tmux.conf"
-      bind L run-shell "tmux set -g @catppuccin_flavor 'latte'; tmux source ~/.config/tmux/tmux.conf"
+      # Tokyo Night dark/light toggle
+      # Prefix + D for dark (night), Prefix + L for light (day)
+      bind D run-shell "tmux set -g @tokyo-night-tmux_theme night; tmux source ~/.config/tmux/tmux.conf"
+      bind L run-shell "tmux set -g @tokyo-night-tmux_theme day; tmux source ~/.config/tmux/tmux.conf"
 
       # Pane splitting (keep cwd)
       bind | split-window -h -c "#{pane_current_path}"

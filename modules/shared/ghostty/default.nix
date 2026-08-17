@@ -52,7 +52,7 @@ in
 
     theme = mkOption {
       type = types.str;
-      default = "light:\"Catppuccin Latte\",dark:\"Catppuccin Mocha\"";
+      default = "light:\"TokyoNight Day\",dark:\"TokyoNight Night\"";
       description = "Theme configuration";
     };
 

@@ -40,9 +40,10 @@ in
         csharp = true;
         eslint = true;
         tailwindcss = true;
-        catppuccin = true;
+        tokyo-night = true;
         authzed-zed = true;
-        catppuccin-icons = true;
+        # Icon themes carry no colour scheme, so this one suits Tokyo Night.
+        material-icon-theme = true;
         terraform = true;
         editorconfig = true;
         ghostty = true;
@@ -52,8 +53,8 @@ in
 
       theme = {
         mode = "system";
-        light = "Catppuccin Latte";
-        dark = "Catppuccin Mocha";
+        light = "Tokyo Night Light";
+        dark = "Tokyo Night";
       };
 
       project_panel = {

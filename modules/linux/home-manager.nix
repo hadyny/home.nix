@@ -52,20 +52,16 @@ in
 
   gtk = {
     enable = true;
+    # nixpkgs supplies no Tokyo Night GTK theme, thus these stay neutral and
+    # dark. They do not conflict with the Tokyo Night editor and terminal
+    # colours.
     theme = {
-      name = "catppuccin-mocha-blue-standard";
-      package = pkgs.catppuccin-gtk.override {
-        accents = [ "blue" ];
-        size = "standard";
-        variant = "mocha";
-      };
+      name = "adw-gtk3-dark";
+      package = pkgs.adw-gtk3;
     };
     iconTheme = {
       name = "Papirus-Dark";
-      package = pkgs.catppuccin-papirus-folders.override {
-        flavor = "mocha";
-        accent = "blue";
-      };
+      package = pkgs.papirus-icon-theme;
     };
   };
 

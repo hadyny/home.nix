@@ -34,8 +34,37 @@ let
   # Read the package names that Helix adds to its PATH.
   packageNames = map (p: lib.getName p) helix.extraPackages;
 
+  # A theme is a plain string or a table. The empty set keeps the string form
+  # usable in the checks below.
+  theme = helix.settings.theme or null;
+  themeAttrs = if builtins.isAttrs theme then theme else { };
+
   # ── Act and Assert ─────────────────────────────────────────────────────────
   cases = [
+    # Helix changes the theme with the terminal only for the table form. A plain
+    # string sets `is_adaptive()` to false, and the handler in
+    # helix-term/src/application.rs then ignores every mode change.
+    {
+      name = "theme uses the adaptive table form";
+      actual = themeAttrs ? light && themeAttrs ? dark;
+      expected = true;
+    }
+    {
+      # The enum denies unknown fields, thus a wrong key stops Helix at start.
+      name = "theme sets no key other than light, dark and fallback";
+      actual = lib.subtractLists [
+        "light"
+        "dark"
+        "fallback"
+      ] (lib.attrNames themeAttrs);
+      expected = [ ];
+    }
+    {
+      name = "the light theme and the dark theme differ";
+      actual = (themeAttrs.light or null) != (themeAttrs.dark or "");
+      expected = true;
+    }
+
     # Nix files use nixd. The nil server is fully removed.
     {
       name = "nix language uses nixd";
