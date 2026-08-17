@@ -37,6 +37,7 @@ in
         git-crypt
         gh
         tig
+        git-extras
       ];
 
       sessionVariables = {
@@ -61,6 +62,26 @@ in
           github.user = cfg.githubUser;
           init.defaultBranch = "main";
           diff.colorMoved = "default";
+
+          # git-extras reads `git-extras.default-branch` and uses
+          # `init.defaultBranch` when that key is absent, thus the key above
+          # covers every git-extras command that needs the default branch.
+          "git-extras" = {
+            # `git get <url>` clones under this directory. The command has no
+            # default and stops with an error when the key is absent.
+            get.clone-path = "${config.home.homeDirectory}/src";
+          };
+
+          # `git bulk -w <name> <command>` runs one git command in every
+          # repository of a workspace. The names come from the same workspace
+          # list that supplies the per-directory gitconfig.
+          #
+          # Each value must be a literal absolute path. `git bulk` treats a
+          # value that starts with `$` as the *name* of an environment
+          # variable, so a path such as `$HOME/src/ep` fails.
+          bulkworkspaces = lib.mapAttrs' (
+            path: _: lib.nameValuePair (baseNameOf path) "${config.home.homeDirectory}/${path}"
+          ) cfg.workspaces;
         };
 
         includes = map (x: {
