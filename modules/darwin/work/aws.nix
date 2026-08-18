@@ -73,7 +73,7 @@
         region = "ap-southeast-2";
       };
 
-      canada = {
+      live-ca-central-1 = {
         sso_start_url = "https://educationperfect.awsapps.com/start";
         sso_account_id = "176806616083";
         sso_role_name = "admin";
