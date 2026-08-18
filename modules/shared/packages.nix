@@ -38,6 +38,7 @@ with pkgs;
   claude-code
   gemini-cli
   fnm
+  nixd
 
   # ─────────────────────────────────────────────────────────────
   # JavaScript / TypeScript

@@ -57,6 +57,25 @@ in
         dark = "Tokyo Night";
       };
 
+      theme_overrides = {
+        "Tokyo Night".syntax = {
+          comment = {
+            font_style = "italic";
+          };
+          "comment.doc" = {
+            font_style = "italic";
+          };
+        };
+        "Tokyo Night Light".syntax = {
+          comment = {
+            font_style = "italic";
+          };
+          "comment.doc" = {
+            font_style = "italic";
+          };
+        };
+      };
+
       project_panel = {
         dock = "right";
       };
@@ -69,9 +88,13 @@ in
 
       languages = {
         Nix = {
+          # nixd only, as in the Helix module. The nix extension supplies both
+          # servers, and the two report the same problem twice. The extension
+          # downloads no binary: it calls `which` against the project shell
+          # environment, so a devenv or direnv nixd wins over the profile one.
           language_servers = [
-            "nil"
-            "!nixd"
+            "nixd"
+            "!nil"
           ];
         };
         "C#" = {
@@ -87,11 +110,6 @@ in
       };
 
       lsp = {
-        nil = {
-          binary = {
-            path_lookup = true;
-          };
-        };
         csharp-language-server = {
           binary = {
             path_lookup = true;
