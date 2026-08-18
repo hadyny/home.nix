@@ -219,6 +219,15 @@ in
             "extend_to_line_bounds"
           ];
           "K" = [ "hover" ];
+
+          "C-g" = [
+            ":write-all"
+            ":new"
+            ":insert-output lazygit"
+            ":buffer-close!"
+            ":redraw"
+            ":reload-all"
+          ];
         };
       };
 

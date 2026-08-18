@@ -65,6 +65,24 @@ let
       expected = true;
     }
 
+    # Ctrl-g opens lazygit. Each step of the sequence is necessary:
+    # `:write-all` makes every change visible to lazygit, `:new` supplies a
+    # scratch buffer for the output, `:buffer-close!` removes that buffer,
+    # `:redraw` repaints the screen, and `:reload-all` clears the change marks
+    # of files that lazygit committed.
+    {
+      name = "Ctrl-g runs lazygit and then cleans up";
+      actual = helix.settings.keys.normal."C-g" or null;
+      expected = [
+        ":write-all"
+        ":new"
+        ":insert-output lazygit"
+        ":buffer-close!"
+        ":redraw"
+        ":reload-all"
+      ];
+    }
+
     # Nix files use nixd. The nil server is fully removed.
     {
       name = "nix language uses nixd";
