@@ -36,7 +36,7 @@ with pkgs;
   scooter
   koji
   claude-code
-  gemini-cli
+  antigravity-cli
   fnm
   nixd
 
