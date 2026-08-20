@@ -854,11 +854,11 @@
         "org-modern": "org-modern"
       },
       "locked": {
-        "lastModified": 1787121823,
-        "narHash": "sha256-LDe++ZwHDR10NuYJrMPgZFpbRMRg1suHWNLl52Z3SCY=",
+        "lastModified": 1787179332,
+        "narHash": "sha256-bLMuRgm2xofhWmtuWD4gxrSVcsyqd7e4drHrMCq0XbU=",
         "owner": "hadyny",
         "repo": "nix-nvim",
-        "rev": "e7ae4d89a3505f8f80ae63f6f45e6bed24c59561",
+        "rev": "58906b57fdca2aea441eaf5ec703bd8ba194ba20",
         "type": "github"
       },
       "original": {

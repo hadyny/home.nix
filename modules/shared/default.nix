@@ -41,5 +41,8 @@
     ./tools/dotnet.nix
     ./tools/git.nix
     ./tools/koji.nix
+
+    # Apps
+    ./dooit
   ];
 }

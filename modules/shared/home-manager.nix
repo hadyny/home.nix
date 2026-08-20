@@ -84,11 +84,11 @@
     # Per-shell form avoids the fzf >=0.66.0 guard on the global option.
     historyWidget.zsh.command = "";
     colors = {
-      fg = "#908caa,bg:#191724,hl:#ebbcba";
-      "fg+" = "#e0def4,bg+:#26233a,hl+:#ebbcba";
-      border = "#403d52,header:#31748f,gutter:#191724";
-      spinner = "#f6c177,info:#9ccfd8";
-      pointer = "#c4a7e7,marker:#eb6f92,prompt:#908caa";
+      fg = "#c0caf5,bg:#1a1b26,hl:#f7768e";
+      "fg+" = "#c0caf5,bg+:#292e42,hl+:#f7768e";
+      border = "#3b4261,header:#7aa2f7,gutter:#1a1b26";
+      spinner = "#9ece6a,info:#7dcfff";
+      pointer = "#7aa2f7,marker:#9ece6a,prompt:#a9b1d6";
     };
     defaultOptions = [
       "--style minimal"
@@ -320,8 +320,8 @@
 
       # Subtle pane borders
       set -g pane-border-lines simple
-      set -g pane-border-style "fg=#313244"
-      set -g pane-active-border-style "fg=#89b4fa"
+      set -g pane-border-style "fg=#3b4261"
+      set -g pane-active-border-style "fg=#7aa2f7"
     '';
   };
 
@@ -368,7 +368,8 @@
     shellAliases = {
       # tmux dev session mirroring the zellij dev layout
       tdev = ''
-        tmux new-session -d -s dev -n Claude claude \; \
+        tmux new-session -d -s dev -n Todos dooit \; \
+          new-window -t dev -n Claude claude \; \
           new-window -t dev -n Project nvim \; \
           new-window -t dev -n Git lazygit \; \
           new-window -t dev -n Files yazi \; \
