@@ -10,11 +10,12 @@ let
   inherit (pkgs) lib;
 
   # ── Arrange ────────────────────────────────────────────────────────────────
-  languages = helix.languages;
+  inherit (helix) languages;
+  inherit (languages) language;
   servers = languages.language-server;
 
   # Find the language block with the given name.
-  langOf = name: lib.findFirst (l: l.name == name) null languages.language;
+  langOf = name: lib.findFirst (l: l.name == name) null language;
 
   # Read the server names from a language block. A block can hold plain strings
   # or attribute sets that contain a `name` field.
