@@ -7,7 +7,7 @@ This configuration provides a complete development environment with:
 - Modular structure for shared, darwin-specific, and linux-specific configurations
 - Work profile support with separate configurations and certificates
 - Custom modules for Git, AWS, Docker, .NET, 1Password integration, and more
-- Comprehensive development tools including Neovim (via nix-nvim), Helix, Emacs (via the dotemacs flake), and Ghostty terminal
+- Comprehensive development tools including Neovim (via nix-nvim), Emacs (via the dotemacs flake), and Ghostty terminal
 
 ## Repository Structure
 
@@ -32,7 +32,6 @@ This configuration provides a complete development environment with:
 │   │   ├── fonts.nix         # Font packages
 │   │   ├── work.nix          # Work-specific settings
 │   │   ├── ghostty/          # Terminal configuration
-│   │   ├── helix/            # Helix editor configuration
 │   │   ├── config/           # Static config files & assets
 │   │   │   └── wallpaper/    # Wallpaper images
 │   │   ├── services/
@@ -400,8 +399,8 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
 The configuration includes numerous CLI tools and programs:
 
 - **Shells**: zsh (with starship using the pure preset, fzf-tab, syntax highlighting, autosuggestions), mcfly history search
-- **Editors**: Neovim (nix-nvim), Helix (Catppuccin Mocha theme, LSP for Nix/Lua/Markdown/C#/TypeScript/ESLint/Tailwind), Emacs (via the dotemacs flake — `emacs-dotemacs`, with a live `~/src/dotemacs.d` checkout)
-- **Terminals**: Ghostty (Catppuccin Latte/Mocha theme, Maple Mono NF font), tmux (Catppuccin Mocha theme, tmux-which-key, dev session with Claude, Project, Git, Files, Shell windows)
+- **Editors**: Neovim (nix-nvim), Emacs (via the dotemacs flake — `emacs-dotemacs`, with a live `~/src/dotemacs.d` checkout)
+- **Terminals**: Ghostty (Catppuccin Latte/Mocha theme, Maple Mono NF font)
 - **Dev Tools**: direnv, devenv, lazygit, tig, lazydocker, gh (GitHub CLI), gh-dash, github-mcp-server, opencode, claude-code, gemini-cli, koji, scooter, cmake, gcc, shfmt, shellcheck, stylelint, dockfmt
 - **File Management**: yazi (with git, starship + rich-preview plugins for CSV/MD/RST/JSON/IPYNB), eza, fd, ripgrep, bat (with extras), duf, gdu, moreutils
 - **Languages**: .NET 8/9/10 (with csharprepl and lazydotnet), Bun, fnm (Node version manager)
@@ -417,10 +416,6 @@ The configuration includes numerous CLI tools and programs:
 ## Key Bindings
 
 - **Caps Lock** is remapped to **Control** (macOS)
-- tmux prefix: `Ctrl+a`
-- tmux: `Prefix + D` for dark theme, `Prefix + L` for light (dawn) theme
-- tmux: `Prefix + Space` for which-key menu, `Ctrl+Space` for root which-key
-- tmux: vim-style pane navigation (`h/j/k/l`), splitting (`|` / `-`)
 
 ## Flake Inputs
 
@@ -432,8 +427,6 @@ The configuration includes numerous CLI tools and programs:
 - **nix-nvim**: hadyny/nix-nvim for custom Neovim configuration
 - **nur**: nix-community/NUR for additional packages
 - **claude-code**: sadjow/claude-code-nix for Claude Code CLI
-- **helix**: helix-editor/helix built from git, for LSP pull-diagnostics support (required for C# diagnostics via Roslyn)
-- **csharp-language-server**: SofusA/csharp-language-server — wraps Roslyn so Helix is offered pull diagnostics
 
 ## Platform-Specific Features
 

@@ -80,7 +80,6 @@ in
       enable = true;
       fontSize = 12;
     };
-    helix.enable = true;
   };
 
   wayland.windowManager.sway = {

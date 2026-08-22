@@ -19,17 +19,10 @@
     };
     claude-code.url = "github:sadjow/claude-code-nix";
     devenv.url = "github:cachix/devenv";
-    # Helix from git for LSP pull-diagnostics support (helix#11315), not yet in
-    # a tagged release (25.07.1). Required for C# diagnostics via Roslyn.
-    helix = {
-      url = "github:helix-editor/helix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
     inputs@{
-      self,
       nix-darwin,
       home-manager,
       nixpkgs,
@@ -84,13 +77,7 @@
 
       # `nix flake check --impure` runs these. The pre-push hook in devenv.nix
       # calls that command.
-      checks.aarch64-darwin = {
-        helix-config = import ./modules/shared/helix/tests/config.nix {
-          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-          helix =
-            self.darwinConfigurations."Hadyns-MacBook-Pro".config.home-manager.users.${userConfig.name}.programs.helix;
-        };
-      };
+      checks.aarch64-darwin = { };
 
       formatter = {
         aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-tree;

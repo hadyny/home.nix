@@ -194,71 +194,6 @@
     );
   };
 
-  tmux = {
-    enable = true;
-    prefix = "C-a";
-    terminal = "tmux-256color";
-    mouse = true;
-    keyMode = "vi";
-    baseIndex = 1;
-    escapeTime = 0;
-    historyLimit = 10000;
-    plugins = with pkgs.tmuxPlugins; [
-      sensible
-      {
-        plugin = tokyo-night-tmux;
-        # This plugin builds the right side of the status line from widgets, so
-        # a `status-right` of its own is not necessary.
-        extraConfig = ''
-          set -g @tokyo-night-tmux_theme night
-          set -g @tokyo-night-tmux_transparent 1
-          set -g @tokyo-night-tmux_show_path 1
-          set -g @tokyo-night-tmux_show_hostname 1
-          set -g status-right-length 100
-        '';
-      }
-      {
-        plugin = tmux-which-key;
-        extraConfig = ''
-          set -g @tmux-which-key-xdg-enable 1
-        '';
-      }
-    ];
-    extraConfig = ''
-      # True colour support
-      set -ag terminal-overrides ",xterm-256color:RGB"
-
-      # Tokyo Night dark/light toggle
-      # Prefix + D for dark (night), Prefix + L for light (day)
-      bind D run-shell "tmux set -g @tokyo-night-tmux_theme night; tmux source ~/.config/tmux/tmux.conf"
-      bind L run-shell "tmux set -g @tokyo-night-tmux_theme day; tmux source ~/.config/tmux/tmux.conf"
-
-      # Pane splitting (keep cwd)
-      bind | split-window -h -c "#{pane_current_path}"
-      bind - split-window -v -c "#{pane_current_path}"
-
-      # Pane navigation (vim-style)
-      bind h select-pane -L
-      bind j select-pane -D
-      bind k select-pane -U
-      bind l select-pane -R
-
-      # Pane resizing
-      bind -r H resize-pane -L 5
-      bind -r J resize-pane -D 5
-      bind -r K resize-pane -U 5
-      bind -r L resize-pane -R 5
-
-      # Window renumbering
-      set -g renumber-windows on
-
-      # Subtle pane borders
-      set -g pane-border-lines simple
-      set -g pane-border-style "fg=#3b4261"
-      set -g pane-active-border-style "fg=#7aa2f7"
-    '';
-  };
-
   zsh = {
     enable = true;
     enableCompletion = true;
@@ -299,19 +234,6 @@
         inherit (pkgs.pure-prompt) src;
       }
     ];
-    shellAliases = {
-      # tmux dev session mirroring the zellij dev layout
-      tdev = ''
-        tmux new-session -d -s dev -n Todos dooit \; \
-          new-window -t dev -n Claude claude \; \
-          new-window -t dev -n Project nvim \; \
-          new-window -t dev -n Git lazygit \; \
-          new-window -t dev -n Files yazi \; \
-          new-window -t dev -n Shell zsh \; \
-          select-window -t dev:Project \; \
-          attach-session -t dev
-      '';
-    };
     syntaxHighlighting.enable = true;
   };
 

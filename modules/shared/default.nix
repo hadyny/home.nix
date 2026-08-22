@@ -15,14 +15,12 @@
       inputs.dotemacs.overlays.default
       inputs.nix-nvim.overlays.default
       inputs.claude-code.overlays.default
-      inputs.helix.overlays.default
       (import ../../overlays/pinned.nix)
     ];
   };
 
   imports = [
     # Editors
-    ./helix
     inputs.dotemacs.homeModules.default
 
     # Terminal
@@ -40,8 +38,5 @@
     ./tools/dotnet.nix
     ./tools/git.nix
     ./tools/koji.nix
-
-    # Apps
-    ./dooit
   ];
 }

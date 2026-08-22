@@ -61,7 +61,6 @@ in
       enable = true;
       adjustCellHeight = "15%";
     };
-    helix.enable = true;
     wallpaper = {
       enable = true;
       file = ../shared/config/wallpaper/nord.jpg;
