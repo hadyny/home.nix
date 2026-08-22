@@ -52,7 +52,7 @@ in
 
     theme = mkOption {
       type = types.str;
-      default = "light:\"TokyoNight Day\",dark:\"TokyoNight Night\"";
+      default = "light:\"Modus Operandi Tinted\",dark:\"Modus Vivendi Tinted\"";
       description = "Theme configuration";
     };
 
