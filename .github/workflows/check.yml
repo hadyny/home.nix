@@ -26,7 +26,6 @@ jobs:
     - name: Check for dead code
       run: nix run nixpkgs#deadnix -- --fail .
     # NOTE: no `nix flake check` here. Both configs target aarch64 (darwin +
-    # linux) and the shared obsidian module builds a theme via import-from-
-    # derivation, so evaluating them on the x86_64-linux runner forces a
+    # linux), so evaluating them on the x86_64-linux runner forces a
     # foreign-platform build ("platform mismatch"). Config eval/build needs a
     # native runner (see a macOS leg for the darwin config).

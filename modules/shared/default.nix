@@ -23,7 +23,6 @@
   imports = [
     # Editors
     ./helix
-    ./zed
     inputs.dotemacs.homeModules.default
 
     # Terminal

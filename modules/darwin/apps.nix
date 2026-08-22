@@ -18,7 +18,6 @@
       "slack"
       "rider"
       "spotify"
-      "zed"
     ];
 
     global.brewfile = true;

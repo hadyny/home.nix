@@ -7,7 +7,7 @@ This configuration provides a complete development environment with:
 - Modular structure for shared, darwin-specific, and linux-specific configurations
 - Work profile support with separate configurations and certificates
 - Custom modules for Git, AWS, Docker, .NET, 1Password integration, and more
-- Comprehensive development tools including Neovim (via nix-nvim), Helix, Zed, Emacs (via the dotemacs flake), and Ghostty terminal
+- Comprehensive development tools including Neovim (via nix-nvim), Helix, Emacs (via the dotemacs flake), and Ghostty terminal
 
 ## Repository Structure
 
@@ -33,7 +33,6 @@ This configuration provides a complete development environment with:
 │   │   ├── work.nix          # Work-specific settings
 │   │   ├── ghostty/          # Terminal configuration
 │   │   ├── helix/            # Helix editor configuration
-│   │   ├── zed/              # Zed editor configuration
 │   │   ├── config/           # Static config files & assets
 │   │   │   └── wallpaper/    # Wallpaper images
 │   │   ├── services/
@@ -326,26 +325,6 @@ services.colima = {
 };
 ```
 
-### Zed (`zed-editor`)
-
-Declarative Zed editor configuration with LSP support, extensions, and theming.
-
-```nix
-settings.zed = {
-  enable = true;
-  fontFamily = "Maple Mono NF";  # default
-  fontSize = 15;                 # default
-};
-```
-
-Auto-installs the `nix`, `lua`, `csharp`, `eslint`, `tailwindcss`, `catppuccin`,
-`catppuccin-icons`, `authzed-zed`, `terraform`, `editorconfig`, `ghostty`,
-`graphql`, and `astro` extensions, applies the system-aware Catppuccin
-Latte/Mocha theme, enables vim mode, and wires up path-lookup LSPs for `nil`
-(Nix, with `nixd` disabled), `csharp-language-server` (C#, with `roslyn` and
-`omnisharp` disabled), `tailwindcss-language-server`,
-`typescript-language-server`, and `eslint`.
-
 ### Dock (`targets.darwin.dock`)
 
 Declaratively configure macOS Dock applications.
@@ -404,7 +383,6 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
       "slack"
       "rider"
       "spotify"
-      "zed"
     ];
 
     global.brewfile = true;
@@ -422,7 +400,7 @@ Homebrew packages are managed via `modules/darwin/apps.nix`:
 The configuration includes numerous CLI tools and programs:
 
 - **Shells**: zsh (with starship using the pure preset, fzf-tab, syntax highlighting, autosuggestions), mcfly history search
-- **Editors**: Neovim (nix-nvim), Helix (Catppuccin Mocha theme, LSP for Nix/Lua/Markdown/C#/TypeScript/ESLint/Tailwind), Zed (declarative config with LSP & extensions), Emacs (via the dotemacs flake — `emacs-dotemacs`, with a live `~/src/dotemacs.d` checkout)
+- **Editors**: Neovim (nix-nvim), Helix (Catppuccin Mocha theme, LSP for Nix/Lua/Markdown/C#/TypeScript/ESLint/Tailwind), Emacs (via the dotemacs flake — `emacs-dotemacs`, with a live `~/src/dotemacs.d` checkout)
 - **Terminals**: Ghostty (Catppuccin Latte/Mocha theme, Maple Mono NF font), tmux (Catppuccin Mocha theme, tmux-which-key, dev session with Claude, Project, Git, Files, Shell windows)
 - **Dev Tools**: direnv, devenv, lazygit, tig, lazydocker, gh (GitHub CLI), gh-dash, github-mcp-server, opencode, claude-code, gemini-cli, koji, scooter, cmake, gcc, shfmt, shellcheck, stylelint, dockfmt
 - **File Management**: yazi (with git, starship + rich-preview plugins for CSV/MD/RST/JSON/IPYNB), eza, fd, ripgrep, bat (with extras), duf, gdu, moreutils
@@ -430,11 +408,10 @@ The configuration includes numerous CLI tools and programs:
 - **LSPs**: typescript-language-server, tailwindcss-language-server, lua-language-server, nil (Nix), csharp-language-server (Roslyn wrapper for C#), marksman (Markdown), prettierd, vscode-langservers-extracted (ESLint)
 - **Containers**: Docker (with docker-credential-helpers), Colima
 - **Virtualisation**: UTM (macOS)
-- **Infrastructure**: Terraform, SpiceDB (spicedb + zed CLI)
+- **Infrastructure**: Terraform, SpiceDB (spicedb + spicedb-zed CLI)
 - **Kafka**: redpanda-client, kafkactl, kcat
 - **Utilities**: btop, jq, z-lua (directory jumping), posting (API client), tabiew (CSV viewer), kew (music player), mitmproxy, rich-cli
 - **Databases**: DBeaver (`dbeaver-bin`)
-- **Knowledge Management**: Obsidian (Catppuccin theme, git plugin)
 - **Browsers**: Brave, Firefox, Vivaldi, Helium (via NUR)
 
 ## Key Bindings

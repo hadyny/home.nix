@@ -81,7 +81,6 @@ in
       fontSize = 12;
     };
     helix.enable = true;
-    zed.enable = true;
   };
 
   wayland.windowManager.sway = {

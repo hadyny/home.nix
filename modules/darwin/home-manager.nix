@@ -62,7 +62,6 @@ in
       adjustCellHeight = "15%";
     };
     helix.enable = true;
-    zed.enable = true;
     wallpaper = {
       enable = true;
       file = ../shared/config/wallpaper/nord.jpg;

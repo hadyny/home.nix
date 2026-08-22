@@ -22,9 +22,9 @@ jobs:
         authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
     - run: nix flake update
     # NOTE: no in-job `nix flake check` — it can't evaluate these aarch64
-    # configs on the x86_64-linux runner (foreign-platform IFD build via the
-    # obsidian module). The bump PR is unvalidated here; review before merge, or
-    # add a native (macOS) validation leg.
+    # configs on the x86_64-linux runner (foreign-platform build). The bump
+    # PR is unvalidated here; review before merge, or add a native (macOS)
+    # validation leg.
     - uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
       with:
         commit-message: "chore: update flake inputs"

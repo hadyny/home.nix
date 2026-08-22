@@ -90,19 +90,6 @@
           helix =
             self.darwinConfigurations."Hadyns-MacBook-Pro".config.home-manager.users.${userConfig.name}.programs.helix;
         };
-        zed-config = import ./modules/shared/zed/tests/config.nix {
-          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-          home = self.darwinConfigurations."Hadyns-MacBook-Pro".config.home-manager.users.${userConfig.name};
-          sharedPackages =
-            let
-              shared = (import ./modules/shared/default.nix { inherit inputs; }).nixpkgs;
-              pkgs = import nixpkgs {
-                system = "aarch64-darwin";
-                inherit (shared) config overlays;
-              };
-            in
-            pkgs.callPackage ./modules/shared/packages.nix { inherit inputs pkgs; };
-        };
       };
 
       formatter = {
