@@ -84,11 +84,11 @@
     # Per-shell form avoids the fzf >=0.66.0 guard on the global option.
     historyWidget.zsh.command = "";
     colors = {
-      fg = "#c0caf5,bg:#1a1b26,hl:#f7768e";
-      "fg+" = "#c0caf5,bg+:#292e42,hl+:#f7768e";
-      border = "#3b4261,header:#7aa2f7,gutter:#1a1b26";
-      spinner = "#9ece6a,info:#7dcfff";
-      pointer = "#7aa2f7,marker:#9ece6a,prompt:#a9b1d6";
+      fg = "#f8f8f2,bg:#282a36,hl:#bd93f9";
+      "fg+" = "#f8f8f2,bg+:#44475a,hl+:#bd93f9";
+      border = "#6272a4,header:#6272a4,gutter:#282a36";
+      spinner = "#ffb86c,info:#ffb86c";
+      pointer = "#ff79c6,marker:#ff79c6,prompt:#50fa7b";
     };
     defaultOptions = [
       "--style minimal"

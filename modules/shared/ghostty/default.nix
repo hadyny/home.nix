@@ -52,7 +52,7 @@ in
 
     theme = mkOption {
       type = types.str;
-      default = "light:\"Modus Operandi Tinted\",dark:\"Modus Vivendi Tinted\"";
+      default = "light:\"iTerm2 Solarized Light\",dark:\"Dracula\"";
       description = "Theme configuration";
     };
 
