@@ -39,8 +39,8 @@ in
 
     theme = mkOption {
       type = types.str;
-      default = "Terminal";
-      description = "Theme persisted to tuxedo's config.toml (Terminal respects the terminal's own palette)";
+      default = "Catppuccin Mocha";
+      description = "Theme persisted to tuxedo's config.toml (Catppuccin Mocha/Latte are installed as custom themes below; cycle with `T`)";
     };
   };
 
@@ -52,6 +52,14 @@ in
         TODO_DIR = cfg.todoDir;
         TODO_FILE = cfg.todoFile;
         DONE_FILE = cfg.doneFile;
+      };
+
+      # Custom themes tuxedo picks up from its themes dir (joins the `T`
+      # picker in sorted filename order). These are plain Nix-store symlinks:
+      # tuxedo never rewrites files here, only config.toml.
+      file = {
+        ".config/tuxedo/themes/catppuccin-mocha.toml".source = ./themes/catppuccin-mocha.toml;
+        ".config/tuxedo/themes/catppuccin-latte.toml".source = ./themes/catppuccin-latte.toml;
       };
 
       # tuxedo rewrites config.toml itself (theme/density/sort/etc. all
