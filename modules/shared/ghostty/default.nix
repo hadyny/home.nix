@@ -26,6 +26,24 @@ in
       description = "Italic font family to use in Ghostty (the italic faces of the same family)";
     };
 
+    fontFamilyBold = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Bold font family to use in Ghostty (defaults to fontFamily when null)";
+    };
+
+    fontFamilyBoldItalic = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Bold-italic font family to use in Ghostty (defaults to fontFamilyItalic when null)";
+    };
+
+    fontFeatures = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = "Font feature settings to apply (e.g. ligature/stylistic-set OpenType features)";
+    };
+
     fontSize = mkOption {
       type = types.int;
       default = 15;
@@ -85,6 +103,11 @@ in
     home.file.".config/ghostty/config".text = ''
       font-family = "${cfg.fontFamily}"
       font-family-italic = "${cfg.fontFamilyItalic}"
+      font-family-bold = "${if cfg.fontFamilyBold != null then cfg.fontFamilyBold else cfg.fontFamily}"
+      font-family-bold-italic = "${
+        if cfg.fontFamilyBoldItalic != null then cfg.fontFamilyBoldItalic else cfg.fontFamilyItalic
+      }"
+      ${concatMapStringsSep "\n" (feature: "font-feature = ${feature}") cfg.fontFeatures}
       font-size = ${toString cfg.fontSize}
       font-thicken = ${boolToString cfg.fontThicken}
       font-thicken-strength = ${toString cfg.fontThickenStrength}

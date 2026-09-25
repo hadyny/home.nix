@@ -59,7 +59,27 @@ in
   settings = {
     ghostty = {
       enable = true;
-      adjustCellHeight = "15%";
+      adjustCellHeight = "35%";
+      fontSize = 14;
+      fontFamily = "MonaspiceNe Nerd Font Mono";
+      fontFamilyItalic = "MonaspiceRn Nerd Font Mono";
+      fontFamilyBold = "MonaspiceXe Nerd Font Mono";
+      fontFamilyBoldItalic = "MonaspiceKr Nerd Font Mono";
+      # calt = texture healing, liga = repeated-character ligatures, ss01-ss10 = coding ligature stylistic sets.
+      fontFeatures = [
+        "calt"
+        "liga"
+        "ss01"
+        "ss02"
+        "ss03"
+        "ss04"
+        "ss05"
+        "ss06"
+        "ss07"
+        "ss08"
+        "ss09"
+        "ss10"
+      ];
     };
     wallpaper = {
       enable = true;
