@@ -86,6 +86,7 @@ in
       workspaces = userConfig.gitWorkspaces;
     };
     koji.enable = true;
+    tuxedo.enable = true;
   };
 
   # https://nix-community.github.io/home-manager/release-notes.html

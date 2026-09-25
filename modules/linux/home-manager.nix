@@ -138,6 +138,7 @@ in
       workspaces = userConfig.gitWorkspaces;
     };
     koji.enable = true;
+    tuxedo.enable = true;
   };
 
   home.stateVersion = "24.11";
