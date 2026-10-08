@@ -144,6 +144,7 @@ in
       workspaces = userConfig.gitWorkspaces;
     };
     koji.enable = true;
+    obsidian.enable = true;
     tuxedo.enable = true;
   };
 
