@@ -8,7 +8,7 @@
 
   git-hooks.hooks = {
     # replaces .githooks/pre-commit (`nix fmt -- --ci`)
-    nixfmt-rfc-style.enable = true;
+    nixfmt.enable = true;
 
     # replaces .githooks/pre-push (`nix flake check`)
     # --impure is required because the devenv devShells output needs to
